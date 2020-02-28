@@ -55,56 +55,37 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected $middleware = [
-        TrustProxies::class,
-        CheckForMaintenanceMode::class,
-        ValidatePostSize::class,
-        TrimStrings::class,
-        ConvertEmptyStringsToNull::class,
-    ];
+    protected $middleware
+        = [
+            TrustProxies::class,
+            CheckForMaintenanceMode::class,
+            ValidatePostSize::class,
+            TrimStrings::class,
+            ConvertEmptyStringsToNull::class,
+        ];
 
     /**
      * The application's route middleware groups.
      *
      * @var array
      */
-    protected $middlewareGroups = [
-        'web' => [
-            EncryptCookies::class,
-            AddQueuedCookiesToResponse::class,
-            StartSession::class,
-            // \Illuminate\Session\Middleware\AuthenticateSession::class,
-            ShareErrorsFromSession::class,
-            VerifyCsrfToken::class,
-            SubstituteBindings::class,
-        ],
+    protected $middlewareGroups
+        = [
+            'web' => [
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+                // \Illuminate\Session\Middleware\AuthenticateSession::class,
+                ShareErrorsFromSession::class,
+                VerifyCsrfToken::class,
+                SubstituteBindings::class,
+            ],
 
-        'api' => [
-            'throttle:60,1',
-            SubstituteBindings::class,
-        ],
-    ];
-
-    /**
-     * The application's route middleware.
-     *
-     * These middleware may be assigned to groups or used individually.
-     *
-     * @var array
-     */
-    protected $routeMiddleware = [
-        'auth' => Authenticate::class,
-        'auth.basic' => AuthenticateWithBasicAuth::class,
-        'bindings' => SubstituteBindings::class,
-        'cache.headers' => SetCacheHeaders::class,
-        'can' => Authorize::class,
-        'guest' => RedirectIfAuthenticated::class,
-        'password.confirm' => RequirePassword::class,
-        'signed' => ValidateSignature::class,
-        'throttle' => ThrottleRequests::class,
-        'verified' => EnsureEmailIsVerified::class,
-    ];
-
+            'api' => [
+                'throttle:60,1',
+                SubstituteBindings::class,
+            ],
+        ];
     /**
      * The priority-sorted list of middleware.
      *
@@ -112,13 +93,34 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected $middlewarePriority = [
-        StartSession::class,
-        ShareErrorsFromSession::class,
-        Authenticate::class,
-        ThrottleRequests::class,
-        AuthenticateSession::class,
-        SubstituteBindings::class,
-        Authorize::class,
-    ];
+    protected $middlewarePriority
+        = [
+            StartSession::class,
+            ShareErrorsFromSession::class,
+            Authenticate::class,
+            ThrottleRequests::class,
+            AuthenticateSession::class,
+            SubstituteBindings::class,
+            Authorize::class,
+        ];
+    /**
+     * The application's route middleware.
+     *
+     * These middleware may be assigned to groups or used individually.
+     *
+     * @var array
+     */
+    protected $routeMiddleware
+        = [
+            'auth'             => Authenticate::class,
+            'auth.basic'       => AuthenticateWithBasicAuth::class,
+            'bindings'         => SubstituteBindings::class,
+            'cache.headers'    => SetCacheHeaders::class,
+            'can'              => Authorize::class,
+            'guest'            => RedirectIfAuthenticated::class,
+            'password.confirm' => RequirePassword::class,
+            'signed'           => ValidateSignature::class,
+            'throttle'         => ThrottleRequests::class,
+            'verified'         => EnsureEmailIsVerified::class,
+        ];
 }
