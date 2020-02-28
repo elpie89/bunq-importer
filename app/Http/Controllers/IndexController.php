@@ -13,6 +13,14 @@ use Illuminate\View\View;
 class IndexController extends Controller
 {
     /**
+     * IndexController constructor.
+     */
+    public function __construct()
+    {
+        app('view')->share('pageTitle', 'Index');
+    }
+
+    /**
      * @return Factory|View
      */
     public function index()
