@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * BroadcastServiceProvider.php
  * Copyright (c) 2020 james@firefly-iii.org
@@ -32,7 +33,7 @@ class BroadcastServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Broadcast::routes();
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * User.php
  * Copyright (c) 2020 james@firefly-iii.org
@@ -22,7 +23,6 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 

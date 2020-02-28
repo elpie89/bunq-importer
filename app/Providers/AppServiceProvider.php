@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * AppServiceProvider.php
  * Copyright (c) 2020 james@firefly-iii.org
@@ -41,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         //
     }

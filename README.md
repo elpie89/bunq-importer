@@ -1,4 +1,4 @@
-# ff3-bunq-importer
+# Firefly III bunq importer
 A Firefly III importer that can get files from bunq. Work in progress.
 
 ## WoW

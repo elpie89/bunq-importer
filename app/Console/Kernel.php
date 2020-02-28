@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Kernel.php
  * Copyright (c) 2020 james@firefly-iii.org
@@ -39,7 +40,7 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
