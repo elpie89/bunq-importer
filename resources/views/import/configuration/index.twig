@@ -1,0 +1,211 @@
+{% extends "./layout/default" %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                &nbsp;
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>{{ mainTitle }}</h1>
+                <h2>{{ subTitle }}</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <p class="lead">Configure bunq.</p>
+                <p>
+                    Do config bunq bla bla
+                    If you would like some support, <a href="https://firefly-iii.gitbook.io/firefly-iii-csv-importer/importing-data/configure"
+                                                       target="_blank">check out the documentation for this page.</a>
+                </p>
+                {% if not errors.isEmpty %}
+                    <p class="text-danger">Some error(s) occurred:</p>
+                    <ul>
+                        {% for error in errors.all %}
+                            <li class="text-danger">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <hr/>
+                <div class="row">
+                    <div class="col-lg-10">
+                        <form method="post" action="{{ route('import.configure.post') }}" accept-charset="UTF-8" id="store">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="mapping" value="{{ mapping }}"/>
+                            <h4>bunq options</h4>
+
+                            <div class="form-group row">
+                                <div class="col-sm-3">Accounts</div>
+                                <div class="col-sm-9">
+                                    {% for combinedAccount in combinedAccounts %}
+                                        <div class="form-check">
+                                            {% if null == combinedAccount.ff3_id %}
+                                                <input class="form-check-input" id="accounts_{{ combinedAccount.id }}" type="checkbox" name="accounts[]"
+                                                       value="0" disabled aria-describedby="accountsHelp"/>
+                                            {% else %}
+                                                <input class="form-check-input" id="accounts_{{ combinedAccount.id }}" type="checkbox" name="accounts[]"
+                                                       value="{{ combinedAccount.id }}" aria-describedby="accountsHelp"/>
+                                            {% endif %}
+                                            <label class="form-check-label" for="accounts_{{ combinedAccount.id }}">{{ combinedAccount.description }}
+                                                {% if '' != combinedAccount.iban %} <small>({{ combinedAccount.iban }})</small>{% endif %}
+                                                {% if 'CANCELLED' == combinedAccount.status %}
+                                                    <br/><span class="text-warning">You cannot import from a closed account.</span>
+                                                {% endif %}
+                                                {% if 'CANCELLED' != combinedAccount.status and null == combinedAccount.ff3_id %}
+                                                    <br/><span class="text-warning">You have no Firefly III asset account with this IBAN and currency.</span>
+                                                {% endif %}
+                                                {% if 'ACTIVE' == combinedAccount.status and null != combinedAccount.ff3_id %}
+                                                    <br/><span class="text-success">This bunq account will be imported into <a
+                                                            href="{{ combinedAccount.ff3_uri }}"
+                                                            title="{{ combinedAccount.ff3_name }}">{{ combinedAccount.ff3_name }}</a>.</span>
+                                                {% endif %}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                    <small id="accountsHelp" class="form-text text-muted">
+                                        Select the accounts you want to import into your Firefly III installation.
+                                    </small>
+                                </div>
+                            </div>
+
+
+                            <h4>Import options</h4>
+                            <div class="form-group row">
+                                <label for="default_account" class="col-sm-3 col-form-label">Date range</label>
+                                <div class="col-sm-9">
+                                    <div class="form-check">
+                                        <input class="form-check-input date-range-radio" id="date_range_all" type="radio" name="date_range[]" value="all"
+                                               {% if configuration.getDateRange == 'all' %}checked{% endif %}
+                                               aria-describedby="rangeHelp"/>
+                                        <label class="form-check-label" for="date_range_all">Import everything</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input date-range-radio" id="date_range_partial" type="radio" name="date_range[]"
+                                               value="partial"
+                                               {% if configuration.getDateRange == 'partial' %}checked{% endif %}
+                                               aria-describedby="rangeHelp"/>
+                                        <label class="form-check-label" for="date_range_partial">Go back some time</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input date-range-radio" id="date_range_range" type="radio" name="date_range[]" value="range"
+                                               {% if configuration.getDateRange == 'range' %}checked{% endif %}
+                                               aria-describedby="rangeHelp"/>
+                                        <label class="form-check-label" for="date_range_range">Import a specific range</label>
+                                    </div>
+
+                                    <small id="rangeHelp" class="form-text text-muted">
+                                        What range to grab from bunq?
+                                    </small>
+                                </div>
+                            </div>
+                            <!-- settings for a limit retrieval -->
+                            <div class="form-group row" id="date_range_partial_settings">
+                                <div class="col-sm-3">
+                                    Date range settings
+                                </div>
+                                <div class="col-sm-3">
+                                    <input
+                                            name="date_range_number"
+                                            id="date_range_number"
+                                            class="form-control" value="{{ configuration.getDateRangeNumber }}" type="number" step="1" min="1" max="365">
+                                </div>
+                                <div class="col-sm-6">
+                                    <select class="form-control"
+                                            name="date_range_unit"
+                                            id="date_range_unit">
+                                        <option {% if 'd' == configuration.getDateRangeUnit %}selected{% endif %} value="d" label="days">days</option>
+                                        <option {% if 'w' == configuration.getDateRangeUnit %}selected{% endif %} value="w" label="weeks">weeks</option>
+                                        <option {% if 'm' == configuration.getDateRangeUnit %}selected{% endif %} value="m" label="months">months</option>
+                                        <option {% if 'y' == configuration.getDateRangeUnit %}selected{% endif %} value="y" label="years">years</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row" id="date_range_range_settings">
+                                <div class="col-sm-3">
+                                    Date range settings
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="date" name="date_range_start" class="form-control" value="{{ configuration.getDateRangeStart }}">
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="date" name="date_range_end" class="form-control" value="{{ configuration.getDateRangeEnd }}">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <div class="col-sm-3">Rules</div>
+                                <div class="col-sm-9">
+                                    <div class="form-check">
+                                        <input class="form-check-input" {% if configuration.isRules %}checked{% endif %} type="checkbox" id="rules" name="rules"
+                                               value="1" aria-describedby="rulesHelp">
+                                        <label class="form-check-label" for="rules">
+                                            Yes
+                                        </label>
+                                        <small id="rulesHelp" class="form-text text-muted">
+                                            Select if you want Firefly III to apply your rules to the import.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <h4>Other options</h4>
+                            <div class="form-group row">
+                                <div class="col-sm-3">Skip form</div>
+                                <div class="col-sm-9">
+                                    <div class="form-check">
+                                        <input class="form-check-input" {% if configuration.isSkipForm %}checked{% endif %} type="checkbox" id="skip_form"
+                                               name="skip_form" value="1" aria-describedby="skipHelp">
+                                        <label class="form-check-label" for="skip_form">
+                                            Yes
+                                        </label>
+                                        <small id="skipHelp" class="form-text text-muted">
+                                            Skip the options the next time you import and go straight to processing.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                        <p>&nbsp;</p>
+                        <p>&nbsp;</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#date_range_partial_settings').hide();
+            $('#date_range_range_settings').hide();
+            $('.date-range-radio').on('change', updateRange);
+            updateRange();
+        });
+
+        function updateRange() {
+            var check = $('input[name="date_range[]"]:checked');
+            if ('partial' === check.val()) {
+                $('#date_range_partial_settings').show();
+                $('#date_range_range_settings').hide();
+            }
+
+            if ('range' === check.val()) {
+                $('#date_range_partial_settings').hide();
+                $('#date_range_range_settings').show();
+            }
+            if ('all' === check.val()) {
+                $('#date_range_partial_settings').hide();
+                $('#date_range_range_settings').hide();
+            }
+        }
+    </script>
+{% endblock %}

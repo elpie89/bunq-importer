@@ -32,6 +32,9 @@
 */
 Route::get('/', ['uses' => 'IndexController@index', 'as' => 'index']);
 
+// clear session
+Route::get('/flush','IndexController@flush')->name('flush');
+
 // validate access token:
 Route::get('/token', 'TokenController@index')->name('token.index');
 Route::get('/token/validate', 'TokenController@doValidate')->name('token.validate');

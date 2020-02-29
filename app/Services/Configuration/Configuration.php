@@ -41,16 +41,135 @@ class Configuration
     private $skipForm;
     /** @var int */
     private $version;
+    /** @var array */
+    private $mapping;
+
+    /** @var string */
+    private $dateRange;
+
+    /** @var int */
+    private $dateRangeNumber;
+
+    /** @var string */
+    private $dateRangeUnit;
+
+    /** @var string */
+    private $dateRangeStart;
+
+    /** @var string */
+    private $dateRangeEnd;
 
     /**
      * Configuration constructor.
      */
     private function __construct()
     {
-        $this->rules    = true;
-        $this->skipForm = false;
-        $this->accounts = [];
-        $this->version  = self::VERSION;
+        $this->rules           = true;
+        $this->skipForm        = false;
+        $this->accounts        = [];
+        $this->version         = self::VERSION;
+        $this->mapping         = [];
+        $this->dateRange       = 'all';
+        $this->dateRangeNumber = 30;
+        $this->dateRangeUnit   = 'd';
+        $this->dateRangeStart  = '';
+        $this->dateRangeEnd    = '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateRangeStart(): string
+    {
+        return $this->dateRangeStart;
+    }
+
+    /**
+     * @param string $dateRangeStart
+     */
+    public function setDateRangeStart(string $dateRangeStart): void
+    {
+        $this->dateRangeStart = $dateRangeStart;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateRangeEnd(): string
+    {
+        return $this->dateRangeEnd;
+    }
+
+    /**
+     * @param string $dateRangeEnd
+     */
+    public function setDateRangeEnd(string $dateRangeEnd): void
+    {
+        $this->dateRangeEnd = $dateRangeEnd;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateRangeUnit(): string
+    {
+        return $this->dateRangeUnit;
+    }
+
+    /**
+     * @param string $dateRangeUnit
+     */
+    public function setDateRangeUnit(string $dateRangeUnit): void
+    {
+        $this->dateRangeUnit = $dateRangeUnit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDateRangeNumber(): int
+    {
+        return $this->dateRangeNumber;
+    }
+
+    /**
+     * @param int $dateRangeNumber
+     */
+    public function setDateRangeNumber(int $dateRangeNumber): void
+    {
+        $this->dateRangeNumber = $dateRangeNumber;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateRange(): string
+    {
+        return $this->dateRange;
+    }
+
+    /**
+     * @param string $dateRange
+     */
+    public function setDateRange(string $dateRange): void
+    {
+        $this->dateRange = $dateRange;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMapping(): array
+    {
+        return $this->mapping;
+    }
+
+    /**
+     * @param array $mapping
+     */
+    public function setMapping(array $mapping): void
+    {
+        $this->mapping = $mapping;
     }
 
     /**
@@ -64,11 +183,17 @@ class Configuration
 
         // TODO now have room to do version based array parsing.
 
-        $object           = new self;
-        $object->rules    = $array['rules'];
-        $object->skipForm = $array['skip_form'];
-        $object->accounts = $array['accounts'];
-        $object->version  = $version;
+        $object                  = new self;
+        $object->rules           = $array['rules'] ?? [];
+        $object->skipForm        = $array['skip_form'] ?? false;
+        $object->accounts        = $array['accounts'] ?? [];
+        $object->mapping         = $array['mapping'] ?? [];
+        $object->dateRange       = $array['date_range'] ?? 'all';
+        $object->dateRangeNumber = $array['date_range_number'] ?? 30;
+        $object->dateRangeUnit   = $array['date_range_unit'] ?? 'd';
+        $object->dateRangeStart  = $array['date_range_start'] ?? '';
+        $object->dateRangeEnd    = $array['date_range_end'] ?? '';
+        $object->version         = $version;
 
         return $object;
     }
@@ -95,11 +220,17 @@ class Configuration
      */
     public static function fromRequest(array $array): self
     {
-        $object           = new self;
-        $object->version  = self::VERSION;
-        $object->rules    = $array['rules'];
-        $object->skipForm = $array['skip_form'];
-        $object->accounts = $array['accounts'];
+        $object                  = new self;
+        $object->version         = self::VERSION;
+        $object->rules           = $array['rules'];
+        $object->skipForm        = $array['skip_form'];
+        $object->accounts        = $array['accounts'];
+        $object->mapping         = $array['mapping'];
+        $object->dateRange       = $array['date_range'];
+        $object->dateRangeNumber = $array['date_range_number'];
+        $object->dateRangeUnit   = $array['date_range_unit'];
+        $object->dateRangeStart  = $array['date_range_start'];
+        $object->dateRangeEnd    = $array['date_range_end'];
 
         return $object;
     }
@@ -111,17 +242,31 @@ class Configuration
      */
     private static function fromDefaultFile(array $data): self
     {
-        $object           = new self;
-        $object->rules    = $data['rules'] ?? true;
-        $object->skipForm = $data['skip_form'] ?? true;
+        $object                  = new self;
+        $object->rules           = $data['rules'] ?? true;
+        $object->skipForm        = $data['skip_form'] ?? false;
+        $object->dateRange       = $data['date_range'] ?? 'all';
+        $object->dateRangeNumber = $data['date_range_number'] ?? 30;
+        $object->dateRangeUnit   = $data['date_range_unit'] ?? 'd';
+        $object->dateRangeStart  = $data['date_range_start'] ?? '';
+        $object->dateRangeEnd    = $data['date_range_end'] ?? '';
 
         // array values
         $object->accounts = [];
+        $object->mapping  = [];
 
         // set version to "1" and return.
         $object->version = 1;
 
         return $object;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRules(): bool
+    {
+        return $this->rules;
     }
 
     /**
@@ -148,12 +293,16 @@ class Configuration
     public function toArray(): array
     {
         return [
-            'rules'     => $this->rules,
-            'skip_form' => $this->skipForm,
-            'accounts'  => $this->accounts,
-            'version'   => $this->version,
+            'rules'             => $this->rules,
+            'skip_form'         => $this->skipForm,
+            'accounts'          => $this->accounts,
+            'version'           => $this->version,
+            'mapping'           => $this->mapping,
+            'date_range'        => $this->dateRange,
+            'date_range_number' => $this->dateRangeNumber,
+            'date_range_unit'   => $this->dateRangeUnit,
+            'date_range_start'  => $this->dateRangeStart,
+            'date_range_end'    => $this->dateRangeEnd,
         ];
     }
-
-
 }

@@ -23,16 +23,16 @@
 namespace App\Http\Controllers\Import;
 
 
+use App\Bunq\ApiContext\ApiContextManager;
+use App\Bunq\Requests\MonetaryAccountList;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\ConfigComplete;
-use App\Http\Request\ConfigurationPostRequest;
-use App\Services\CSV\Configuration\Configuration;
-use App\Services\CSV\Specifics\SpecificService;
-use App\Services\FireflyIIIApi\Model\Account;
-use App\Services\FireflyIIIApi\Request\GetAccountsRequest;
+use App\Services\Configuration\Configuration;
 use App\Services\Session\Constants;
 use App\Services\Storage\StorageService;
 use Carbon\Carbon;
+use GrumpyDictator\FFIIIApiSupport\Model\Account;
+use GrumpyDictator\FFIIIApiSupport\Request\GetAccountsRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
@@ -54,55 +54,68 @@ class ConfigurationController extends Controller
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
-     * @throws \App\Exceptions\ApiHttpException
      */
     public function index()
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
         $mainTitle = 'Import routine';
         $subTitle  = 'Configure your CSV file import';
-        $accounts  = [];
+        //$accounts  = [];
 
-        $configuration = null;
+        $configuration = Configuration::fromArray([]);
         if (session()->has(Constants::CONFIGURATION)) {
             $configuration = Configuration::fromArray(session()->get(Constants::CONFIGURATION));
         }
+
         // if config says to skip it, skip it:
         if (null !== $configuration && true === $configuration->isSkipForm()) {
             // skipForm
             return redirect()->route('import.roles.index');
         }
 
-        // get list of asset accounts:
-        $request = new GetAccountsRequest;
+        // get list of asset accounts in Firefly III
+        $uri     = config('bunq.uri');
+        $token   = config('bunq.access_token');
+        $request = new GetAccountsRequest($uri, $token);
         $request->setType(GetAccountsRequest::ASSET);
         $response = $request->get();
 
-        // get list of specifics:
-        $specifics = SpecificService::getSpecifics();
+        // get the user's bunq accounts.
+        ApiContextManager::getApiContext();
 
-        /** @var Account $account */
-        foreach ($response as $account) {
-            $accounts[$account->id] = $account;
+        /** @var MonetaryAccountList $lister */
+        $lister           = app(MonetaryAccountList::class);
+        $bunqAccounts     = $lister->listing();
+        $combinedAccounts = [];
+        foreach ($bunqAccounts as $bunqAccount) {
+            $bunqAccount['ff3_id']       = null;
+            $bunqAccount['ff3_name']     = null;
+            $bunqAccount['ff3_type']     = null;
+            $bunqAccount['ff3_iban']     = null;
+            $bunqAccount['ff3_currency'] = null;
+            /** @var Account $ff3Account */
+            foreach ($response as $ff3Account) {
+                if ($bunqAccount['currency'] === $ff3Account->currencyCode && $bunqAccount['iban'] === $ff3Account->iban
+                    && 'CANCELLED' !== $bunqAccount['status']
+                ) {
+                    $bunqAccount['ff3_id']       = $ff3Account->id;
+                    $bunqAccount['ff3_name']     = $ff3Account->name;
+                    $bunqAccount['ff3_type']     = $ff3Account->type;
+                    $bunqAccount['ff3_iban']     = $ff3Account->iban;
+                    $bunqAccount['ff3_currency'] = $ff3Account->currencyCode;
+                    $bunqAccount['ff3_uri']      = sprintf('%saccounts/show/%d', $uri, $ff3Account->id);
+                }
+            }
+            $combinedAccounts[] = $bunqAccount;
         }
-
-
-        // send other values through the form. A bit of a hack but OK.
-        $roles     = '{}';
-        $doMapping = '{}';
-        $mapping   = '{}';
-        if (null !== $configuration) {
-            $roles     = base64_encode(json_encode($configuration->getRoles()));
-            $doMapping = base64_encode(json_encode($configuration->getDoMapping()));
-            $mapping   = base64_encode(json_encode($configuration->getMapping()));
-        }
+        //        /** @var Account $account */
+        //        foreach ($response as $account) {
+        //            $accounts[$account->id] = $account;
+        //        }
 
         // update configuration with old values if present? TODO
 
-        return view(
-            'import.configuration.index',
-            compact('mainTitle', 'subTitle', 'accounts', 'specifics', 'configuration', 'roles', 'mapping', 'doMapping')
-        );
+        return view('import.configuration.index', compact('mainTitle', 'subTitle', 'combinedAccounts', 'configuration', 'bunqAccounts'));
     }
 
     /**
@@ -130,7 +143,7 @@ class ConfigurationController extends Controller
         // store config on drive.
         $fromRequest   = $request->getAll();
         $configuration = Configuration::fromRequest($fromRequest);
-        $config = StorageService::storeContent(json_encode($configuration));
+        $config        = StorageService::storeContent(json_encode($configuration));
 
         session()->put(Constants::CONFIGURATION, $configuration->toArray());
 

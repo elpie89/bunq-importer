@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1ce8c28fd10aeff4bb35a0a00032bcd8",
+    "content-hash": "945af95c22214c9e89675760427388a6",
     "packages": [
         {
             "name": "bunq/sdk_php",
@@ -371,7 +371,7 @@
             "source": {
                 "type": "git",
                 "url": "/sites/FF3/support/api-support-classes",
-                "reference": "a4160682337f7c335dc27726555dea18120bb708"
+                "reference": "08c358e6e41007f82552a1740223342d5803381e"
             },
             "require": {
                 "ext-json": "*",
@@ -427,7 +427,7 @@
                 "api-support-classes",
                 "firefly-iii"
             ],
-            "time": "2020-02-29T06:36:41+00:00"
+            "time": "2020-02-29T08:56:00+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -6580,7 +6580,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.3"
+        "php": "^7.3",
+        "ext-json": "*"
     },
     "platform-dev": []
 }
