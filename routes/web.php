@@ -35,3 +35,11 @@ Route::get('/', ['uses' => 'IndexController@index', 'as' => 'index']);
 // validate access token:
 Route::get('/token', 'TokenController@index')->name('token.index');
 Route::get('/token/validate', 'TokenController@doValidate')->name('token.validate');
+
+// start bunq import.
+Route::get('/import/start', ['uses' => 'Import\StartController@index', 'as' => 'import.start']);
+Route::post('/import/upload', ['uses' => 'Import\UploadController@upload', 'as' => 'import.upload']);
+
+// configure
+Route::get('/import/configure', ['uses' => 'Import\ConfigurationController@index', 'as' => 'import.configure.index']);
+Route::post('/import/configure', ['uses' => 'Import\ConfigurationController@postIndex', 'as' => 'import.configure.post']);

@@ -23,6 +23,8 @@
 namespace App\Http\Controllers;
 
 
+use App\Bunq\ApiContext\ApiContextManager;
+use bunq\Exception\BunqException;
 use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 use GrumpyDictator\FFIIIApiSupport\Request\SystemInformationRequest;
 use GrumpyDictator\FFIIIApiSupport\Response\SystemInformationResponse;
@@ -45,20 +47,27 @@ class TokenController extends Controller
         $token    = config('bunq.access_token');
         $uri      = config('bunq.uri');
         Log::debug(sprintf('Going to try and access %s', $uri));
-        $request  = new SystemInformationRequest($uri, $token);
+        $request = new SystemInformationRequest($uri, $token);
         try {
             $result = $request->get();
         } catch (ApiHttpException $e) {
             $response = ['result' => 'NOK', 'message' => $e->getMessage()];
         }
-        // -1 = OK (minimum is smaller)
-        // 0 = OK (same version)
-        // 1 = NOK (too low a version)
 
-        $minimum = config('csv_importer.minimum_version');
-        $compare = version_compare($minimum, $result->version);
-        if (1 === $compare) {
-            $errorMessage = sprintf('Your Firefly III version %s is below the minimum required version %s', $result->version, $minimum);
+        if (isset($result)) {
+            $minimum = config('csv_importer.minimum_version');
+            $compare = version_compare($minimum, $result->version);
+            if (1 === $compare) {
+                $errorMessage = sprintf('Your Firefly III version %s is below the minimum required version %s', $result->version, $minimum);
+                $response     = ['result' => 'NOK', 'message' => $errorMessage];
+            }
+        }
+
+        // validate connection to bunq, create API context.
+        try {
+            ApiContextManager::getApiContext();
+        } catch (ApiHttpException $e) {
+            $errorMessage = sprintf('bunq complained: %s', $e->getMessage());
             $response     = ['result' => 'NOK', 'message' => $errorMessage];
         }
 
@@ -72,8 +81,8 @@ class TokenController extends Controller
      */
     public function index()
     {
-        $token        = config('bunq.access_token');
-        $uri          = config('bunq.uri');
+        $token = config('bunq.access_token');
+        $uri   = config('bunq.uri');
         Log::debug(sprintf('Going to try and access %s', $uri));
         $request      = new SystemInformationRequest($uri, $token);
         $errorMessage = 'No error message.';
@@ -87,9 +96,7 @@ class TokenController extends Controller
             $errorMessage = $e->getMessage();
             $isError      = true;
         }
-        // -1 = OK (minimum is smaller)
-        // 0 = OK (same version)
-        // 1 = NOK (too low a version)
+
         if (false === $isError) {
             $minimum = config('bunq.minimum_version');
             $compare = version_compare($minimum, $result->version);
@@ -97,6 +104,14 @@ class TokenController extends Controller
         if (false === $isError && 1 === $compare) {
             $errorMessage = sprintf('Your Firefly III version %s is below the minimum required version %s', $result->version, $minimum);
             $isError      = true;
+        }
+
+        // validate connection to bunq, create API context.
+        try {
+            ApiContextManager::getApiContext();
+        } catch (ApiHttpException $e) {
+            $errorMessage = sprintf('bunq complained: %s', $e->getMessage());
+            $isError =true;
         }
 
         if (false === $isError) {

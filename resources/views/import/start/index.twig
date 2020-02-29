@@ -1,0 +1,42 @@
+{% extends "./layout/default" %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                &nbsp;
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>{{ mainTitle }}</h1>
+                <h2>{{ subTitle }}</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <p class="lead">JSON config to make easier.</p>
+                <p>
+                    Bla bla upload config if you want
+                    <a target="_blank" href="https://firefly-iii.gitbook.io/firefly-iii-csv-importer/importing-data/upload">check out the documentation</a>.
+                </p>
+                <hr />
+                <div class="row">
+                    <div class="col-lg-8">
+                        <form method="post" action="{{ route('import.upload') }}" accept-charset="UTF-8" id="store" enctype="multipart/form-data">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+                            <div class="form-group row">
+                                <label for="config_file" class="col-sm-4 col-form-label">Optional configuration file</label>
+                                <div class="col-sm-8">
+                                    <input type="file" class="form-control" id="config_file" name="config_file" placeholder="Configuration file" />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Continue</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+{% endblock %}
