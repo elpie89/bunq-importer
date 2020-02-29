@@ -17,6 +17,7 @@ class IndexController extends Controller
      */
     public function __construct()
     {
+        parent::__construct();
         app('view')->share('pageTitle', 'Index');
     }
 

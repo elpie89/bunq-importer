@@ -9,21 +9,37 @@
         <div class="col-lg-6 offset-lg-3">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Firefly III bunq Import Tool</h5>
+                    <h5 class="card-title">Firefly III bunq Import Tool 🌈</h5>
                     <h6 class="card-subtitle mb-2 text-muted">v{{ version }}</h6>
                     <p class="card-text">
-                        Bla bla
+                        Welcome to the Firefly III bunq import tool.
                     </p>
                     <p>
                         This tool is sparsely documented, you can find all the details you need
                         in the <a href="https://firefly-iii.gitbook.io/firefly-iii-csv-importer/" target="_blank">
                             official documentation</a>. Any links you see to the docs will open in a new window or tab.
                     </p>
-                    <a class="btn btn-success disabled" id="start" href="#">...</a>
+                    <a class="btn btn-success disabled" id="start" href="#"><i class="fas fa-cog fa-spin"></i></a>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+{% block scripts %}
 
-
+    <script type="text/javascript">
+        var uri = '{{ route('token.validate') }}';
+        var tokenPageUri = '{{ route('token.index') }}';
+        $.getJSON(uri).done(function (data) {
+            if ('OK' === data.result) {
+                $('#start').removeClass('disabled').text('Start here');
+            } else {
+                $('#start').hide();
+                window.location = tokenPageUri;
+            }
+        }).fail(function() {
+            $('#start').hide();
+            window.location = tokenPageUri;
+        });
+    </script>
 {% endblock %}

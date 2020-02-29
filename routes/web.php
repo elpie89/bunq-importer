@@ -31,3 +31,7 @@
 |
 */
 Route::get('/', ['uses' => 'IndexController@index', 'as' => 'index']);
+
+// validate access token:
+Route::get('/token', 'TokenController@index')->name('token.index');
+Route::get('/token/validate', 'TokenController@doValidate')->name('token.validate');
