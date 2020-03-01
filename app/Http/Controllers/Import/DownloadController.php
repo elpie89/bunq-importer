@@ -78,17 +78,20 @@ class DownloadController extends Controller
         $identifier = $request->get('identifier');
         $routine    = new RoutineManager($identifier);
 
+        // store identifier in session so the status can get it.
+        session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $identifier);
 
         $downloadJobStatus = JobStatusManager::startOrFindJob($identifier);
         if (JobStatus::JOB_DONE === $downloadJobStatus->status) {
-            Log::debug('Job already done!');
-
-            return response()->json($downloadJobStatus->toArray());
+            // TODO DISABLED DURING DEVELOPMENT:
+            //Log::debug('Job already done!');
+            //return response()->json($downloadJobStatus->toArray());
         }
         JobStatusManager::setJobStatus(JobStatus::JOB_RUNNING);
 
         try {
-            $routine->setConfiguration(Configuration::fromArray(session()->get(Constants::CONFIGURATION)));
+            $config = session()->get(Constants::CONFIGURATION) ?? [];
+            $routine->setConfiguration(Configuration::fromArray($config));
             $routine->start();
         } catch (ImportException $e) {
         }

@@ -22,12 +22,12 @@
 
 namespace App\Bunq\ApiContext;
 
+use App\Exceptions\ImportException;
 use bunq\Context\ApiContext;
 use bunq\Context\BunqContext;
 use bunq\Exception\BadRequestException;
 use bunq\Exception\BunqException;
 use bunq\Util\BunqEnumApiEnvironmentType;
-use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 
 /**
  * Class ApiContextManager
@@ -36,7 +36,7 @@ class ApiContextManager
 {
     /**
      *
-     * @throws ApiHttpException
+     * @throws ImportException
      */
     public static function getApiContext(): ApiContext
     {
@@ -69,14 +69,14 @@ class ApiContextManager
                 $permittedIps
             );
         } catch (BadRequestException $e) {
-            throw new ApiHttpException($e->getMessage());
+            throw new ImportException($e->getMessage());
         }
 
         BunqContext::loadApiContext($apiContext);
         try {
             $apiContext->save($contextFile);
         } catch (BunqException $e) {
-            throw new ApiHttpException($e->getMessage());
+            throw new ImportException($e->getMessage());
         }
 
         return $apiContext;

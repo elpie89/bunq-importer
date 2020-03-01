@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace App\Services\Configuration;
 
+use Carbon\Carbon;
 use Log;
 use RuntimeException;
 
@@ -57,10 +58,10 @@ class Configuration
     private $dateRangeUnit;
 
     /** @var string */
-    private $dateRangeStart;
+    private $dateNotBefore;
 
     /** @var string */
-    private $dateRangeEnd;
+    private $dateNotAfter;
 
     /**
      * Configuration constructor.
@@ -76,40 +77,218 @@ class Configuration
         $this->dateRange       = 'all';
         $this->dateRangeNumber = 30;
         $this->dateRangeUnit   = 'd';
-        $this->dateRangeStart  = '';
-        $this->dateRangeEnd    = '';
+        $this->dateNotBefore   = '';
+        $this->dateNotAfter    = '';
+    }
+
+    /**
+     * @param array $array
+     *
+     * @return static
+     */
+    public static function fromArray(array $array): self
+    {
+        $version = $array['version'] ?? 1;
+
+        // TODO now have room to do version based array parsing.
+
+        $object                  = new self;
+        $object->rules           = $array['rules'] ?? false;
+        $object->skipForm        = $array['skip_form'] ?? false;
+        $object->accounts        = $array['accounts'] ?? [];
+        $object->mapping         = $array['mapping'] ?? [];
+        $object->dateRange       = $array['date_range'] ?? 'all';
+        $object->dateRangeNumber = $array['date_range_number'] ?? 30;
+        $object->dateRangeUnit   = $array['date_range_unit'] ?? 'd';
+        $object->dateNotBefore   = $array['date_not_before'] ?? '';
+        $object->dateNotAfter    = $array['date_not_after'] ?? '';
+        $object->doMapping       = $array['do_mapping'] ?? false;
+        $object->version         = $version;
+
+        return $object;
+    }
+
+
+    /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public static function fromFile(array $data): self
+    {
+        Log::debug('Now in Configuration::fromClassic', $data);
+        $version = $data['version'] ?? 1;
+        if (1 === $version) {
+            return self::fromDefaultFile($data);
+        }
+        throw new RuntimeException(sprintf('Configuration file version "%s" cannot be parsed.', $version));
+    }
+
+    /**
+     * @param array $array
+     *
+     * @return $this
+     */
+    public static function fromRequest(array $array): self
+    {
+        $object                  = new self;
+        $object->version         = self::VERSION;
+        $object->rules           = $array['rules'];
+        $object->skipForm        = $array['skip_form'];
+        $object->accounts        = $array['accounts'];
+        $object->mapping         = $array['mapping'];
+        $object->dateRange       = $array['date_range'];
+        $object->dateRangeNumber = $array['date_range_number'];
+        $object->dateRangeUnit   = $array['date_range_unit'];
+        $object->dateNotBefore   = $array['date_not_before'];
+        $object->dateNotAfter    = $array['date_not_after'];
+        $object->doMapping       = $array['do_mapping'];
+
+        switch ($object->dateRange) {
+            case 'all':
+                $object->dateRangeUnit   = null;
+                $object->dateRangeNumber = null;
+                $object->dateNotBefore   = null;
+                $object->dateNotAfter    = null;
+                break;
+            case 'partial':
+                $object->dateNotAfter  = null;
+                $object->dateNotBefore = self::calcDateNotBefore($object->dateRangeUnit, $object->dateRangeNumber);
+                break;
+            case 'range':
+                $before = $object->dateNotBefore;
+                $after  = $object->dateNotAfter;
+
+                if (null !== $before && null !== $after && $object->dateNotBefore > $object->dateNotAfter) {
+                    [$before, $after] = [$after, $before];
+                }
+
+                $object->dateNotBefore = null === $before ? null : $before->format('Y-m-d');
+                $object->dateNotAfter  = null === $after ? null : $after->format('Y-m-d');
+        }
+
+        return $object;
+    }
+
+    /**
+     * @param string $unit
+     * @param int    $number
+     *
+     * @return string|null
+     */
+    private static function calcDateNotBefore(string $unit, int $number): ?string
+    {
+        $functions = [
+            'd' => 'subDays',
+            'w' => 'subWeeks',
+            'm' => 'subMonths',
+            'y' => 'subYears',
+        ];
+        if (isset($functions[$unit])) {
+            $today    = Carbon::now();
+            $function = $functions[$unit];
+            $today->$function($number);
+
+            return $today->format('Y-m-d');
+        }
+        Log::error(sprintf('Could not parse date setting. Unknown key "%s"', $unit));
+
+        return null;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return static
+     */
+    private static function fromDefaultFile(array $data): self
+    {
+        $object                  = new self;
+        $object->rules           = $data['rules'] ?? true;
+        $object->skipForm        = $data['skip_form'] ?? false;
+        $object->dateRange       = $data['date_range'] ?? 'all';
+        $object->dateRangeNumber = $data['date_range_number'] ?? 30;
+        $object->dateRangeUnit   = $data['date_range_unit'] ?? 'd';
+        $object->dateNotBefore   = $data['date_not_before'] ?? '';
+        $object->dateNotAfter    = $data['date_not_after'] ?? '';
+        $object->doMapping       = $data['do_mapping'] ?? false;
+        $object->mapping         = $data['mapping'] ?? [];
+        $object->accounts        = $data['accounts'] ?? [];
+
+        // TODO recalculate the date if 'partial'
+        die('need to recalculate the dates');
+
+        // set version to "1" and return.
+        $object->version = 1;
+
+        return $object;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'rules'             => $this->rules,
+            'skip_form'         => $this->skipForm,
+            'accounts'          => $this->accounts,
+            'version'           => $this->version,
+            'mapping'           => $this->mapping,
+            'date_range'        => $this->dateRange,
+            'date_range_number' => $this->dateRangeNumber,
+            'date_range_unit'   => $this->dateRangeUnit,
+            'date_not_before'   => $this->dateNotBefore,
+            'date_not_after'    => $this->dateNotAfter,
+            'do_mapping'        => $this->doMapping,
+        ];
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDateNotBefore(): ?string
+    {
+        if (null === $this->dateNotBefore) {
+            return null;
+        }
+        if ('' === $this->dateNotBefore) {
+            return null;
+        }
+
+        return $this->dateNotBefore;
+    }
+
+    /**
+     * @param string $dateNotBefore
+     */
+    public function setDateNotBefore(string $dateNotBefore): void
+    {
+        $this->dateNotBefore = $dateNotBefore;
     }
 
     /**
      * @return string
      */
-    public function getDateRangeStart(): string
+    public function getDateNotAfter(): ?string
     {
-        return $this->dateRangeStart;
+        if (null === $this->dateNotAfter) {
+            return null;
+        }
+        if ('' === $this->dateNotAfter) {
+            return null;
+        }
+
+        return $this->dateNotAfter;
     }
 
     /**
-     * @param string $dateRangeStart
+     * @param string $dateNotAfter
      */
-    public function setDateRangeStart(string $dateRangeStart): void
+    public function setDateNotAfter(string $dateNotAfter): void
     {
-        $this->dateRangeStart = $dateRangeStart;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDateRangeEnd(): string
-    {
-        return $this->dateRangeEnd;
-    }
-
-    /**
-     * @param string $dateRangeEnd
-     */
-    public function setDateRangeEnd(string $dateRangeEnd): void
-    {
-        $this->dateRangeEnd = $dateRangeEnd;
+        $this->dateNotAfter = $dateNotAfter;
     }
 
     /**
@@ -176,32 +355,6 @@ class Configuration
         $this->mapping = $mapping;
     }
 
-    /**
-     * @param array $array
-     *
-     * @return static
-     */
-    public static function fromArray(array $array): self
-    {
-        $version = $array['version'] ?? 1;
-
-        // TODO now have room to do version based array parsing.
-
-        $object                  = new self;
-        $object->rules           = $array['rules'] ?? false;
-        $object->skipForm        = $array['skip_form'] ?? false;
-        $object->accounts        = $array['accounts'] ?? [];
-        $object->mapping         = $array['mapping'] ?? [];
-        $object->dateRange       = $array['date_range'] ?? 'all';
-        $object->dateRangeNumber = $array['date_range_number'] ?? 30;
-        $object->dateRangeUnit   = $array['date_range_unit'] ?? 'd';
-        $object->dateRangeStart  = $array['date_range_start'] ?? '';
-        $object->dateRangeEnd    = $array['date_range_end'] ?? '';
-        $object->doMapping       = $array['do_mapping'] ?? false;
-        $object->version         = $version;
-
-        return $object;
-    }
 
     /**
      * @return bool
@@ -213,84 +366,11 @@ class Configuration
 
 
     /**
-     * @param array $data
-     *
-     * @return $this
-     */
-    public static function fromFile(array $data): self
-    {
-        Log::debug('Now in Configuration::fromClassic', $data);
-        $version = $data['version'] ?? 1;
-        if (1 === $version) {
-            return self::fromDefaultFile($data);
-        }
-        throw new RuntimeException(sprintf('Configuration file version "%s" cannot be parsed.', $version));
-    }
-
-    /**
-     * @param array $array
-     *
-     * @return $this
-     */
-    public static function fromRequest(array $array): self
-    {
-        $object                  = new self;
-        $object->version         = self::VERSION;
-        $object->rules           = $array['rules'];
-        $object->skipForm        = $array['skip_form'];
-        $object->accounts        = $array['accounts'];
-        $object->mapping         = $array['mapping'];
-        $object->dateRange       = $array['date_range'];
-        $object->dateRangeNumber = $array['date_range_number'];
-        $object->dateRangeUnit   = $array['date_range_unit'];
-        $object->dateRangeStart  = $array['date_range_start'];
-        $object->dateRangeEnd    = $array['date_range_end'];
-        $object->doMapping       = $array['do_mapping'];
-
-        return $object;
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return static
-     */
-    private static function fromDefaultFile(array $data): self
-    {
-        $object                  = new self;
-        $object->rules           = $data['rules'] ?? true;
-        $object->skipForm        = $data['skip_form'] ?? false;
-        $object->dateRange       = $data['date_range'] ?? 'all';
-        $object->dateRangeNumber = $data['date_range_number'] ?? 30;
-        $object->dateRangeUnit   = $data['date_range_unit'] ?? 'd';
-        $object->dateRangeStart  = $data['date_range_start'] ?? '';
-        $object->dateRangeEnd    = $data['date_range_end'] ?? '';
-        $object->doMapping       = $data['do_mapping'] ?? false;
-        $object->mapping         = $data['mapping'] ?? [];
-        $object->accounts        = $data['accounts'] ?? [];
-
-        // set version to "1" and return.
-        $object->version = 1;
-
-        return $object;
-    }
-
-    /**
      * @return bool
      */
     public function isRules(): bool
     {
         return $this->rules;
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return static
-     */
-    private static function fromVersionTwo(array $data): self
-    {
-        return self::fromArray($data);
     }
 
     /**
@@ -304,20 +384,18 @@ class Configuration
     /**
      * @return array
      */
-    public function toArray(): array
+    public function getAccounts(): array
     {
-        return [
-            'rules'             => $this->rules,
-            'skip_form'         => $this->skipForm,
-            'accounts'          => $this->accounts,
-            'version'           => $this->version,
-            'mapping'           => $this->mapping,
-            'date_range'        => $this->dateRange,
-            'date_range_number' => $this->dateRangeNumber,
-            'date_range_unit'   => $this->dateRangeUnit,
-            'date_range_start'  => $this->dateRangeStart,
-            'date_range_end'    => $this->dateRangeEnd,
-            'do_mapping'        => $this->doMapping,
-        ];
+        return $this->accounts;
     }
+
+    /**
+     * @param array $accounts
+     */
+    public function setAccounts(array $accounts): void
+    {
+        $this->accounts = $accounts;
+    }
+
+
 }

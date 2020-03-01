@@ -23,6 +23,7 @@
 namespace App\Bunq\Download;
 
 use App\Bunq\Download\JobStatus\JobStatusManager;
+use App\Bunq\Requests\PaymentList;
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
 use Log;
@@ -44,6 +45,8 @@ class RoutineManager
     private $allWarnings;
     /** @var array */
     private $allErrors;
+    /** @var PaymentList */
+    private $paymentList;
 
     /**
      * Collect info on the current job, hold it in memory.
@@ -76,11 +79,10 @@ class RoutineManager
      */
     public function setConfiguration(Configuration $configuration): void
     {
-        $this->configuration              = $configuration;
-        // no processors created yet.
+        $this->configuration = $configuration;
+        $this->paymentList   = new PaymentList($configuration);
 
-        // set the identifier:
-        // no processors created yet.
+        $this->paymentList->setIdentifier($this->identifier);
     }
 
     /**
@@ -116,25 +118,10 @@ class RoutineManager
     {
         Log::debug(sprintf('Now in %s', __METHOD__));
 
-        // TODO: list the jobs to do here.
-        //$CSVLines = $this->csvFileProcessor->processCSVFile();
+        // download and store transactions from bunq.
+        $transactions = $this->paymentList->getPaymentList();
 
-        // convert raw lines into arrays with individual ColumnValues
-        //$valueArrays = $this->lineProcessor->processCSVLines($CSVLines);
-
-        // convert value arrays into (pseudo) transactions.
-        //$pseudo = $this->columnValueConverter->processValueArrays($valueArrays);
-
-        // convert pseudo transactions into actual transactions.
-        //$transactions = $this->pseudoTransactionProcessor->processPseudo($pseudo);
-        Log::debug('Start sleeping');
-        sleep (30);
-        Log::debug('Done sleeping');
-
-        // submit transactions to API:
-        //$this->apiSubmitter->processTransactions($transactions);
-
-        $count = 0;
+        $count = count($transactions);
         $this->mergeMessages($count);
         $this->mergeWarnings($count);
         $this->mergeErrors($count);

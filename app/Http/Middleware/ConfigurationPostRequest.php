@@ -57,9 +57,9 @@ class ConfigurationPostRequest extends Request
             'skip_form'         => $this->convertBoolean($this->get('skip_form')),
             'date_range'        => $this->string('date_range'),
             'date_range_number' => $this->integer('date_range_number'),
-            'date_range_unit'   => $this->integer('date_range_unit'),
-            'date_range_start'  => $this->date('date_range_start'),
-            'date_range_end'    => $this->date('date_range_end'),
+            'date_range_unit'   => $this->string('date_range_unit'),
+            'date_not_before'   => $this->date('date_not_before'),
+            'date_not_after'    => $this->date('date_not_after'),
             'do_mapping'        => $this->convertBoolean($this->get('do_mapping')),
             'mapping'           => $mapping,
             'accounts'          => $this->get('accounts'),
@@ -80,8 +80,8 @@ class ConfigurationPostRequest extends Request
             'date_range'        => 'required|in:all,partial,range',
             'date_range_number' => 'numeric|between:1,365',
             'date_range_unit'   => 'required|in:d,w,m,y',
-            'date_range_start'  => 'date|nullable',
-            'date_range_end'    => 'date|nullable',
+            'date_not_before'  => 'date|nullable',
+            'date_not_after'    => 'date|nullable',
             'accounts.*'        => 'required|numeric',
         ];
 
@@ -98,7 +98,7 @@ class ConfigurationPostRequest extends Request
     public function withValidator(Validator $validator): void
     {
         $validator->after(
-            function (Validator $validator) {
+            static function (Validator $validator) {
                 $data = $validator->getData();
                 if(!isset($data['accounts'])) {
                     $validator->errors()->add(

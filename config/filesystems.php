@@ -75,13 +75,17 @@ return [
             'visibility' => 'public',
         ],
 
-        'uploads' => [
+        'uploads'   => [
             'driver' => 'local',
             'root'   => storage_path('uploads'),
         ],
-        'jobs' => [
+        'jobs'      => [
             'driver' => 'local',
             'root'   => storage_path('jobs'),
+        ],
+        'downloads' => [
+            'driver' => 'local',
+            'root'   => storage_path('downloads'),
         ],
 
         's3' => [
