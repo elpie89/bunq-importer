@@ -42,11 +42,11 @@
                                     {% for combinedAccount in combinedAccounts %}
                                         <div class="form-check">
                                             {% if null == combinedAccount.ff3_id %}
-                                                <input class="form-check-input" id="accounts_{{ combinedAccount.id }}" type="checkbox" name="accounts[]"
+                                                <input class="form-check-input" id="accounts_{{ combinedAccount.id }}" type="checkbox" name="accounts[{{ combinedAccount.id }}]"
                                                        value="0" disabled aria-describedby="accountsHelp"/>
                                             {% else %}
-                                                <input class="form-check-input" id="accounts_{{ combinedAccount.id }}" type="checkbox" name="accounts[]"
-                                                       value="{{ combinedAccount.id }}" aria-describedby="accountsHelp"/>
+                                                <input class="form-check-input" id="accounts_{{ combinedAccount.id }}" type="checkbox" name="accounts[{{ combinedAccount.id }}]"
+                                                       value="{{ combinedAccount.ff3_id }}" aria-describedby="accountsHelp"/>
                                             {% endif %}
                                             <label class="form-check-label" for="accounts_{{ combinedAccount.id }}">{{ combinedAccount.description }}
                                                 {% if '' != combinedAccount.iban %} <small>({{ combinedAccount.iban }})</small>{% endif %}
@@ -76,14 +76,14 @@
                                 <label for="default_account" class="col-sm-3 col-form-label">Date range</label>
                                 <div class="col-sm-9">
                                     <div class="form-check">
-                                        <input class="form-check-input date-range-radio" id="date_range_all" type="radio" name="date_range[]" value="all"
+                                        <input class="form-check-input date-range-radio" id="date_range_all" type="radio" name="date_range" value="all"
                                                {% if configuration.getDateRange == 'all' %}checked{% endif %}
                                                aria-describedby="rangeHelp"/>
                                         <label class="form-check-label" for="date_range_all">Import everything</label>
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input date-range-radio" id="date_range_partial" type="radio" name="date_range[]"
+                                        <input class="form-check-input date-range-radio" id="date_range_partial" type="radio" name="date_range"
                                                value="partial"
                                                {% if configuration.getDateRange == 'partial' %}checked{% endif %}
                                                aria-describedby="rangeHelp"/>
@@ -91,7 +91,7 @@
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input date-range-radio" id="date_range_range" type="radio" name="date_range[]" value="range"
+                                        <input class="form-check-input date-range-radio" id="date_range_range" type="radio" name="date_range" value="range"
                                                {% if configuration.getDateRange == 'range' %}checked{% endif %}
                                                aria-describedby="rangeHelp"/>
                                         <label class="form-check-label" for="date_range_range">Import a specific range</label>
@@ -154,6 +154,22 @@
                                 </div>
                             </div>
 
+                            <div class="form-group row">
+                                <div class="col-sm-3">Map data</div>
+                                <div class="col-sm-9">
+                                    <div class="form-check">
+                                        <input class="form-check-input" {% if configuration.isDoMapping %}checked{% endif %} type="checkbox" id="do_mapping"
+                                               name="do_mapping" value="1" aria-describedby="doMappingHelp">
+                                        <label class="form-check-label" for="do_mapping">
+                                            Yes
+                                        </label>
+                                        <small id="doMappingHelp" class="form-text text-muted">
+                                            You get the opportunity to link your bunq data to existing Firefly III data, for a cleaner import.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
 
                             <h4>Other options</h4>
                             <div class="form-group row">
@@ -192,7 +208,7 @@
         });
 
         function updateRange() {
-            var check = $('input[name="date_range[]"]:checked');
+            var check = $('input[name="date_range"]:checked');
             if ('partial' === check.val()) {
                 $('#date_range_partial_settings').show();
                 $('#date_range_range_settings').hide();

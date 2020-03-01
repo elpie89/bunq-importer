@@ -44,6 +44,9 @@ class Configuration
     /** @var array */
     private $mapping;
 
+    /** @var bool */
+    private $doMapping;
+
     /** @var string */
     private $dateRange;
 
@@ -66,6 +69,7 @@ class Configuration
     {
         $this->rules           = true;
         $this->skipForm        = false;
+        $this->doMapping       = false;
         $this->accounts        = [];
         $this->version         = self::VERSION;
         $this->mapping         = [];
@@ -184,7 +188,7 @@ class Configuration
         // TODO now have room to do version based array parsing.
 
         $object                  = new self;
-        $object->rules           = $array['rules'] ?? [];
+        $object->rules           = $array['rules'] ?? false;
         $object->skipForm        = $array['skip_form'] ?? false;
         $object->accounts        = $array['accounts'] ?? [];
         $object->mapping         = $array['mapping'] ?? [];
@@ -193,10 +197,20 @@ class Configuration
         $object->dateRangeUnit   = $array['date_range_unit'] ?? 'd';
         $object->dateRangeStart  = $array['date_range_start'] ?? '';
         $object->dateRangeEnd    = $array['date_range_end'] ?? '';
+        $object->doMapping       = $array['do_mapping'] ?? false;
         $object->version         = $version;
 
         return $object;
     }
+
+    /**
+     * @return bool
+     */
+    public function isDoMapping(): bool
+    {
+        return $this->doMapping;
+    }
+
 
     /**
      * @param array $data
@@ -231,6 +245,7 @@ class Configuration
         $object->dateRangeUnit   = $array['date_range_unit'];
         $object->dateRangeStart  = $array['date_range_start'];
         $object->dateRangeEnd    = $array['date_range_end'];
+        $object->doMapping       = $array['do_mapping'];
 
         return $object;
     }
@@ -250,10 +265,9 @@ class Configuration
         $object->dateRangeUnit   = $data['date_range_unit'] ?? 'd';
         $object->dateRangeStart  = $data['date_range_start'] ?? '';
         $object->dateRangeEnd    = $data['date_range_end'] ?? '';
-
-        // array values
-        $object->accounts = [];
-        $object->mapping  = [];
+        $object->doMapping       = $data['do_mapping'] ?? false;
+        $object->mapping         = $data['mapping'] ?? [];
+        $object->accounts        = $data['accounts'] ?? [];
 
         // set version to "1" and return.
         $object->version = 1;
@@ -303,6 +317,7 @@ class Configuration
             'date_range_unit'   => $this->dateRangeUnit,
             'date_range_start'  => $this->dateRangeStart,
             'date_range_end'    => $this->dateRangeEnd,
+            'do_mapping'        => $this->doMapping,
         ];
     }
 }

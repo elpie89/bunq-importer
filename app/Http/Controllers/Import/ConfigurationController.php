@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * ConfigurationController.php
  * Copyright (c) 2020 james@firefly-iii.org
@@ -27,14 +28,12 @@ use App\Bunq\ApiContext\ApiContextManager;
 use App\Bunq\Requests\MonetaryAccountList;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\ConfigComplete;
+use App\Http\Middleware\ConfigurationPostRequest;
 use App\Services\Configuration\Configuration;
 use App\Services\Session\Constants;
 use App\Services\Storage\StorageService;
-use Carbon\Carbon;
 use GrumpyDictator\FFIIIApiSupport\Model\Account;
 use GrumpyDictator\FFIIIApiSupport\Request\GetAccountsRequest;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Log;
 
 /**
@@ -66,7 +65,6 @@ class ConfigurationController extends Controller
         if (session()->has(Constants::CONFIGURATION)) {
             $configuration = Configuration::fromArray(session()->get(Constants::CONFIGURATION));
         }
-
         // if config says to skip it, skip it:
         if (null !== $configuration && true === $configuration->isSkipForm()) {
             // skipForm
@@ -74,8 +72,8 @@ class ConfigurationController extends Controller
         }
 
         // get list of asset accounts in Firefly III
-        $uri     = config('bunq.uri');
-        $token   = config('bunq.access_token');
+        $uri     = (string)config('bunq.uri');
+        $token   = (string)config('bunq.access_token');
         $request = new GetAccountsRequest($uri, $token);
         $request->setType(GetAccountsRequest::ASSET);
         $response = $request->get();
@@ -108,28 +106,14 @@ class ConfigurationController extends Controller
             }
             $combinedAccounts[] = $bunqAccount;
         }
-        //        /** @var Account $account */
-        //        foreach ($response as $account) {
-        //            $accounts[$account->id] = $account;
-        //        }
-
         // update configuration with old values if present? TODO
 
-        return view('import.configuration.index', compact('mainTitle', 'subTitle', 'combinedAccounts', 'configuration', 'bunqAccounts'));
-    }
+        $mapping = '{}';
+        if (null !== $configuration) {
+            $mapping = base64_encode(json_encode($configuration->getMapping(), JSON_THROW_ON_ERROR, 512));
+        }
 
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function phpDate(Request $request): JsonResponse
-    {
-        Log::debug(sprintf('Now at %s', __METHOD__));
-        $format = $request->get('format');
-        $date   = Carbon::make('1984-09-17');
-
-        return response()->json(['result' => $date->format($format)]);
+        return view('import.configuration.index', compact('mainTitle', 'subTitle', 'combinedAccounts', 'configuration', 'bunqAccounts', 'mapping'));
     }
 
     /**
@@ -143,7 +127,7 @@ class ConfigurationController extends Controller
         // store config on drive.
         $fromRequest   = $request->getAll();
         $configuration = Configuration::fromRequest($fromRequest);
-        $config        = StorageService::storeContent(json_encode($configuration));
+        $config        = StorageService::storeContent(json_encode($configuration, JSON_THROW_ON_ERROR, 512));
 
         session()->put(Constants::CONFIGURATION, $configuration->toArray());
 
@@ -151,7 +135,7 @@ class ConfigurationController extends Controller
         session()->put(Constants::CONFIG_COMPLETE_INDICATOR, true);
 
         // redirect to import things?
-        return redirect()->route('import.roles.index');
+        return redirect()->route('import.download.index');
     }
 
 }
