@@ -116,6 +116,7 @@
                     }
                     if ('job_done' === this.status) {
                         console.log('Job is done!');
+                        window.location = mappingUri;
                         return;
                     }
 

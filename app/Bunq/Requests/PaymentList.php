@@ -262,7 +262,6 @@ class PaymentList
             $transaction['description'] = '(empty description)';
         }
 
-        //Log::debug('Converted result', $transaction);
         Log::debug(
             sprintf(
                 'Downloaded and parsed transaction #%d (%s) "%s" (%s %s).',

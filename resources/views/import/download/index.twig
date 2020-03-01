@@ -21,7 +21,7 @@
     <script type="text/javascript">
         var downloadStatusUri = '{{ route('import.download.status') }}?identifier={{ identifier }}';
         var downloadStartUri = '{{ route('import.download.start') }}?identifier={{ identifier }}';
-        var configDownloadUri = '{{ route('import.configuration.download') }}?identifier={{ identifier }}';
+        var mappingUri = '{{ route('import.mapping.index') }}';
         var flushUri = '{{ route('flush') }}';
     </script>
     <script src="js/download.js" type="text/javascript"></script>

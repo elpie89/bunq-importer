@@ -54,3 +54,10 @@ Route::get('/import/download/status', ['uses' => 'Import\DownloadController@stat
 
 // download config:
 Route::get('/configuration/download', ['uses' => 'Import\DownloadController@download', 'as' => 'import.configuration.download']);
+
+// do mapping configuration
+Route::get('/import/mapping', ['uses' => 'Import\MappingController@index', 'as' => 'import.mapping.index']);
+Route::post('/import/mapping', ['uses' => 'Import\MappingController@postIndex', 'as' => 'import.mapping.post']);
+
+// upload
+Route::get('/import/sync', ['uses' => 'Import\SyncController@index', 'as' => 'import.sync.index']);

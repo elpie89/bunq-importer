@@ -33,6 +33,8 @@ class Constants
     public const CONFIG_COMPLETE_INDICATOR = 'config_complete';
     /** @var string  */
     public const CONFIGURATION = 'configuration';
-
+    /** @var string */
     public const DOWNLOAD_JOB_IDENTIFIER = 'download_job_id';
+    /** @var string */
+    public const SYNC_JOB_IDENTIFIER = 'sync_job_id';
 }
