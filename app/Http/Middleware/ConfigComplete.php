@@ -43,8 +43,7 @@ class ConfigComplete
     public function handle(Request $request, Closure $next)
     {
         if (session()->has(Constants::CONFIG_COMPLETE_INDICATOR) && true === session()->get(Constants::CONFIG_COMPLETE_INDICATOR)) {
-            die('todo redirect');
-            //return redirect()->route('import.roles.index');
+            return redirect()->route('import.download.index');
         }
 
         return $next($request);

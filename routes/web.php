@@ -46,3 +46,11 @@ Route::post('/import/upload', ['uses' => 'Import\UploadController@upload', 'as' 
 // configure
 Route::get('/import/configure', ['uses' => 'Import\ConfigurationController@index', 'as' => 'import.configure.index']);
 Route::post('/import/configure', ['uses' => 'Import\ConfigurationController@postIndex', 'as' => 'import.configure.post']);
+
+// download from bunq
+Route::get('/import/download', ['uses' => 'Import\DownloadController@index', 'as' => 'import.download.index']);
+Route::any('/import/download/start', ['uses' => 'Import\DownloadController@start', 'as' => 'import.download.start']);
+Route::get('/import/download/status', ['uses' => 'Import\DownloadController@status', 'as' => 'import.download.status']);
+
+// download config:
+Route::get('/configuration/download', ['uses' => 'Import\DownloadController@download', 'as' => 'import.configuration.download']);

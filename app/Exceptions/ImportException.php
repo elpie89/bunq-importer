@@ -1,10 +1,10 @@
 <?php
 /**
- * Constants.php
+ * ImportException.php
  * Copyright (c) 2020 james@firefly-iii.org
  *
- * This file is part of the Firefly III CSV importer
- * (https://github.com/firefly-iii/csv-importer).
+ * This file is part of the Firefly III bunq importer
+ * (https://github.com/firefly-iii/bunq-importer).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,19 +20,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace App\Services\Session;
+namespace App\Exceptions;
+
+use Exception;
 
 /**
- * Class Constants
+ * Class ImportException
  */
-class Constants
+class ImportException extends Exception
 {
-    /** @var string  */
-    public const UPLOAD_CONFIG_FILE = 'config_file_path';
-    /** @var string  */
-    public const CONFIG_COMPLETE_INDICATOR = 'config_complete';
-    /** @var string  */
-    public const CONFIGURATION = 'configuration';
 
-    public const DOWNLOAD_JOB_IDENTIFIER = 'download_job_id';
 }
