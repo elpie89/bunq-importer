@@ -15,7 +15,8 @@
         "guzzlehttp/guzzle": "^6.5",
         "laravel/framework": "^6.2",
         "rcrowe/twigbridge": "^0.11.3",
-      "ext-json": "*"
+      "ext-json": "*",
+      "ext-bcmath": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
