@@ -38,7 +38,7 @@ class RoutineManager
     /** @var Configuration */
     private $configuration;
     /** @var string */
-    private $identifier;
+    private $downloadIdentifier;
     /** @var array */
     private $allMessages;
     /** @var array */
@@ -53,9 +53,9 @@ class RoutineManager
      *
      * ImportRoutineManager constructor.
      *
-     * @param string|null $identifier
+     * @param string|null $downloadIdentifier
      */
-    public function __construct(string $identifier = null)
+    public function __construct(string $downloadIdentifier = null)
     {
         Log::debug('Constructed ImportRoutineManager');
 
@@ -63,13 +63,13 @@ class RoutineManager
         $this->allMessages = [];
         $this->allWarnings = [];
         $this->allErrors   = [];
-        if (null === $identifier) {
-            $this->generateIdentifier();
+        if (null === $downloadIdentifier) {
+            $this->generateDownloadIdentifier();
         }
-        if (null !== $identifier) {
-            $this->identifier = $identifier;
+        if (null !== $downloadIdentifier) {
+            $this->downloadIdentifier = $downloadIdentifier;
         }
-        JobStatusManager::startOrFindJob($this->identifier);
+        JobStatusManager::startOrFindJob($this->downloadIdentifier);
     }
 
     /**
@@ -81,8 +81,9 @@ class RoutineManager
     {
         $this->configuration = $configuration;
         $this->paymentList   = new PaymentList($configuration);
+        $this->paymentList->setDownloadIdentifier($this->downloadIdentifier);
 
-        $this->paymentList->setIdentifier($this->identifier);
+        Log::debug(sprintf('Created new payment list with download identifier "%s"', $this->downloadIdentifier));
     }
 
     /**
@@ -130,26 +131,26 @@ class RoutineManager
     /**
      *
      */
-    private function generateIdentifier(): void
+    private function generateDownloadIdentifier(): void
     {
-        Log::debug('Going to generate identifier.');
+        Log::debug('Going to generate download identifier.');
         $disk  = Storage::disk('jobs');
         $count = 0;
         do {
-            $identifier = Str::random(16);
+            $downloadIdentifier = Str::random(16);
             $count++;
-            Log::debug(sprintf('Attempt #%d results in "%s"', $count, $identifier));
-        } while ($count < 30 && $disk->exists($identifier));
-        $this->identifier = $identifier;
-        Log::info(sprintf('Job identifier is "%s"', $identifier));
+            Log::debug(sprintf('Attempt #%d results in "%s"', $count, $downloadIdentifier));
+        } while ($count < 30 && $disk->exists($downloadIdentifier));
+        $this->downloadIdentifier = $downloadIdentifier;
+        Log::info(sprintf('Download job identifier is "%s"', $downloadIdentifier));
     }
 
     /**
      * @return string
      */
-    public function getIdentifier(): string
+    public function getDownloadIdentifier(): string
     {
-        return $this->identifier;
+        return $this->downloadIdentifier;
     }
 
     /**

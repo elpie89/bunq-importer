@@ -1,10 +1,10 @@
 <?php
 /**
- * ImportJobStatusManager.php
+ * JobStatusManager.php
  * Copyright (c) 2020 james@firefly-iii.org
  *
- * This file is part of the Firefly III CSV importer
- * (https://github.com/firefly-iii/csv-importer).
+ * This file is part of the Firefly III bunq importer
+ * (https://github.com/firefly-iii/bunq-importer).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,24 +42,24 @@ class JobStatusManager
         Log::debug(sprintf('Now in (sync) startOrFindJob(%s)', $identifier));
         $disk = Storage::disk('jobs');
         try {
-            Log::debug(sprintf('Try to see if file exists for job %s.', $identifier));
+            Log::debug(sprintf('Try to see if file exists for sync job %s.', $identifier));
             if ($disk->exists($identifier)) {
-                Log::debug(sprintf('Status file exists for job %s.', $identifier));
+                Log::debug(sprintf('Status file exists for sync job %s.', $identifier));
                 $array = json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR);
                 $status = JobStatus::fromArray($array);
-                Log::debug(sprintf('Status found for job %s', $identifier), $array);
+                Log::debug(sprintf('Status found for sync job %s', $identifier), $array);
 
                 return $status;
             }
         } catch (FileNotFoundException $e) {
-            Log::error('Could not find file, write a new one.');
+            Log::error('Could not find sync file, write a new one.');
             Log::error($e->getMessage());
         }
-        Log::debug('File does not exist or error, create a new one.');
+        Log::debug('Sync file does not exist or error, create a new one.');
         $status = new JobStatus;
         $disk->put($identifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 
-        Log::debug('Return status.', $status->toArray());
+        Log::debug('Return sync status.', $status->toArray());
 
         return $status;
     }
@@ -132,29 +132,29 @@ class JobStatusManager
      */
     public static function setJobStatus(string $status): JobStatus
     {
-        $identifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
-        Log::debug(sprintf('Now in setJobStatus(%s)', $status));
-        Log::debug(sprintf('Found "%s" in the session', $identifier));
+        $syncIdentifier = session()->get(Constants::SYNC_JOB_IDENTIFIER);
+        Log::debug(sprintf('Now in Sync setJobStatus(%s)', $status));
+        Log::debug(sprintf('Found "%s" in the session', $syncIdentifier));
 
-        $jobStatus         = self::startOrFindJob($identifier);
+        $jobStatus         = self::startOrFindJob($syncIdentifier);
         $jobStatus->status = $status;
 
-        self::storeJobStatus($identifier, $jobStatus);
+        self::storeJobStatus($syncIdentifier, $jobStatus);
 
         return $jobStatus;
     }
 
     /**
-     * @param string          $identifier
+     * @param string          $syncIdentifier
      * @param JobStatus $status
      */
-    private static function storeJobStatus(string $identifier, JobStatus $status): void
+    private static function storeJobStatus(string $syncIdentifier, JobStatus $status): void
     {
-        Log::debug(sprintf('Now in storeJobStatus(%s): %s', $identifier, $status->status));
+        Log::debug(sprintf('Now in Sync storeJobStatus(%s): %s', $syncIdentifier, $status->status));
         $array = $status->toArray();
         Log::debug('Going to store', $array);
         $disk = Storage::disk('jobs');
-        $disk->put($identifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
+        $disk->put($syncIdentifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
         Log::debug('Done with storing.');
     }
 }

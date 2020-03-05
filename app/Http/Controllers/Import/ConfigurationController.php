@@ -48,7 +48,26 @@ class ConfigurationController extends Controller
     {
         parent::__construct();
         app('view')->share('pageTitle', 'Import configuration');
-        $this->middleware(ConfigComplete::class);
+        $this->middleware(ConfigComplete::class)->except('download');
+    }
+
+    public function download() {
+        // do something
+        $config = Configuration::fromArray(session()->get(Constants::CONFIGURATION))->toArray();
+        $result = json_encode($config, JSON_PRETTY_PRINT);
+
+        $response = response($result);
+        $name     = sprintf('bunq_import_config_%s.json', date('Y-m-d'));
+        $response->header('Content-disposition', 'attachment; filename=' . $name)
+                 ->header('Content-Type', 'application/json')
+                 ->header('Content-Description', 'File Transfer')
+                 ->header('Connection', 'Keep-Alive')
+                 ->header('Expires', '0')
+                 ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+                 ->header('Pragma', 'public')
+                 ->header('Content-Length', strlen($result));
+
+        return $response;
     }
 
     /**
@@ -68,7 +87,7 @@ class ConfigurationController extends Controller
         // if config says to skip it, skip it:
         if (null !== $configuration && true === $configuration->isSkipForm()) {
             // skipForm
-            return redirect()->route('import.roles.index');
+            return redirect()->route('import.download.index');
         }
 
         // get list of asset accounts in Firefly III

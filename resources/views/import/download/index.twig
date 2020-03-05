@@ -19,8 +19,8 @@
 {% endblock %}
 {% block scripts %}
     <script type="text/javascript">
-        var downloadStatusUri = '{{ route('import.download.status') }}?identifier={{ identifier }}';
-        var downloadStartUri = '{{ route('import.download.start') }}?identifier={{ identifier }}';
+        var downloadStatusUri = '{{ route('import.download.status') }}?downloadIdentifier={{ downloadIdentifier }}';
+        var downloadStartUri = '{{ route('import.download.start') }}?downloadIdentifier={{ downloadIdentifier }}';
         var mappingUri = '{{ route('import.mapping.index') }}';
         var flushUri = '{{ route('flush') }}';
     </script>

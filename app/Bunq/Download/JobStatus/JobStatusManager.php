@@ -33,31 +33,31 @@ use Storage;
 class JobStatusManager
 {
     /**
-     * @param string $identifier
+     * @param string $downloadIdentifier
      *
      * @return JobStatus
      */
-    public static function startOrFindJob(string $identifier): JobStatus
+    public static function startOrFindJob(string $downloadIdentifier): JobStatus
     {
-        Log::debug(sprintf('Now in (download) startOrFindJob(%s)', $identifier));
+        Log::debug(sprintf('Now in (download) startOrFindJob(%s)', $downloadIdentifier));
         $disk = Storage::disk('jobs');
         try {
-            Log::debug(sprintf('Try to see if file exists for job %s.', $identifier));
-            if ($disk->exists($identifier)) {
-                Log::debug(sprintf('Status file exists for job %s.', $identifier));
-                $array = json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR);
+            Log::debug(sprintf('Try to see if file exists for download job %s.', $downloadIdentifier));
+            if ($disk->exists($downloadIdentifier)) {
+                Log::debug(sprintf('Status file exists for job %s.', $downloadIdentifier));
+                $array = json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR);
                 $status = JobStatus::fromArray($array);
-                Log::debug(sprintf('Status found for job %s', $identifier), $array);
+                Log::debug(sprintf('Status found for download job %s', $downloadIdentifier), $array);
 
                 return $status;
             }
         } catch (FileNotFoundException $e) {
-            Log::error('Could not find file, write a new one.');
+            Log::error('Could not find download job file, write a new one.');
             Log::error($e->getMessage());
         }
         Log::debug('File does not exist or error, create a new one.');
         $status = new JobStatus;
-        $disk->put($identifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
+        $disk->put($downloadIdentifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 
         Log::debug('Return status.', $status->toArray());
 
@@ -65,19 +65,19 @@ class JobStatusManager
     }
 
     /**
-     * @param string $identifier
+     * @param string $downloadIdentifier
      * @param int    $index
      * @param string $error
      */
-    public static function addError(string $identifier, int $index, string $error): void
+    public static function addError(string $downloadIdentifier, int $index, string $error): void
     {
         $disk = Storage::disk('jobs');
         try {
-            if ($disk->exists($identifier)) {
-                $status                   = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
+            if ($disk->exists($downloadIdentifier)) {
+                $status                   = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
                 $status->errors[$index]   = $status->errors[$index] ?? [];
                 $status->errors[$index][] = $error;
-                self::storeJobStatus($identifier, $status);
+                self::storeJobStatus($downloadIdentifier, $status);
             }
         } catch (FileNotFoundException $e) {
             Log::error($e);
@@ -85,19 +85,19 @@ class JobStatusManager
     }
 
     /**
-     * @param string $identifier
+     * @param string $downloadIdentifier
      * @param int    $index
      * @param string $warning
      */
-    public static function addWarning(string $identifier, int $index, string $warning): void
+    public static function addWarning(string $downloadIdentifier, int $index, string $warning): void
     {
         $disk = Storage::disk('jobs');
         try {
-            if ($disk->exists($identifier)) {
-                $status                     = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
+            if ($disk->exists($downloadIdentifier)) {
+                $status                     = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
                 $status->warnings[$index]   = $status->warnings[$index] ?? [];
                 $status->warnings[$index][] = $warning;
-                self::storeJobStatus($identifier, $status);
+                self::storeJobStatus($downloadIdentifier, $status);
             }
         } catch (FileNotFoundException $e) {
             Log::error($e);
@@ -105,19 +105,19 @@ class JobStatusManager
     }
 
     /**
-     * @param string $identifier
+     * @param string $downloadIdentifier
      * @param int    $index
      * @param string $message
      */
-    public static function addMessage(string $identifier, int $index, string $message): void
+    public static function addMessage(string $downloadIdentifier, int $index, string $message): void
     {
         $disk = Storage::disk('jobs');
         try {
-            if ($disk->exists($identifier)) {
-                $status                     = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
+            if ($disk->exists($downloadIdentifier)) {
+                $status                     = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
                 $status->messages[$index]   = $status->messages[$index] ?? [];
                 $status->messages[$index][] = $message;
-                self::storeJobStatus($identifier, $status);
+                self::storeJobStatus($downloadIdentifier, $status);
             }
         } catch (FileNotFoundException $e) {
             Log::error($e);
@@ -132,29 +132,29 @@ class JobStatusManager
      */
     public static function setJobStatus(string $status): JobStatus
     {
-        $identifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
-        Log::debug(sprintf('Now in setJobStatus(%s)', $status));
-        Log::debug(sprintf('Found "%s" in the session', $identifier));
+        $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
+        Log::debug(sprintf('Now in download setJobStatus(%s)', $status));
+        Log::debug(sprintf('Found "%s" in the session', $downloadIdentifier));
 
-        $jobStatus         = self::startOrFindJob($identifier);
+        $jobStatus         = self::startOrFindJob($downloadIdentifier);
         $jobStatus->status = $status;
 
-        self::storeJobStatus($identifier, $jobStatus);
+        self::storeJobStatus($downloadIdentifier, $jobStatus);
 
         return $jobStatus;
     }
 
     /**
-     * @param string          $identifier
+     * @param string          $downloadIdentifier
      * @param JobStatus $status
      */
-    private static function storeJobStatus(string $identifier, JobStatus $status): void
+    private static function storeJobStatus(string $downloadIdentifier, JobStatus $status): void
     {
-        Log::debug(sprintf('Now in storeJobStatus(%s): %s', $identifier, $status->status));
+        Log::debug(sprintf('Now in storeJobStatus(%s): %s', $downloadIdentifier, $status->status));
         $array = $status->toArray();
         Log::debug('Going to store', $array);
         $disk = Storage::disk('jobs');
-        $disk->put($identifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
+        $disk->put($downloadIdentifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
         Log::debug('Done with storing.');
     }
 }

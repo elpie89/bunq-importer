@@ -49,24 +49,24 @@ class DownloadController extends Controller
         $subTitle  = 'Connect to bunq and download your data';
 
         // job ID may be in session:
-        $identifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
-        if (null !== $identifier) {
+        $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
+        if (null !== $downloadIdentifier) {
             // create a new import job:
-            $routine = new RoutineManager($identifier);
+            new RoutineManager($downloadIdentifier);
         }
-        if (null === $identifier) {
+        if (null === $downloadIdentifier) {
             // create a new import job:
             $routine    = new RoutineManager();
-            $identifier = $routine->getIdentifier();
+            $downloadIdentifier = $routine->getDownloadIdentifier();
         }
 
-        Log::debug(sprintf('Download routine manager identifier is "%s"', $identifier));
+        Log::debug(sprintf('Download routine manager identifier is "%s"', $downloadIdentifier));
 
         // store identifier in session so the status can get it.
-        session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $identifier);
-        Log::debug(sprintf('Stored "%s" under "%s"', $identifier, Constants::DOWNLOAD_JOB_IDENTIFIER));
+        session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $downloadIdentifier);
+        Log::debug(sprintf('Stored "%s" under "%s"', $downloadIdentifier, Constants::DOWNLOAD_JOB_IDENTIFIER));
 
-        return view('import.download.index', compact('mainTitle', 'subTitle', 'identifier'));
+        return view('import.download.index', compact('mainTitle', 'subTitle', 'downloadIdentifier'));
     }
 
     /**
@@ -75,13 +75,13 @@ class DownloadController extends Controller
     public function start(Request $request): JsonResponse
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
-        $identifier = $request->get('identifier');
-        $routine    = new RoutineManager($identifier);
+        $downloadIdentifier = $request->get('downloadIdentifier');
+        $routine    = new RoutineManager($downloadIdentifier);
 
         // store identifier in session so the status can get it.
-        session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $identifier);
+        session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $downloadIdentifier);
 
-        $downloadJobStatus = JobStatusManager::startOrFindJob($identifier);
+        $downloadJobStatus = JobStatusManager::startOrFindJob($downloadIdentifier);
         if (JobStatus::JOB_DONE === $downloadJobStatus->status) {
             // TODO DISABLED DURING DEVELOPMENT:
             //Log::debug('Job already done!');
@@ -109,17 +109,17 @@ class DownloadController extends Controller
      */
     public function status(Request $request): JsonResponse
     {
-        $identifier = $request->get('identifier');
-        Log::debug(sprintf('Now at %s(%s)', __METHOD__, $identifier));
-        if (null === $identifier) {
-            Log::warning('Identifier is NULL.');
+        $downloadIdentifier = $request->get('downloadIdentifier');
+        Log::debug(sprintf('Now at %s(%s)', __METHOD__, $downloadIdentifier));
+        if (null === $downloadIdentifier) {
+            Log::warning('Download Identifier is NULL.');
             // no status is known yet because no identifier is in the session.
             // As a fallback, return empty status
             $fakeStatus = new JobStatus();
 
             return response()->json($fakeStatus->toArray());
         }
-        $importJobStatus = JobStatusManager::startOrFindJob($identifier);
+        $importJobStatus = JobStatusManager::startOrFindJob($downloadIdentifier);
 
         return response()->json($importJobStatus->toArray());
     }

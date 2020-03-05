@@ -216,8 +216,9 @@ class Configuration
         $object->accounts        = $data['accounts'] ?? [];
 
         // TODO recalculate the date if 'partial'
-        die('need to recalculate the dates');
-
+        if ('partial' === $data['date_range']) {
+            $object->dateNotBefore = self::calcDateNotBefore($object->dateRangeUnit, $object->dateRangeNumber);
+        }
         // set version to "1" and return.
         $object->version = 1;
 

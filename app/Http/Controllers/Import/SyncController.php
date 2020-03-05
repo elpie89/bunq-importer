@@ -27,6 +27,8 @@ use App\Exceptions\ImportException;
 use App\Http\Controllers\Controller;
 use App\Services\Configuration\Configuration;
 use App\Services\Session\Constants;
+use App\Services\Sync\JobStatus\JobStatus;
+use App\Services\Sync\JobStatus\JobStatusManager;
 use App\Services\Sync\RoutineManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,34 +39,40 @@ use Log;
  */
 class SyncController extends Controller
 {
-
     /**
      *
      */
     public function index()
     {
+        Log::debug(sprintf('Now at %s', __METHOD__));
         $mainTitle = 'Sync transactions';
         $subTitle  = 'sync sync sync';
 
-        // job ID may be in session:
-        $identifier = session()->get(Constants::SYNC_JOB_IDENTIFIER);
-        if (null !== $identifier) {
+        // get download job ID so we have the data to send to FF3
+        $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
+
+        // get sync ID so we have a separate track thing.
+        $syncIdentifier = session()->get(Constants::SYNC_JOB_IDENTIFIER);
+
+        if (null !== $syncIdentifier) {
             // create a new import job:
-            $routine = new RoutineManager($identifier);
+            Log::debug('SyncController is creating new routine manager with existing sync identifier');
+            new RoutineManager($syncIdentifier);
         }
-        if (null === $identifier) {
+        if (null === $syncIdentifier) {
+            Log::debug('SyncController is creating new routine manager with NEW sync identifier');
             // create a new import job:
-            $routine    = new RoutineManager();
-            $identifier = $routine->getIdentifier();
+            $routine        = new RoutineManager(null);
+            $syncIdentifier = $routine->getSyncIdentifier();
         }
 
-        Log::debug(sprintf('Sync routine manager identifier is "%s"', $identifier));
+        Log::debug(sprintf('Sync routine manager job identifier is "%s"', $syncIdentifier));
 
         // store identifier in session so the status can get it.
-        session()->put(Constants::SYNC_JOB_IDENTIFIER, $identifier);
-        Log::debug(sprintf('Stored "%s" under "%s"', $identifier, Constants::SYNC_JOB_IDENTIFIER));
+        session()->put(Constants::SYNC_JOB_IDENTIFIER, $syncIdentifier);
+        Log::debug(sprintf('Stored "%s" under "%s"', $syncIdentifier, Constants::SYNC_JOB_IDENTIFIER));
 
-        return view('import.sync.index', compact('mainTitle', 'subTitle', 'identifier'));
+        return view('import.sync.index', compact('mainTitle', 'subTitle', 'syncIdentifier', 'downloadIdentifier'));
     }
 
     /**
@@ -73,13 +81,20 @@ class SyncController extends Controller
     public function start(Request $request): JsonResponse
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
-        $identifier = $request->get('identifier');
-        $routine    = new RoutineManager($identifier);
 
-        // store identifier in session so the status can get it.
-        session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $identifier);
+        // get download job ID so we have the data to send to FF3
+        $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
 
-        $downloadJobStatus = JobStatusManager::startOrFindJob($identifier);
+        // get sync ID so we have a separate track thing.
+        $syncIdentifier = session()->get(Constants::SYNC_JOB_IDENTIFIER);
+
+        $routine    = new RoutineManager($syncIdentifier);
+
+        // store identifier in session so the status can get it (should already be there)
+        session()->put(Constants::SYNC_JOB_IDENTIFIER, $syncIdentifier);
+        session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $downloadIdentifier);
+
+        $downloadJobStatus = JobStatusManager::startOrFindJob($syncIdentifier);
         if (JobStatus::JOB_DONE === $downloadJobStatus->status) {
             // TODO DISABLED DURING DEVELOPMENT:
             //Log::debug('Job already done!');
@@ -90,6 +105,8 @@ class SyncController extends Controller
         try {
             $config = session()->get(Constants::CONFIGURATION) ?? [];
             $routine->setConfiguration(Configuration::fromArray($config));
+            $routine->setDownloadIdentifier($downloadIdentifier);
+            $routine->setSyncIdentifier($syncIdentifier);
             $routine->start();
         } catch (ImportException $e) {
         }
@@ -107,9 +124,9 @@ class SyncController extends Controller
      */
     public function status(Request $request): JsonResponse
     {
-        $identifier = $request->get('identifier');
-        Log::debug(sprintf('Now at %s(%s)', __METHOD__, $identifier));
-        if (null === $identifier) {
+        $syncIdentifier = $request->get('syncIdentifier');
+        Log::debug(sprintf('Now at %s(%s)', __METHOD__, $syncIdentifier));
+        if (null === $syncIdentifier) {
             Log::warning('Identifier is NULL.');
             // no status is known yet because no identifier is in the session.
             // As a fallback, return empty status
@@ -117,7 +134,7 @@ class SyncController extends Controller
 
             return response()->json($fakeStatus->toArray());
         }
-        $importJobStatus = JobStatusManager::startOrFindJob($identifier);
+        $importJobStatus = JobStatusManager::startOrFindJob($syncIdentifier);
 
         return response()->json($importJobStatus->toArray());
     }

@@ -57,8 +57,6 @@ class MappingController extends Controller
 
         $mapping = $configuration->getMapping();
 
-        $mapping['NL68RABO0121946649'] = 30;
-
         // parse all opposing accounts from the download
         $bunqAccounts = $this->getOpposingAccounts();
 

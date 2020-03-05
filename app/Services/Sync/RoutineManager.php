@@ -24,6 +24,7 @@ namespace App\Services\Sync;
 
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
+use App\Services\Sync\JobStatus\JobStatusManager;
 use Log;
 use Storage;
 use Str;
@@ -42,30 +43,80 @@ class RoutineManager
     /** @var Configuration */
     private $configuration;
     /** @var string */
-    private $identifier;
+    private $syncIdentifier;
+    /** @var string */
+    private $downloadIdentifier;
+
+    /** @var ParseBunqDownload */
+    private $bunqParser;
+    /** @var GenerateTransactions */
+    private $transactionGenerator;
+    /** @var SendTransactions */
+    private $transactionSender;
+
+    /**
+     * @param string $downloadIdentifier
+     */
+    public function setDownloadIdentifier(string $downloadIdentifier): void
+    {
+        $this->downloadIdentifier = $downloadIdentifier;
+    }
+
+    /**
+     * @param string $syncIdentifier
+     */
+    public function setSyncIdentifier(string $syncIdentifier): void
+    {
+        $this->syncIdentifier = $syncIdentifier;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSyncIdentifier(): string
+    {
+        return $this->syncIdentifier;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDownloadIdentifier(): string
+    {
+        return $this->downloadIdentifier;
+    }
+
 
     /**
      * Collect info on the current job, hold it in memory.
      *
      * ImportRoutineManager constructor.
      *
-     * @param string|null $identifier
+     * @param null|string $syncIdentifier
      */
-    public function __construct(string $identifier = null)
+    public function __construct(?string $syncIdentifier)
     {
         Log::debug('Constructed RoutineManager for sync');
+
+        $this->bunqParser           = new ParseBunqDownload;
+        $this->transactionGenerator = new GenerateTransactions;
+        $this->transactionSender    = new SendTransactions;
 
         // get line converter
         $this->allMessages = [];
         $this->allWarnings = [];
         $this->allErrors   = [];
-        if (null === $identifier) {
-            $this->generateIdentifier();
+        if (null === $syncIdentifier) {
+            $this->generateSyncIdentifier();
         }
-        if (null !== $identifier) {
-            $this->identifier = $identifier;
+        if (null !== $syncIdentifier) {
+            $this->syncIdentifier = $syncIdentifier;
         }
-        JobStatusManager::startOrFindJob($this->identifier);
+        $this->bunqParser->setIdentifier($this->syncIdentifier);
+        $this->transactionSender->setIdentifier($this->syncIdentifier);
+        $this->transactionGenerator->setIdentifier($this->syncIdentifier);
+
+        JobStatusManager::startOrFindJob($this->syncIdentifier);
     }
 
     /**
@@ -93,14 +144,6 @@ class RoutineManager
     }
 
     /**
-     * @return string
-     */
-    public function getIdentifier(): string
-    {
-        return $this->identifier;
-    }
-
-    /**
      * @param Configuration $configuration
      *
      * @throws ImportException
@@ -108,9 +151,8 @@ class RoutineManager
     public function setConfiguration(Configuration $configuration): void
     {
         $this->configuration = $configuration;
-
-        //        $this->paymentList   = new PaymentList($configuration);
-        //        $this->paymentList->setIdentifier($this->identifier);
+        $this->transactionSender->setConfiguration($configuration);
+        $this->transactionGenerator->setConfiguration($configuration);
     }
 
     /**
@@ -122,11 +164,23 @@ class RoutineManager
     {
         Log::debug(sprintf('Now in %s', __METHOD__));
 
+        // get JSON file from bunq download
+        Log::debug('Going to parse bunq download.');
+        $array = $this->bunqParser->getDownload($this->downloadIdentifier);
+        Log::debug('Done parsing bunq download.');
+
+        // generate Firefly III ready transactions:
+        Log::debug('Generating Firefly III transactions.');
+        $transactions = $this->transactionGenerator->getTransactions($array);
+        Log::debug(sprintf('Generated %d Firefly III transactions.', count($transactions)));
+
+        // send to Firefly III.
+        Log::debug('Going to send them to Firefly III.');
+        $sent = $this->transactionSender->send($transactions);
         // download and store transactions from bunq.
         // $transactions = $this->paymentList->getPaymentList();
 
-        // $count = count($transactions);
-        $count = 0;
+        $count = count($sent);
         $this->mergeMessages($count);
         $this->mergeWarnings($count);
         $this->mergeErrors($count);
@@ -135,18 +189,18 @@ class RoutineManager
     /**
      *
      */
-    private function generateIdentifier(): void
+    private function generateSyncIdentifier(): void
     {
-        Log::debug('Going to generate identifier.');
+        Log::debug('Going to generate sync job identifier.');
         $disk  = Storage::disk('jobs');
         $count = 0;
         do {
-            $identifier = Str::random(16);
+            $syncIdentifier = Str::random(16);
             $count++;
-            Log::debug(sprintf('Attempt #%d results in "%s"', $count, $identifier));
-        } while ($count < 30 && $disk->exists($identifier));
-        $this->identifier = $identifier;
-        Log::info(sprintf('Job identifier is "%s"', $identifier));
+            Log::debug(sprintf('Attempt #%d results in "%s"', $count, $syncIdentifier));
+        } while ($count < 30 && $disk->exists($syncIdentifier));
+        $this->syncIdentifier = $syncIdentifier;
+        Log::info(sprintf('Sync job identifier is "%s"', $syncIdentifier));
     }
 
     /**

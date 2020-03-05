@@ -25,6 +25,7 @@ namespace App\Bunq\Requests;
 use App\Bunq\ApiContext\ApiContextManager;
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
+use App\Services\Sync\JobStatus\ProgressInformation;
 use bunq\Model\Generated\Endpoint\Payment as BunqPayment;
 use Carbon\Carbon;
 use Log;
@@ -35,12 +36,14 @@ use Storage;
  */
 class PaymentList
 {
+    use ProgressInformation;
+
     /** @var Configuration */
     private $configuration;
     /** @var int */
     private $count;
     /** @var string */
-    private $identifier;
+    private $downloadIdentifier;
     /** @var Carbon */
     private $notAfter;
     /** @var Carbon */
@@ -57,13 +60,18 @@ class PaymentList
         $this->count         = 0;
         $this->notBefore     = null === $configuration->getDateNotBefore() ? null : Carbon::createFromFormat('Y-m-d', $configuration->getDateNotBefore());
         $this->notAfter      = null === $configuration->getDateNotAfter() ? null : Carbon::createFromFormat('Y-m-d', $configuration->getDateNotAfter());
-        $this->notBefore->startOfDay();
-        $this->notAfter->endOfDay();
+        if (null !== $this->notBefore) {
+            $this->notBefore->startOfDay();
+        }
+        if (null !== $this->notAfter) {
+            $this->notAfter->endOfDay();
+        }
     }
 
     /**
      *
      * @throws ImportException
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getPaymentList(): array
     {
@@ -91,11 +99,11 @@ class PaymentList
     }
 
     /**
-     * @param string $identifier
+     * @param string $downloadIdentifier
      */
-    public function setIdentifier(string $identifier): void
+    public function setDownloadIdentifier(string $downloadIdentifier): void
     {
-        $this->identifier = $identifier;
+        $this->downloadIdentifier = $downloadIdentifier;
     }
 
     /**
@@ -105,7 +113,7 @@ class PaymentList
     private function getDownload(): array
     {
         $disk    = Storage::disk('downloads');
-        $content = $disk->get($this->identifier);
+        $content = $disk->get($this->downloadIdentifier);
 
         return json_decode($content, true, 512, JSON_THROW_ON_ERROR);
     }
@@ -134,7 +142,8 @@ class PaymentList
              */
             /** @var Payment $paymentRequest */
             $paymentRequest = app(Payment::class);
-            $params         = ['count' => 197, 'older_id' => $olderId];
+            //$params         = ['count' => 197, 'older_id' => $olderId];
+            $params         = ['count' => 7, 'older_id' => $olderId];
             $response       = $paymentRequest->listing($bunqAccountId, $params);
             $pagination     = $response->getPagination();
             Log::debug('Params for the request to bunq are: ', $params);
@@ -194,7 +203,7 @@ class PaymentList
     {
         $disk = Storage::disk('downloads');
 
-        return $disk->exists($this->identifier);
+        return $disk->exists($this->downloadIdentifier);
     }
 
     /**
@@ -279,7 +288,10 @@ class PaymentList
     private function storeDownload(array $data): void
     {
         $disk = Storage::disk('downloads');
-        $disk->put($this->identifier, json_encode($data, JSON_THROW_ON_ERROR, 512));
+
+
+
+        $disk->put($this->downloadIdentifier, json_encode($data, JSON_THROW_ON_ERROR, 512));
     }
 
 
