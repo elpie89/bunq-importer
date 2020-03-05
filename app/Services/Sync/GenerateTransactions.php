@@ -22,8 +22,10 @@
 
 namespace App\Services\Sync;
 
+use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
 use App\Services\Sync\JobStatus\ProgressInformation;
+use Log;
 
 /**
  * Class GenerateTransactions
@@ -49,6 +51,7 @@ class GenerateTransactions
             $bunqAccountId = (int)$bunqAccountId;
             foreach ($entries as $entry) {
                 $return[] = $this->generateTransaction($bunqAccountId, $entry);
+                // TODO error handling at this point.
             }
         }
         $this->addMessage(0, sprintf('Parsed %d bunq transactions for further processing.', count($return)));
@@ -70,6 +73,7 @@ class GenerateTransactions
      * @param array $entry
      *
      * @return array
+     * @throws ImportException
      */
     private function generateTransaction(int $bunqAccountId, array $entry): array
     {
@@ -101,6 +105,9 @@ class GenerateTransactions
 
             $mappedId = $this->getMappedId($entry['counter_party']['display_name'], (string)$entry['counter_party']['iban']);
             if (null !== $mappedId) {
+                $mappedType = $this->getMappedType($mappedId);
+
+                $return['transactions'][0]['type']      = $this->getTransactionType($mappedType, 'asset');
                 $return['transactions'][0]['source_id'] = $mappedId;
                 unset($return['transactions'][0]['source_iban'], $return['transactions'][0]['source_name']);
             }
@@ -118,11 +125,14 @@ class GenerateTransactions
             $return['transactions'][0]['bunq_payment_id']    = $entry['id'];
             $return['transactions'][0]['external_id']        = $entry['id'];
             $return['transactions'][0]['internal_reference'] = $bunqAccountId;
-            $mappedId                                        = $this->getMappedId(
-                $entry['counter_party']['display_name'], (string)$entry['counter_party']['iban']
-            );
+
+            $mappedId = $this->getMappedId($entry['counter_party']['display_name'], (string)$entry['counter_party']['iban']);
             if (null !== $mappedId) {
                 $return['transactions'][0]['destination_id'] = $mappedId;
+                // source is asset, destination is ??, set the transaction type:
+                $mappedType = $this->getMappedType($mappedId);
+
+                $return['transactions'][0]['type'] = $this->getTransactionType('asset', $mappedType);
                 unset($return['transactions'][0]['destination_iban'], $return['transactions'][0]['destination_name']);
             }
         }
@@ -144,6 +154,43 @@ class GenerateTransactions
         }
 
         return $this->configuration->getMapping()[$fullName] ?? null;
+    }
+
+    /**
+     * @param int $mappedId
+     *
+     * @return string
+     */
+    private function getMappedType(int $mappedId): string
+    {
+        if (!isset($this->configuration->getAccountTypes()[$mappedId])) {
+            Log::warning(sprintf('Cannot find account type for Firefly III account #%d.', $mappedId));
+            // TODO contact Firefly III to get it.
+        }
+
+        return $this->configuration->getAccountTypes()[$mappedId] ?? 'expense';
+    }
+
+    /**
+     * @param string $source
+     * @param string $destination
+     *
+     * @return string
+     * @throws ImportException
+     */
+    private function getTransactionType(string $source, string $destination): string
+    {
+        $combination = sprintf('%s-%s', $source, $destination);
+        switch ($combination) {
+            default:
+                throw new ImportException(sprintf('Unknown combination: %s and %s', $source, $destination));
+            case 'asset-expense':
+                return 'withdrawal';
+            case 'asset-asset':
+                return 'transfer';
+            case 'revenue-asset':
+                return 'deposit';
+        }
     }
 
 }

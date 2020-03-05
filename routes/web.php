@@ -52,8 +52,7 @@ Route::get('/import/download', ['uses' => 'Import\DownloadController@index', 'as
 Route::any('/import/download/start', ['uses' => 'Import\DownloadController@start', 'as' => 'import.download.start']);
 Route::get('/import/download/status', ['uses' => 'Import\DownloadController@status', 'as' => 'import.download.status']);
 
-// download config:
-Route::get('/configuration/download', ['uses' => 'Import\DownloadController@download', 'as' => 'import.configuration.download']);
+
 
 // do mapping configuration
 Route::get('/import/mapping', ['uses' => 'Import\MappingController@index', 'as' => 'import.mapping.index']);
@@ -61,3 +60,8 @@ Route::post('/import/mapping', ['uses' => 'Import\MappingController@postIndex', 
 
 // upload
 Route::get('/import/sync', ['uses' => 'Import\SyncController@index', 'as' => 'import.sync.index']);
+Route::any('/import/sync/start', ['uses' => 'Import\SyncController@start', 'as' => 'import.sync.start']);
+Route::get('/import/sync/status', ['uses' => 'Import\SyncController@status', 'as' => 'import.sync.status']);
+
+// download config:
+Route::get('/configuration/download', ['uses' => 'Import\ConfigurationController@download', 'as' => 'import.configuration.download']);

@@ -44,6 +44,8 @@ class Configuration
     private $version;
     /** @var array */
     private $mapping;
+    /** @var array */
+    private $accountTypes;
 
     /** @var bool */
     private $doMapping;
@@ -74,12 +76,30 @@ class Configuration
         $this->accounts        = [];
         $this->version         = self::VERSION;
         $this->mapping         = [];
+        $this->accountTypes    = [];
         $this->dateRange       = 'all';
         $this->dateRangeNumber = 30;
         $this->dateRangeUnit   = 'd';
         $this->dateNotBefore   = '';
         $this->dateNotAfter    = '';
     }
+
+    /**
+     * @return array
+     */
+    public function getAccountTypes(): array
+    {
+        return $this->accountTypes;
+    }
+
+    /**
+     * @param array $accountTypes
+     */
+    public function setAccountTypes(array $accountTypes): void
+    {
+        $this->accountTypes = $accountTypes;
+    }
+
 
     /**
      * @param array $array
@@ -97,6 +117,7 @@ class Configuration
         $object->skipForm        = $array['skip_form'] ?? false;
         $object->accounts        = $array['accounts'] ?? [];
         $object->mapping         = $array['mapping'] ?? [];
+        $object->accountTypes    = $array['account_types'] ?? [];
         $object->dateRange       = $array['date_range'] ?? 'all';
         $object->dateRangeNumber = $array['date_range_number'] ?? 30;
         $object->dateRangeUnit   = $array['date_range_unit'] ?? 'd';
@@ -137,6 +158,7 @@ class Configuration
         $object->skipForm        = $array['skip_form'];
         $object->accounts        = $array['accounts'];
         $object->mapping         = $array['mapping'];
+        $object->accountTypes    = $array['account_types'] ?? [];
         $object->dateRange       = $array['date_range'];
         $object->dateRangeNumber = $array['date_range_number'];
         $object->dateRangeUnit   = $array['date_range_unit'];
@@ -210,6 +232,7 @@ class Configuration
         $object->dateRangeNumber = $data['date_range_number'] ?? 30;
         $object->dateRangeUnit   = $data['date_range_unit'] ?? 'd';
         $object->dateNotBefore   = $data['date_not_before'] ?? '';
+        $object->accountTypes    = $array['account_types'] ?? [];
         $object->dateNotAfter    = $data['date_not_after'] ?? '';
         $object->doMapping       = $data['do_mapping'] ?? false;
         $object->mapping         = $data['mapping'] ?? [];
@@ -237,6 +260,7 @@ class Configuration
             'accounts'          => $this->accounts,
             'version'           => $this->version,
             'mapping'           => $this->mapping,
+            'account_types'     => $this->accountTypes,
             'date_range'        => $this->dateRange,
             'date_range_number' => $this->dateRangeNumber,
             'date_range_unit'   => $this->dateRangeUnit,

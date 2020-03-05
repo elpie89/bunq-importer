@@ -74,8 +74,9 @@ class MappingController extends Controller
     public function postIndex(Request $request)
     {
         // post mapping is not particularly complex.
-        $result  = $request->all();
-        $mapping = $result['mapping'] ?? [];
+        $result       = $request->all();
+        $mapping      = $result['mapping'] ?? [];
+        $accountTypes = $result['account_type'] ?? [];
 
         $configuration = Configuration::fromArray([]);
         if (session()->has(Constants::CONFIGURATION)) {
@@ -88,6 +89,7 @@ class MappingController extends Controller
         }
         // save mapping in config.
         $configuration->setMapping($mapping);
+        $configuration->setAccountTypes($accountTypes);
 
         // save mapping in config, save config.
         session()->put(Constants::CONFIGURATION, $configuration->toArray());

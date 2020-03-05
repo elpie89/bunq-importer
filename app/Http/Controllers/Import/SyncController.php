@@ -30,6 +30,7 @@ use App\Services\Session\Constants;
 use App\Services\Sync\JobStatus\JobStatus;
 use App\Services\Sync\JobStatus\JobStatusManager;
 use App\Services\Sync\RoutineManager;
+use RuntimeException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
@@ -109,6 +110,8 @@ class SyncController extends Controller
             $routine->setSyncIdentifier($syncIdentifier);
             $routine->start();
         } catch (ImportException $e) {
+            // TODO better error handling.
+            throw new RuntimeException($e->getMessage());
         }
 
         // set done:

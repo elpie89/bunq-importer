@@ -69,6 +69,12 @@
                             <p>
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </p>
+                            {# hidden in the form is the asset type for all firefly iii accounts. will be very useful later on #}
+                            {% for type, list in ff3Accounts %}
+                                {% for id, name in list %}
+                                    <input type="hidden" name="account_type[{{ id }}]" value="{{ type }}" />
+                                {% endfor %}
+                            {% endfor %}
                         </form>
                     </div>
                 </div>
