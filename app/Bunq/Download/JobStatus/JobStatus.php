@@ -22,6 +22,7 @@
 
 namespace App\Bunq\Download\JobStatus;
 
+use Log;
 /**
  * Class JobStatus
  */
@@ -46,10 +47,11 @@ class JobStatus
     public $messages;
 
     /**
-     * ImportJobStatus constructor.
+     * JobStatus constructor.
      */
     public function __construct()
     {
+        Log::debug('Constructed download JobStatus');
         $this->status   = self::JOB_WAITING;
         $this->errors   = [];
         $this->warnings = [];

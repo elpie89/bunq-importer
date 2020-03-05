@@ -64,9 +64,11 @@ class RoutineManager
         $this->allWarnings = [];
         $this->allErrors   = [];
         if (null === $downloadIdentifier) {
+            Log::debug('Was given no download identifier, will generate one.');
             $this->generateDownloadIdentifier();
         }
         if (null !== $downloadIdentifier) {
+            Log::debug('Was given download identifier, will use it.');
             $this->downloadIdentifier = $downloadIdentifier;
         }
         JobStatusManager::startOrFindJob($this->downloadIdentifier);
@@ -83,7 +85,7 @@ class RoutineManager
         $this->paymentList   = new PaymentList($configuration);
         $this->paymentList->setDownloadIdentifier($this->downloadIdentifier);
 
-        Log::debug(sprintf('Created new payment list with download identifier "%s"', $this->downloadIdentifier));
+        Log::debug(sprintf('Download ImportRoutineManager: created new payment list with download identifier "%s"', $this->downloadIdentifier));
     }
 
     /**
@@ -111,8 +113,6 @@ class RoutineManager
     }
 
     /**
-     * Start the import.
-     *
      * @throws ImportException
      */
     public function start(): void
@@ -120,12 +120,16 @@ class RoutineManager
         Log::debug(sprintf('Now in %s', __METHOD__));
 
         // download and store transactions from bunq.
+        // TODO catch errors. Make sure that messages are created.
         $transactions = $this->paymentList->getPaymentList();
 
         $count = count($transactions);
         $this->mergeMessages($count);
         $this->mergeWarnings($count);
         $this->mergeErrors($count);
+
+        // TODO this sleep message to make sure we see any messages before we continue. remove me.
+        sleep(5);
     }
 
     /**

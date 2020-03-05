@@ -28,6 +28,7 @@ use bunq\Context\BunqContext;
 use bunq\Exception\BadRequestException;
 use bunq\Exception\BunqException;
 use bunq\Util\BunqEnumApiEnvironmentType;
+use Log;
 
 /**
  * Class ApiContextManager
@@ -45,15 +46,18 @@ class ApiContextManager
         if (config('bunq.use_sandbox')) {
             $environmentType = BunqEnumApiEnvironmentType::SANDBOX();
             $contextFile     = storage_path('context/bunq_sandbox.context');
+            Log::debug('Will create sandbox bunq API Context');
         }
         if (config('bunq.use_production')) {
             $environmentType = BunqEnumApiEnvironmentType::PRODUCTION();
             $contextFile     = storage_path('context/bunq_pr.context');
+            Log::debug('Will create PR bunq API Context');
         }
         // restore if exists.
         if (file_exists($contextFile)) {
             $apiContext = ApiContext::restore($contextFile);
             BunqContext::loadApiContext($apiContext);
+            Log::debug('Restored existing bunq context.');
 
             return $apiContext;
         }
@@ -62,6 +66,7 @@ class ApiContextManager
         $deviceDescription = sprintf('Firefly III bunq importer v%s', config('bunq.version'));
         $permittedIps      = []; // List the real expected IPs of this device or leave empty to use the current IP
         try {
+            Log::debug('Try to build API context with given parameters.');
             $apiContext = ApiContext::create(
                 $environmentType,
                 $apiKey,
@@ -69,16 +74,21 @@ class ApiContextManager
                 $permittedIps
             );
         } catch (BadRequestException $e) {
+            Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
             throw new ImportException($e->getMessage());
         }
 
         BunqContext::loadApiContext($apiContext);
         try {
+            Log::debug('Trying to save API context.');
             $apiContext->save($contextFile);
         } catch (BunqException $e) {
+            Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
             throw new ImportException($e->getMessage());
         }
-
+        Log::debug('Done! return API context.');
         return $apiContext;
     }
 

@@ -44,7 +44,7 @@ class JobStatusManager
         try {
             Log::debug(sprintf('Try to see if file exists for download job %s.', $downloadIdentifier));
             if ($disk->exists($downloadIdentifier)) {
-                Log::debug(sprintf('Status file exists for job %s.', $downloadIdentifier));
+                Log::debug(sprintf('Status file exists for download job %s.', $downloadIdentifier));
                 $array = json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR);
                 $status = JobStatus::fromArray($array);
                 Log::debug(sprintf('Status found for download job %s', $downloadIdentifier), $array);
@@ -55,11 +55,11 @@ class JobStatusManager
             Log::error('Could not find download job file, write a new one.');
             Log::error($e->getMessage());
         }
-        Log::debug('File does not exist or error, create a new one.');
+        Log::debug('Download job file does not exist or error, create a new one.');
         $status = new JobStatus;
         $disk->put($downloadIdentifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 
-        Log::debug('Return status.', $status->toArray());
+        Log::debug('Return download job status.', $status->toArray());
 
         return $status;
     }
@@ -80,7 +80,8 @@ class JobStatusManager
                 self::storeJobStatus($downloadIdentifier, $status);
             }
         } catch (FileNotFoundException $e) {
-            Log::error($e);
+            Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
         }
     }
 
@@ -100,7 +101,8 @@ class JobStatusManager
                 self::storeJobStatus($downloadIdentifier, $status);
             }
         } catch (FileNotFoundException $e) {
-            Log::error($e);
+            Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
         }
     }
 
@@ -120,7 +122,8 @@ class JobStatusManager
                 self::storeJobStatus($downloadIdentifier, $status);
             }
         } catch (FileNotFoundException $e) {
-            Log::error($e);
+            Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
         }
     }
 
@@ -133,8 +136,7 @@ class JobStatusManager
     public static function setJobStatus(string $status): JobStatus
     {
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
-        Log::debug(sprintf('Now in download setJobStatus(%s)', $status));
-        Log::debug(sprintf('Found "%s" in the session', $downloadIdentifier));
+        Log::debug(sprintf('Now in download setJobStatus(%s) for job %s', $status, $downloadIdentifier));
 
         $jobStatus         = self::startOrFindJob($downloadIdentifier);
         $jobStatus->status = $status;
@@ -151,10 +153,7 @@ class JobStatusManager
     private static function storeJobStatus(string $downloadIdentifier, JobStatus $status): void
     {
         Log::debug(sprintf('Now in storeJobStatus(%s): %s', $downloadIdentifier, $status->status));
-        $array = $status->toArray();
-        Log::debug('Going to store', $array);
         $disk = Storage::disk('jobs');
         $disk->put($downloadIdentifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
-        Log::debug('Done with storing.');
     }
 }
