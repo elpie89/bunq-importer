@@ -28,6 +28,7 @@ use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 use GrumpyDictator\FFIIIApiSupport\Model\Transaction;
 use GrumpyDictator\FFIIIApiSupport\Request\PostTransactionRequest;
 use GrumpyDictator\FFIIIApiSupport\Response\PostTransactionResponse;
+use GrumpyDictator\FFIIIApiSupport\Response\ValidationErrorResponse;
 use Log;
 
 /**
@@ -78,12 +79,23 @@ class SendTransactions
         $request = new PostTransactionRequest($uri, $token);
         $request->setBody($transaction);
         try {
-            /** @var PostTransactionResponse $response */
             $response = $request->post();
         } catch (ApiHttpException $e) {
             Log::error($e->getMessage());
             $this->addError($index, $e->getMessage());
+            return [];
         }
+        if($response instanceof ValidationErrorResponse) {
+            /** ValidationErrorResponse $error */
+            foreach($response->errors->getMessages() as $key => $errors) {
+                foreach($errors as $error) {
+                    // +1 so the line numbers match.
+                    $this->addError($index+1, $error);
+                }
+            }
+            return [];
+        }
+        /** @var PostTransactionResponse $group */
         $group = $response->getTransactionGroup();
         if (null === $group) {
             $this->addError($index, 'Group is unexpectedly NULL.');

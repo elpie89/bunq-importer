@@ -79,7 +79,9 @@ class GenerateTransactions
     {
 
         $return = [
-            'transactions' => [
+            'apply_rules'             => $this->configuration->isRules(),
+            'error_if_duplicate_hash' => true,
+            'transactions'            => [
                 [
                     'type'          => 'withdrawal', // reverse
                     'date'          => substr($entry['created'], 0, 10),

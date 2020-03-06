@@ -147,7 +147,6 @@ class ConfigurationController extends Controller
 
         $fromRequest   = $request->getAll();
         $configuration = Configuration::fromRequest($fromRequest);
-        var_dump($configuration);exit;
         $config        = StorageService::storeContent(json_encode($configuration, JSON_THROW_ON_ERROR, 512));
 
         session()->put(Constants::CONFIGURATION, $configuration->toArray());

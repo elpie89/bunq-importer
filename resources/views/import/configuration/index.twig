@@ -43,6 +43,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" id="do_import_{{ combinedAccount.id }}" type="checkbox"
                                                    name="do_import[{{ combinedAccount.id }}]"
+                                                   {% if configuration.getAccounts[combinedAccount.id] != 0  %}checked{% endif %}
                                                    value="1" aria-describedby="accountsHelp"/>
                                             <label class="form-check-label" for="do_import_{{ combinedAccount.id }}">"{{ combinedAccount.description }}"
                                                 {% if '' != combinedAccount.iban %} <small>({{ combinedAccount.iban }})</small>{% endif %}
@@ -51,7 +52,9 @@
                                                     <select class="form-control form-control-sm" name="accounts[{{ combinedAccount.id }}]">
                                                         {% for ff3Account in ff3Accounts %}
                                                             <option value="{{ ff3Account.id }}"
+                                                                    {% if configuration.getAccounts[combinedAccount.id] == ff3Account.id  %}selected{% endif %}
                                                                 label="{{ ff3Account.name }}{% if ff3Account.iban %} ({{ ff3Account.iban }}){% endif %}">
+                                                                {{ configuration.getAccounts[combinedAccount.id] }}
                                                                 {{ ff3Account.name }}{% if ff3Account.iban %} ({{ ff3Account.iban }}){% endif %}
                                                             </option>
                                                         {% endfor %}
