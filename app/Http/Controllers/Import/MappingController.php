@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * MappingController.php
  * Copyright (c) 2020 james@firefly-iii.org
@@ -26,8 +27,10 @@ namespace App\Http\Controllers\Import;
 use App\Http\Controllers\Controller;
 use App\Services\Configuration\Configuration;
 use App\Services\Session\Constants;
+use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 use GrumpyDictator\FFIIIApiSupport\Request\GetAccountsRequest;
 use GrumpyDictator\FFIIIApiSupport\Response\GetAccountsResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Storage;
 
@@ -47,7 +50,7 @@ class MappingController extends Controller
 
     /**
      *
-     * @throws \GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException
+     * @throws ApiHttpException
      */
     public function index()
     {
@@ -78,7 +81,7 @@ class MappingController extends Controller
     /**
      * @param Request $request
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function postIndex(Request $request)
     {
@@ -108,7 +111,7 @@ class MappingController extends Controller
 
     /**
      * @return array
-     * @throws \GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException
+     * @throws ApiHttpException
      */
     private function getFireflyIIIAccounts(): array
     {
@@ -138,6 +141,7 @@ class MappingController extends Controller
 
     /**
      * @return array
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     private function getOpposingAccounts(): array
     {

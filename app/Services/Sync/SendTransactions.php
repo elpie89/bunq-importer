@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * SendTransactions.php
  * Copyright (c) 2020 james@firefly-iii.org
@@ -70,6 +71,7 @@ class SendTransactions
     /**
      * @param string $uri
      * @param string $token
+     * @param int    $index
      * @param array  $transaction
      *
      * @return array

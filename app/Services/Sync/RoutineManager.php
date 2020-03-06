@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * RoutineManager.php
  * Copyright (c) 2020 james@firefly-iii.org
@@ -146,7 +147,6 @@ class RoutineManager
     /**
      * @param Configuration $configuration
      *
-     * @throws ImportException
      */
     public function setConfiguration(Configuration $configuration): void
     {
@@ -158,7 +158,6 @@ class RoutineManager
     /**
      * Start the import.
      *
-     * @throws ImportException
      */
     public function start(): void
     {

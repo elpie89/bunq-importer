@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * DownloadController.php
  * Copyright (c) 2020 james@firefly-iii.org
@@ -78,6 +79,8 @@ class DownloadController extends Controller
     }
 
     /**
+     * @param Request $request
+     *
      * @return JsonResponse
      */
     public function start(Request $request): JsonResponse

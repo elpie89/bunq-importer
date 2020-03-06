@@ -1,11 +1,10 @@
 <?php
-declare(strict_types=1);
 /**
  * ConfigurationController.php
  * Copyright (c) 2020 james@firefly-iii.org
  *
- * This file is part of the Firefly III CSV importer
- * (https://github.com/firefly-iii/csv-importer).
+ * This file is part of the Firefly III bunq importer
+ * (https://github.com/firefly-iii/bunq-importer).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +20,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Import;
 
 
@@ -34,6 +35,9 @@ use App\Services\Session\Constants;
 use App\Services\Storage\StorageService;
 use GrumpyDictator\FFIIIApiSupport\Model\Account;
 use GrumpyDictator\FFIIIApiSupport\Request\GetAccountsRequest;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Log;
 
 /**
@@ -52,7 +56,7 @@ class ConfigurationController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return ResponseFactory|Response
      */
     public function download() {
         // do something
@@ -74,7 +78,9 @@ class ConfigurationController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|RedirectResponse|\Illuminate\View\View
+     * @throws \App\Exceptions\ImportException
+     * @throws \GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException
      */
     public function index()
     {
@@ -138,7 +144,7 @@ class ConfigurationController extends Controller
     /**
      * @param ConfigurationPostRequest $request
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function postIndex(ConfigurationPostRequest $request)
     {

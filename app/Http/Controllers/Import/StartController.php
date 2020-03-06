@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * StartController.php
  * Copyright (c) 2020 james@firefly-iii.org
@@ -21,9 +20,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\View\View;
 
 /**
  * Class StartController
@@ -40,7 +43,7 @@ class StartController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function index()
     {

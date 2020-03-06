@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * TokenController.php
  * Copyright (c) 2020 james@firefly-iii.org
  *
- * This file is part of the Firefly III CSV importer
- * (https://github.com/firefly-iii/csv-importer).
+ * This file is part of the Firefly III bunq importer
+ * (https://github.com/firefly-iii/bunq-importer).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,6 +41,7 @@ class TokenController extends Controller
      * Check if the Firefly III API responds properly.
      *
      * @return JsonResponse
+     * @throws \App\Exceptions\ImportException
      */
     public function doValidate(): JsonResponse
     {
@@ -78,6 +80,7 @@ class TokenController extends Controller
      * Same thing but not over JSON.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     * @throws \App\Exceptions\ImportException
      */
     public function index()
     {

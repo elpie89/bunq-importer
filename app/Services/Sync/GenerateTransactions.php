@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * GenerateTransactions.php
  * Copyright (c) 2020 james@firefly-iii.org
@@ -44,6 +45,7 @@ class GenerateTransactions
      * @param array $bunq
      *
      * @return array
+     * @throws ImportException
      */
     public function getTransactions(array $bunq): array
     {
@@ -73,6 +75,7 @@ class GenerateTransactions
     }
 
     /**
+     * @param int   $bunqAccountId
      * @param array $entry
      *
      * @return array
@@ -148,6 +151,7 @@ class GenerateTransactions
      * @param int $accountId
      *
      * @return string
+     * @throws \GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException
      */
     private function getAccountType(int $accountId): string
     {

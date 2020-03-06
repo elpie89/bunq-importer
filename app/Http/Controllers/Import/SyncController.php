@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * SyncController.php
  * Copyright (c) 2020 james@firefly-iii.org
@@ -85,6 +86,8 @@ class SyncController extends Controller
     }
 
     /**
+     * @param Request $request
+     *
      * @return JsonResponse
      */
     public function start(Request $request): JsonResponse

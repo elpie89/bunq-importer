@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * UploadController.php
  * Copyright (c) 2020 james@firefly-iii.org
  *
- * This file is part of the Firefly III CSV importer
- * (https://github.com/firefly-iii/csv-importer).
+ * This file is part of the Firefly III bunq importer
+ * (https://github.com/firefly-iii/bunq-importer).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +29,9 @@ use App\Http\Middleware\UploadedFiles;
 use App\Services\Configuration\ConfigFileProcessor;
 use App\Services\Session\Constants;
 use App\Services\Storage\StorageService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\MessageBag;
 use Log;
 
@@ -49,7 +52,7 @@ class UploadController extends Controller
     /**
      * @param Request $request
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return RedirectResponse|Redirector
      */
     public function upload(Request $request)
     {

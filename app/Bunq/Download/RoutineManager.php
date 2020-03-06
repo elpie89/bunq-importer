@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
- * ImportRoutineManager.php
+ * RoutineManager.php
  * Copyright (c) 2020 james@firefly-iii.org
  *
- * This file is part of the Firefly III CSV importer
- * (https://github.com/firefly-iii/csv-importer).
+ * This file is part of the Firefly III bunq importer
+ * (https://github.com/firefly-iii/bunq-importer).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -77,7 +78,6 @@ class RoutineManager
     /**
      * @param Configuration $configuration
      *
-     * @throws ImportException
      */
     public function setConfiguration(Configuration $configuration): void
     {
@@ -113,7 +113,6 @@ class RoutineManager
     }
 
     /**
-     * @throws ImportException
      */
     public function start(): void
     {

@@ -1,11 +1,10 @@
 <?php
-declare(strict_types=1);
 /**
  * ConfigurationPostRequest.php
  * Copyright (c) 2020 james@firefly-iii.org
  *
- * This file is part of the Firefly III CSV importer
- * (https://github.com/firefly-iii/csv-importer).
+ * This file is part of the Firefly III bunq importer
+ * (https://github.com/firefly-iii/bunq-importer).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +19,8 @@ declare(strict_types=1);
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
@@ -48,7 +49,8 @@ class ConfigurationPostRequest extends Request
         // parse entire config file.
         $mapping  = $this->get('mapping') ? json_decode(base64_decode($this->get('mapping')), true, 512, JSON_THROW_ON_ERROR) : null;
         $doImport = $this->get('do_import') ?? [];
-        $result   = [
+
+        return [
             'do_import'         => $doImport,
             'rules'             => $this->convertBoolean($this->get('rules')),
             'skip_form'         => $this->convertBoolean($this->get('skip_form')),
@@ -61,8 +63,6 @@ class ConfigurationPostRequest extends Request
             'mapping'           => $mapping,
             'accounts'          => $this->get('accounts'),
         ];
-
-        return $result;
     }
 
     /**
@@ -70,7 +70,7 @@ class ConfigurationPostRequest extends Request
      */
     public function rules(): array
     {
-        $rules = [
+        return [
             //'some_weird_field' => 'required',
             'rules'             => 'numeric|between:0,1',
             'do_mapping'        => 'numeric|between:0,1',
@@ -82,8 +82,6 @@ class ConfigurationPostRequest extends Request
             'accounts.*'        => 'numeric',
             'do_import.*'       => 'numeric',
         ];
-
-        return $rules;
     }
 
     /**
