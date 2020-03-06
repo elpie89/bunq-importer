@@ -1,17 +1,72 @@
 {
-    "name": "laravel/laravel",
-    "type": "project",
-    "description": "The Laravel Framework.",
+    "name": "firefly-iii/bunq-importer",
+    "description": "Firefly III bunq Importer Tool.",
     "keywords": [
-        "framework",
-        "laravel"
+        "firefly iii",
+        "firefly-iii",
+        "firefly",
+        "bunq",
+        "bunq bank",
+        "bank of the free",
+        "import",
+        "importing",
+        "tool",
+        "finance",
+        "finances",
+        "manager",
+        "management",
+        "euro",
+        "dollar",
+        "laravel",
+        "money",
+        "currency",
+        "financials",
+        "financial",
+        "budgets",
+        "administration",
+        "tool",
+        "tooling",
+        "help",
+        "helper",
+        "assistant",
+        "planning",
+        "organizing",
+        "bills",
+        "personal finance",
+        "budgets",
+        "budgeting",
+        "budgeting tool",
+        "budgeting application",
+        "transactions",
+        "self hosted",
+        "self-hosted",
+        "transfers",
+        "management"
     ],
-    "license": "MIT",
+    "license": "AGPL-3.0-or-later",
+    "homepage": "https://github.com/firefly-iii/firefly-iii",
+    "type": "project",
+    "readme": "readme.md",
+    "authors": [
+        {
+            "name": "James Cole",
+            "email": "thegrumpydictator@gmail.com",
+            "homepage": "https://github.com/firefly-iii",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "thegrumpydictator@gmail.com",
+        "issues": "https://github.com/firefly-iii/firefly-iii/issues",
+        "forum": "https://reddit.com/r/FireflyIII",
+        "source": "https://github.com/firefly-iii/bunq-importer",
+        "docs": "https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/"
+    },
     "require": {
         "php": "^7.3",
         "bunq/sdk_php": "^1.13",
         "fideloper/proxy": "^4.0",
-        "firefly-iii/api-support-classes": "@dev",
+        "firefly-iii/api-support-classes": "dev-master",
         "guzzlehttp/guzzle": "^6.5",
         "laravel/framework": "^6.2",
         "rcrowe/twigbridge": "^0.11.3",
@@ -29,13 +84,6 @@
         "nunomaduro/collision": "^3.0",
         "phpunit/phpunit": "^8.0"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "/sites/FF3/support/api-support-classes",
-            "symlink": true
-        }
-    ],
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",

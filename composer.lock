@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9643b1ce287678cc1151f6338a068141",
+    "content-hash": "14d77bace8b232a605c435e67d63d116",
     "packages": [
         {
             "name": "bunq/sdk_php",
@@ -370,8 +370,14 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "/sites/FF3/support/api-support-classes",
+                "url": "https://github.com/JC5/api-support-classes.git",
                 "reference": "0ccd0d18f9950a8d70ff32bae0e857235bfb07a1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JC5/api-support-classes/zipball/0ccd0d18f9950a8d70ff32bae0e857235bfb07a1",
+                "reference": "0ccd0d18f9950a8d70ff32bae0e857235bfb07a1",
+                "shasum": ""
             },
             "require": {
                 "ext-json": "*",
@@ -394,22 +400,7 @@
                     "GrumpyDictator\\FFIIIApiSupport\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "GrumpyDictator\\FFIIIApiSupport\\": "tests"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ],
-                "check-style": [
-                    "phpcs src tests"
-                ],
-                "fix-style": [
-                    "phpcbf src tests"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "AGPL-3.0-or-later"
             ],
