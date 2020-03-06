@@ -43,19 +43,19 @@
                              aria-valuemax="100" style="width: 100%"></div>
                     </div>
                     <download-messages
-                            :messages="this.messages"
-                            :warnings="this.warnings"
-                            :errors="this.errors"
+                        :messages="this.messages"
+                        :warnings="this.warnings"
+                        :errors="this.errors"
                     ></download-messages>
                 </div>
                 <div class="card-body" v-if="'job_done' === this.status ">
                     <p>
-                        If errors, messages and warnings is zero, auto redirect.
+                        If errors, messages and warnings is zero, auto redirect. Otherwise button.
                     </p>
                     <download-messages
-                            :messages="this.messages"
-                            :warnings="this.warnings"
-                            :errors="this.errors"
+                        :messages="this.messages"
+                        :warnings="this.warnings"
+                        :errors="this.errors"
                     ></download-messages>
                 </div>
                 <div class="card-body" v-if="'error' === this.status && true === this.triedToStart">
@@ -63,9 +63,9 @@
                         The job could not be started or failed due to an error. Please check the log files. Sorry about this :(.
                     </p>
                     <download-messages
-                            :messages="this.messages"
-                            :warnings="this.warnings"
-                            :errors="this.errors"
+                        :messages="this.messages"
+                        :warnings="this.warnings"
+                        :errors="this.errors"
                     ></download-messages>
                 </div>
             </div>
@@ -116,7 +116,13 @@
                     }
                     if ('job_done' === this.status) {
                         console.log('Job is done!');
-                        window.location = mappingUri;
+                        if (
+                            this.warnings.length === 0 &&
+                            this.errors.length === 0
+                        ) {
+                            window.location = mappingUri;
+                            return;
+                        }
                         return;
                     }
 

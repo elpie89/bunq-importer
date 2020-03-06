@@ -118,10 +118,14 @@ class RoutineManager
     public function start(): void
     {
         Log::debug(sprintf('Now in %s', __METHOD__));
-
         // download and store transactions from bunq.
-        // TODO catch errors. Make sure that messages are created.
-        $transactions = $this->paymentList->getPaymentList();
+        try {
+            $transactions = $this->paymentList->getPaymentList();
+        } catch(ImportException $e) {
+            Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
+        }
+
 
         $count = count($transactions);
         $this->mergeMessages($count);

@@ -51,6 +51,9 @@ class ConfigurationController extends Controller
         $this->middleware(ConfigComplete::class)->except('download');
     }
 
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function download() {
         // do something
         $config = Configuration::fromArray(session()->get(Constants::CONFIGURATION))->toArray();
@@ -77,7 +80,7 @@ class ConfigurationController extends Controller
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
         $mainTitle = 'Import routine';
-        $subTitle  = 'Configure your CSV file import';
+        $subTitle  = 'Configure your bunq file import';
         //$accounts  = [];
 
         $configuration = Configuration::fromArray([]);

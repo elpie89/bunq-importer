@@ -51,7 +51,7 @@
                                             <label class="form-check-label" for="accounts_{{ combinedAccount.id }}">{{ combinedAccount.description }}
                                                 {% if '' != combinedAccount.iban %} <small>({{ combinedAccount.iban }})</small>{% endif %}
                                                 {% if 'CANCELLED' == combinedAccount.status %}
-                                                    <br/><span class="text-warning">You cannot import from a closed account.</span>
+                                                    <br/><span class="text-warning">You cannot import (yet) from a closed account.</span>
                                                 {% endif %}
                                                 {% if 'CANCELLED' != combinedAccount.status and null == combinedAccount.ff3_id %}
                                                     <br/><span class="text-warning">You have no Firefly III asset account with this IBAN and currency.</span>

@@ -28,6 +28,7 @@ use App\Services\Configuration\Configuration;
 use App\Services\Sync\JobStatus\ProgressInformation;
 use bunq\Model\Generated\Endpoint\Payment as BunqPayment;
 use Carbon\Carbon;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Log;
 use Storage;
 
@@ -69,9 +70,6 @@ class PaymentList
     }
 
     /**
-     *
-     * @throws ImportException
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getPaymentList(): array
     {
@@ -79,17 +77,30 @@ class PaymentList
 
         if ($this->hasDownload()) {
             Log::info('Already downloaded content for this job. Return it.');
+            $this->addMessage(0, 'Already had data. This is not a problem though.');
 
             return $this->getDownload();
         }
 
         $return = [];
-        // todo test what happens if we forget this
-        ApiContextManager::getApiContext();
+        try {
+            ApiContextManager::getApiContext();
+        } catch (ImportException $e) {
+            $this->addError(0, $e->getMessage());
+
+            return [];
+        }
 
         foreach (array_keys($this->configuration->getAccounts()) as $bunqAccountId) {
-            $bunqAccountId          = (int)$bunqAccountId;
-            $return[$bunqAccountId] = $this->getForAccount($bunqAccountId);
+            $bunqAccountId = (int)$bunqAccountId;
+            try {
+
+                $return[$bunqAccountId] = $this->getForAccount($bunqAccountId);
+            } catch (ImportException $e) {
+                Log::error($e->getMessage());
+                Log::error($e->getTraceAsString());
+                $this->addError(0, $e->getMessage());
+            }
         }
 
         // store the result somewhere so it can be processed easily.
@@ -104,16 +115,20 @@ class PaymentList
     public function setDownloadIdentifier(string $downloadIdentifier): void
     {
         $this->downloadIdentifier = $downloadIdentifier;
+        $this->identifier         = $downloadIdentifier;
     }
 
     /**
      * @return array
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     private function getDownload(): array
     {
-        $disk    = Storage::disk('downloads');
-        $content = $disk->get($this->downloadIdentifier);
+        $disk = Storage::disk('downloads');
+        try {
+            $content = $disk->get($this->downloadIdentifier);
+        } catch (FileNotFoundException $e) {
+            $content = [];
+        }
 
         return json_decode($content, true, 512, JSON_THROW_ON_ERROR);
     }
@@ -143,9 +158,9 @@ class PaymentList
             /** @var Payment $paymentRequest */
             $paymentRequest = app(Payment::class);
             //$params         = ['count' => 197, 'older_id' => $olderId];
-            $params         = ['count' => 7, 'older_id' => $olderId];
-            $response       = $paymentRequest->listing($bunqAccountId, $params);
-            $pagination     = $response->getPagination();
+            $params     = ['count' => 197, 'older_id' => $olderId];
+            $response   = $paymentRequest->listing($bunqAccountId, $params);
+            $pagination = $response->getPagination();
             Log::debug('Params for the request to bunq are: ', $params);
 
             /*
@@ -226,7 +241,7 @@ class PaymentList
 
             return null;
         }
-        if(null !== $this->notAfter && $created->gte($this->notAfter)) {
+        if (null !== $this->notAfter && $created->gte($this->notAfter)) {
             Log::info(
                 sprintf(
                     'Skip transaction because %s is after %s',
@@ -267,7 +282,7 @@ class PaymentList
         $transaction['counter_party']['display_name'] = $counterParty->getDisplayName();
         $transaction['counter_party']['nick_name']    = $counterParty->getLabelUser()->getDisplayName();
         $transaction['counter_party']['country']      = $counterParty->getCountry();
-        if('' === $transaction['description']) {
+        if ('' === $transaction['description']) {
             $transaction['description'] = '(empty description)';
         }
 
@@ -288,7 +303,6 @@ class PaymentList
     private function storeDownload(array $data): void
     {
         $disk = Storage::disk('downloads');
-
 
 
         $disk->put($this->downloadIdentifier, json_encode($data, JSON_THROW_ON_ERROR, 512));
