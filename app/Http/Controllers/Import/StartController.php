@@ -36,7 +36,7 @@ class StartController extends Controller
     public function __construct()
     {
         parent::__construct();
-        app('view')->share('pageTitle', 'Import');
+        app('view')->share('pageTitle', 'Import from bunq.');
     }
 
     /**
@@ -44,7 +44,7 @@ class StartController extends Controller
      */
     public function index()
     {
-        $mainTitle = 'Import routine';
+        $mainTitle = 'Import from bunq';
         $subTitle  = 'Start page and instructions';
 
         return view('import.start.index', compact('mainTitle', 'subTitle'));

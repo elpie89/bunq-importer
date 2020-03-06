@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header">Download from bunq status windows</div>
+                <div class="card-header">Status window</div>
                 <div class="card-body" v-if="'waiting_to_start' === this.status && false === this.triedToStart">
                     <p>
                         The tool is ready to download your transactions from bunq. Please wait...
@@ -36,7 +36,7 @@
                 </div>
                 <div class="card-body" v-if="'job_running' === this.status">
                     <p>
-                        Download is in progress, please wait.
+                        Download is in progress, please wait...
                     </p>
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0"
@@ -50,7 +50,8 @@
                 </div>
                 <div class="card-body" v-if="'job_done' === this.status ">
                     <p>
-                        If errors, messages and warnings is zero, auto redirect. Otherwise button.
+                        If any errors occurred, please read them below. If no errors or warnings appear
+                        this page will redirect you in a moment.
                     </p>
                     <download-messages
                         :messages="this.messages"

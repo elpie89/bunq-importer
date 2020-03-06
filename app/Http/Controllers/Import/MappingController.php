@@ -37,6 +37,15 @@ use Storage;
 class MappingController extends Controller
 {
     /**
+     * MappingController constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        app('view')->share('pageTitle', 'Map your bunq data to Firefly III');
+    }
+
+    /**
      *
      * @throws \GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException
      */

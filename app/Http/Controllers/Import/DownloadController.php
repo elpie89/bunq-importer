@@ -39,14 +39,22 @@ use Log;
  */
 class DownloadController extends Controller
 {
+    /**
+     * DownloadController constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        app('view')->share('pageTitle', 'Download transactions from bunq');
+    }
 
     /**
      *
      */
     public function index()
     {
-        $mainTitle = 'Download transactions';
-        $subTitle  = 'Connect to bunq and download your data';
+        $mainTitle = 'Downloading transactions...';
+        $subTitle  = 'Connecting to bunq and downloading your data...';
 
         // job ID may be in session:
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
@@ -56,7 +64,7 @@ class DownloadController extends Controller
         }
         if (null === $downloadIdentifier) {
             // create a new import job:
-            $routine    = new RoutineManager();
+            $routine            = new RoutineManager();
             $downloadIdentifier = $routine->getDownloadIdentifier();
         }
 
@@ -76,7 +84,7 @@ class DownloadController extends Controller
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
         $downloadIdentifier = $request->get('downloadIdentifier');
-        $routine    = new RoutineManager($downloadIdentifier);
+        $routine            = new RoutineManager($downloadIdentifier);
 
         // store identifier in session so the status can get it.
         session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $downloadIdentifier);

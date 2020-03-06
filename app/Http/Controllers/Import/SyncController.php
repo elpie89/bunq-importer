@@ -41,13 +41,21 @@ use Log;
 class SyncController extends Controller
 {
     /**
+     * SyncController constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        app('view')->share('pageTitle', 'Send data to Firefly III');
+    }
+    /**
      *
      */
     public function index()
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
-        $mainTitle = 'Sync transactions';
-        $subTitle  = 'sync sync sync';
+        $mainTitle = 'Send data to Firefly III';
+        $subTitle  = 'After download, comes import.';
 
         // get download job ID so we have the data to send to FF3
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);

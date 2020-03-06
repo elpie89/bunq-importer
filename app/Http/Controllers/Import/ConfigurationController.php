@@ -79,8 +79,8 @@ class ConfigurationController extends Controller
     public function index()
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
-        $mainTitle = 'Import routine';
-        $subTitle  = 'Configure your bunq file import';
+        $mainTitle = 'Import from bunq';
+        $subTitle  = 'Configure your bunq import';
 
         $configuration = Configuration::fromArray([]);
         if (session()->has(Constants::CONFIGURATION)) {

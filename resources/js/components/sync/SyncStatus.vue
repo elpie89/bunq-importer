@@ -23,12 +23,13 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header">Import bunq into FF3 status</div>
+                <div class="card-header">Firefly III status window</div>
                 <div class="card-body" v-if="'waiting_to_start' === this.status && false === this.triedToStart">
                     <p>
-                        The tool is ready to import your data. Press "start job" to start.
+                        The tool is ready to import your data into Firefly III. Press "start job" to start.
                         <a :href="this.downloadUri" title="Download configuration file.">
-                            You can download a configuration file of your import</a>, so you can make a quick start the next time you import.
+                            You can download a configuration file of your import</a>, so you can make a
+                        quick start the next time you import.
                     </p>
                     <p>
                         <button
@@ -38,12 +39,13 @@
                     </p>
                 </div>
                 <div class="card-body" v-if="'waiting_to_start' === this.status && true === this.triedToStart">
-                    <p>Waiting for the job to start..
+                    <p>
+                        Waiting for the import to start..
                     </p>
                 </div>
                 <div class="card-body" v-if="'job_running' === this.status">
                     <p>
-                        Job is running, please wait.
+                        Import is running, please wait.
                     </p>
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0"
