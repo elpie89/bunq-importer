@@ -93,18 +93,19 @@ class PaymentList
 
             return [];
         }
-
+        $totalCount = 0;
         foreach (array_keys($this->configuration->getAccounts()) as $bunqAccountId) {
             $bunqAccountId = (int)$bunqAccountId;
             try {
                 $return[$bunqAccountId] = $this->getForAccount($bunqAccountId);
+                $totalCount             += count($return[$bunqAccountId]);
             } catch (ImportException $e) {
                 Log::error($e->getMessage());
                 Log::error($e->getTraceAsString());
                 $this->addError(0, $e->getMessage());
             }
         }
-
+        Log::notice(sprintf('Downloaded a total of %d transactions from bunq.', $totalCount));
         // store the result somewhere so it can be processed easily.
         $this->storeDownload($return);
 
@@ -162,9 +163,9 @@ class PaymentList
              */
             /** @var Payment $paymentRequest */
             $paymentRequest = app(Payment::class);
-            $params     = ['count' => 197, 'older_id' => $olderId];
-            $response   = $paymentRequest->listing($bunqAccountId, $params);
-            $pagination = $response->getPagination();
+            $params         = ['count' => 197, 'older_id' => $olderId];
+            $response       = $paymentRequest->listing($bunqAccountId, $params);
+            $pagination     = $response->getPagination();
             Log::debug('Params for the request to bunq are: ', $params);
 
             /*
@@ -210,7 +211,7 @@ class PaymentList
             sleep(2);
         }
         // store newest and oldest tranasction ID to be used later:
-        Log::info(sprintf('Downloaded and parsed %d transactions from bunq.', count($return)));
+        Log::info(sprintf('Downloaded and parsed %d transactions from bunq (from this account).', count($return)));
 
         return $return;
     }

@@ -44,6 +44,7 @@ class ParseBunqDownload
     {
         $disk   = Storage::disk('downloads');
         $result = [];
+        $count  = 0;
         if ($disk->exists($downloadIdentifier)) {
             try {
                 $this->addMessage(0, 'Decoded bunq download.');
@@ -52,7 +53,11 @@ class ParseBunqDownload
                 $this->addError(0, 'Could not decode bunq download.');
             }
         }
-        Log::debug(sprintf('Parsed %d bunq account transactions.', count($result, COUNT_RECURSIVE)));
+        foreach($result as $transactions) {
+            $count += count($transactions);
+        }
+
+        Log::debug(sprintf('Parsed %d bunq account transactions.', $count));
 
         return $result;
     }

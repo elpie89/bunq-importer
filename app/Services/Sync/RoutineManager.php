@@ -94,7 +94,7 @@ class RoutineManager
      *
      * @param null|string $syncIdentifier
      */
-    public function __construct(?string $syncIdentifier)
+    public function __construct(?string $syncIdentifier = null)
     {
         Log::debug('Constructed RoutineManager for sync');
 

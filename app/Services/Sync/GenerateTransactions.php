@@ -25,6 +25,8 @@ namespace App\Services\Sync;
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
 use App\Services\Sync\JobStatus\ProgressInformation;
+use GrumpyDictator\FFIIIApiSupport\Request\GetAccountRequest;
+use GrumpyDictator\FFIIIApiSupport\Response\GetAccountResponse;
 use Log;
 
 /**
@@ -49,6 +51,7 @@ class GenerateTransactions
         /** @var array $entry */
         foreach ($bunq as $bunqAccountId => $entries) {
             $bunqAccountId = (int)$bunqAccountId;
+            Log::debug(sprintf('Going to parse account #%d', $bunqAccountId));
             foreach ($entries as $entry) {
                 $return[] = $this->generateTransaction($bunqAccountId, $entry);
                 // TODO error handling at this point.
@@ -77,7 +80,6 @@ class GenerateTransactions
      */
     private function generateTransaction(int $bunqAccountId, array $entry): array
     {
-
         $return = [
             'apply_rules'             => $this->configuration->isRules(),
             'error_if_duplicate_hash' => true,
@@ -106,9 +108,8 @@ class GenerateTransactions
             $return['transactions'][0]['source_name'] = $entry['counter_party']['display_name'];
 
             $mappedId = $this->getMappedId($entry['counter_party']['display_name'], (string)$entry['counter_party']['iban']);
-            if (null !== $mappedId) {
-                $mappedType = $this->getMappedType($mappedId);
-
+            if (null !== $mappedId && 0 !== $mappedId) {
+                $mappedType                             = $this->getMappedType($mappedId);
                 $return['transactions'][0]['type']      = $this->getTransactionType($mappedType, 'asset');
                 $return['transactions'][0]['source_id'] = $mappedId;
                 unset($return['transactions'][0]['source_iban'], $return['transactions'][0]['source_name']);
@@ -129,7 +130,7 @@ class GenerateTransactions
             $return['transactions'][0]['internal_reference'] = $bunqAccountId;
 
             $mappedId = $this->getMappedId($entry['counter_party']['display_name'], (string)$entry['counter_party']['iban']);
-            if (null !== $mappedId) {
+            if (null !== $mappedId && 0 !== $mappedId) {
                 $return['transactions'][0]['destination_id'] = $mappedId;
                 // source is asset, destination is ??, set the transaction type:
                 $mappedType = $this->getMappedType($mappedId);
@@ -138,8 +139,30 @@ class GenerateTransactions
                 unset($return['transactions'][0]['destination_iban'], $return['transactions'][0]['destination_name']);
             }
         }
+        Log::debug(sprintf('Parsed bunq transaction #%d', $entry['id']));
 
         return $return;
+    }
+
+    /**
+     * @param int $accountId
+     *
+     * @return string
+     */
+    private function getAccountType(int $accountId): string
+    {
+        $uri   = (string)config('bunq.uri');
+        $token = (string)config('bunq.access_token');
+        Log::debug(sprintf('Going to download account #%d', $accountId));
+        $request = new GetAccountRequest($uri, $token);
+        $request->setId($accountId);
+        /** @var GetAccountResponse $result */
+        $result = $request->get();
+        $type   = $result->getAccount()->type;
+
+        Log::debug(sprintf('Discovered that account #%d is of type "%s"', $accountId, $type));
+
+        return $type;
     }
 
     /**
@@ -167,7 +190,12 @@ class GenerateTransactions
     {
         if (!isset($this->configuration->getAccountTypes()[$mappedId])) {
             Log::warning(sprintf('Cannot find account type for Firefly III account #%d.', $mappedId));
-            // TODO contact Firefly III to get it.
+            $accountType             = $this->getAccountType($mappedId);
+            $accountTypes            = $this->configuration->getAccountTypes();
+            $accountTypes[$mappedId] = $accountType;
+            $this->configuration->setAccountTypes($accountTypes);
+
+            return $accountType;
         }
 
         return $this->configuration->getAccountTypes()[$mappedId] ?? 'expense';
