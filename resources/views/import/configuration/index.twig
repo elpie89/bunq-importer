@@ -41,25 +41,30 @@
                                 <div class="col-sm-9">
                                     {% for combinedAccount in combinedAccounts %}
                                         <div class="form-check">
-                                            {% if null == combinedAccount.ff3_id %}
-                                                <input class="form-check-input" id="accounts_{{ combinedAccount.id }}" type="checkbox" name="accounts[{{ combinedAccount.id }}]"
-                                                       value="0" disabled aria-describedby="accountsHelp"/>
-                                            {% else %}
-                                                <input class="form-check-input" id="accounts_{{ combinedAccount.id }}" type="checkbox" name="accounts[{{ combinedAccount.id }}]"
-                                                       value="{{ combinedAccount.ff3_id }}" aria-describedby="accountsHelp"/>
-                                            {% endif %}
-                                            <label class="form-check-label" for="accounts_{{ combinedAccount.id }}">{{ combinedAccount.description }}
+                                            <input class="form-check-input" id="do_import_{{ combinedAccount.id }}" type="checkbox"
+                                                   name="do_import[{{ combinedAccount.id }}]"
+                                                   value="1" aria-describedby="accountsHelp"/>
+                                            <label class="form-check-label" for="do_import_{{ combinedAccount.id }}">"{{ combinedAccount.description }}"
                                                 {% if '' != combinedAccount.iban %} <small>({{ combinedAccount.iban }})</small>{% endif %}
+                                                will be imported in:
                                                 {% if 'CANCELLED' == combinedAccount.status %}
-                                                    <br/><span class="text-warning">You cannot import (yet) from a closed account.</span>
+                                                    <select class="form-control form-control-sm" name="accounts[{{ combinedAccount.id }}]">
+                                                        {% for ff3Account in ff3Accounts %}
+                                                            <option value="{{ ff3Account.id }}"
+                                                                label="{{ ff3Account.name }}{% if ff3Account.iban %} ({{ ff3Account.iban }}){% endif %}">
+                                                                {{ ff3Account.name }}{% if ff3Account.iban %} ({{ ff3Account.iban }}){% endif %}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
                                                 {% endif %}
                                                 {% if 'CANCELLED' != combinedAccount.status and null == combinedAccount.ff3_id %}
                                                     <br/><span class="text-warning">You have no Firefly III asset account with this IBAN and currency.</span>
                                                 {% endif %}
                                                 {% if 'ACTIVE' == combinedAccount.status and null != combinedAccount.ff3_id %}
                                                     <br/><span class="text-success">This bunq account will be imported into <a
-                                                            href="{{ combinedAccount.ff3_uri }}"
-                                                            title="{{ combinedAccount.ff3_name }}">{{ combinedAccount.ff3_name }}</a>.</span>
+                                                        href="{{ combinedAccount.ff3_uri }}"
+                                                        title="{{ combinedAccount.ff3_name }}">{{ combinedAccount.ff3_name }}</a>.</span>
+                                                    <input type="hidden" name="accounts[{{ combinedAccount.id }}]" value="{{ combinedAccount.ff3_id }}" />
                                                 {% endif %}
                                             </label>
                                         </div>
@@ -109,9 +114,9 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <input
-                                            name="date_range_number"
-                                            id="date_range_number"
-                                            class="form-control" value="{{ configuration.getDateRangeNumber }}" type="number" step="1" min="1" max="365">
+                                        name="date_range_number"
+                                        id="date_range_number"
+                                        class="form-control" value="{{ configuration.getDateRangeNumber }}" type="number" step="1" min="1" max="365">
                                 </div>
                                 <div class="col-sm-6">
                                     <select class="form-control"

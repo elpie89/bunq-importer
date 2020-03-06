@@ -131,9 +131,6 @@ class RoutineManager
         $this->mergeMessages($count);
         $this->mergeWarnings($count);
         $this->mergeErrors($count);
-
-        // TODO this sleep message to make sure we see any messages before we continue. remove me.
-        sleep(5);
     }
 
     /**
@@ -166,20 +163,10 @@ class RoutineManager
      */
     private function mergeMessages(int $count): void
     {
-        //$one   = $this->csvFileProcessor->getMessages();
-        //$two   = $this->lineProcessor->getMessages();
-        //$three = $this->columnValueConverter->getMessages();
-        //$four  = $this->pseudoTransactionProcessor->getMessages();
-        //$five  = $this->apiSubmitter->getMessages();
+        $one   = $this->paymentList->getMessages();
         $total = [];
         for ($i = 0; $i < $count; $i++) {
-            $total[$i] = array_merge(
-                $one[$i] ?? [],
-                $two[$i] ?? [],
-                $three[$i] ?? [],
-                $four[$i] ?? [],
-                $five[$i] ?? []
-            );
+            $total[$i] = array_merge($one[$i] ?? []);
         }
 
         $this->allMessages = $total;
@@ -190,20 +177,10 @@ class RoutineManager
      */
     private function mergeWarnings(int $count): void
     {
-//        $one   = $this->csvFileProcessor->getWarnings();
-//        $two   = $this->lineProcessor->getWarnings();
-//        $three = $this->columnValueConverter->getWarnings();
-//        $four  = $this->pseudoTransactionProcessor->getWarnings();
-//        $five  = $this->apiSubmitter->getWarnings();
+        $one   = $this->paymentList->getWarnings();
         $total = [];
         for ($i = 0; $i < $count; $i++) {
-            $total[$i] = array_merge(
-                $one[$i] ?? [],
-                $two[$i] ?? [],
-                $three[$i] ?? [],
-                $four[$i] ?? [],
-                $five[$i] ?? []
-            );
+            $total[$i] = array_merge($one[$i] ?? []);
         }
 
         $this->allWarnings = $total;
@@ -215,21 +192,12 @@ class RoutineManager
      */
     private function mergeErrors(int $count): void
     {
-//        $one   = $this->csvFileProcessor->getErrors();
-//        $two   = $this->lineProcessor->getErrors();
-//        $three = $this->columnValueConverter->getErrors();
-//        $four  = $this->pseudoTransactionProcessor->getErrors();
-//        $five  = $this->apiSubmitter->getErrors();
+        $one   = $this->paymentList->getErrors();
         $total = [];
         for ($i = 0; $i < $count; $i++) {
-            $total[$i] = array_merge(
-                $one[$i] ?? [],
-                $two[$i] ?? [],
-                $three[$i] ?? [],
-                $four[$i] ?? [],
-                $five[$i] ?? []
-            );
+            $total[$i] = array_merge($one[$i] ?? []);
         }
+
 
         $this->allErrors = $total;
     }

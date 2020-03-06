@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use FireflyIII\Models\TransactionGroup;
 use Illuminate\Validation\Validator;
 
 /**
@@ -47,12 +46,10 @@ class ConfigurationPostRequest extends Request
     public function getAll(): array
     {
         // parse entire config file.
-        $mapping = $this->get('mapping') ? json_decode(base64_decode($this->get('mapping')), true, 512, JSON_THROW_ON_ERROR) : null;
-        /*
-         *  $object                  = new self;
-        $object->accounts        = $data['accounts'] ?? [];
-         */
-        $result = [
+        $mapping  = $this->get('mapping') ? json_decode(base64_decode($this->get('mapping')), true, 512, JSON_THROW_ON_ERROR) : null;
+        $doImport = $this->get('do_import') ?? [];
+        $result   = [
+            'do_import'         => $doImport,
             'rules'             => $this->convertBoolean($this->get('rules')),
             'skip_form'         => $this->convertBoolean($this->get('skip_form')),
             'date_range'        => $this->string('date_range'),
@@ -80,9 +77,10 @@ class ConfigurationPostRequest extends Request
             'date_range'        => 'required|in:all,partial,range',
             'date_range_number' => 'numeric|between:1,365',
             'date_range_unit'   => 'required|in:d,w,m,y',
-            'date_not_before'  => 'date|nullable',
+            'date_not_before'   => 'date|nullable',
             'date_not_after'    => 'date|nullable',
-            'accounts.*'        => 'required|numeric',
+            'accounts.*'        => 'numeric',
+            'do_import.*'       => 'numeric',
         ];
 
         return $rules;
@@ -100,11 +98,11 @@ class ConfigurationPostRequest extends Request
         $validator->after(
             static function (Validator $validator) {
                 $data = $validator->getData();
-                if(!isset($data['accounts'])) {
-                    $validator->errors()->add(
-                        'accounts', 'Select at least one bunq account to import from.'
-                    );
-                }
+                //                if (!isset($data['accounts'])) {
+                //                    $validator->errors()->add(
+                //                        'accounts', 'Select at least one bunq account to import from.'
+                //                    );
+                //                }
             }
         );
     }

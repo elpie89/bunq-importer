@@ -67,13 +67,14 @@ class PaymentList
         if (null !== $this->notAfter) {
             $this->notAfter->endOfDay();
         }
+        Log::debug('Created Requests\\PaymentList');
     }
 
     /**
      */
     public function getPaymentList(): array
     {
-        Log::debug('Start of getPaymentList()');
+        Log::debug('Start of PaymentList::getPaymentList()');
 
         if ($this->hasDownload()) {
             Log::info('Already downloaded content for this job. Return it.');
@@ -86,6 +87,8 @@ class PaymentList
         try {
             ApiContextManager::getApiContext();
         } catch (ImportException $e) {
+            Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
             $this->addError(0, $e->getMessage());
 
             return [];
@@ -94,7 +97,6 @@ class PaymentList
         foreach (array_keys($this->configuration->getAccounts()) as $bunqAccountId) {
             $bunqAccountId = (int)$bunqAccountId;
             try {
-
                 $return[$bunqAccountId] = $this->getForAccount($bunqAccountId);
             } catch (ImportException $e) {
                 Log::error($e->getMessage());
@@ -127,6 +129,9 @@ class PaymentList
         try {
             $content = $disk->get($this->downloadIdentifier);
         } catch (FileNotFoundException $e) {
+            Log::error('Could not store download');
+            Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
             $content = [];
         }
 
@@ -157,7 +162,6 @@ class PaymentList
              */
             /** @var Payment $paymentRequest */
             $paymentRequest = app(Payment::class);
-            //$params         = ['count' => 197, 'older_id' => $olderId];
             $params     = ['count' => 197, 'older_id' => $olderId];
             $response   = $paymentRequest->listing($bunqAccountId, $params);
             $pagination = $response->getPagination();
@@ -253,8 +257,6 @@ class PaymentList
             return null;
         }
 
-
-        //Log::debug(sprintf('Processing bunq payment: %s', str_replace("\n", ' ', print_r($payment, true))));
         $transaction                                  = [
             // TODO country, bunqMe, isLight, swiftBic, swiftAccountNumber, transferwiseAccountNumber, transferwiseBankCode
             // TODO merchantCategoryCode, bunqtoStatus, bunqtoSubStatus, bunqtoExpiry, bunqtoTimeResponded
@@ -303,8 +305,6 @@ class PaymentList
     private function storeDownload(array $data): void
     {
         $disk = Storage::disk('downloads');
-
-
         $disk->put($this->downloadIdentifier, json_encode($data, JSON_THROW_ON_ERROR, 512));
     }
 

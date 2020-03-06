@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
+use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -46,5 +47,26 @@ class Handler extends ExceptionHandler
         = [
             //
         ];
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Exception               $e
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function render($request, Exception $e)
+    {
+        $data = [
+                    'message' => $e->getMessage(),
+                    'code'    => 500,
+                    'trace' => $e->getTraceAsString(),
+        ];
+
+        // Build an Illuminate\Response but use our own template engine
+        //return 'jell';
+        return response(\Twig::render('errors/500', $data), 500);
+    }
 
 }

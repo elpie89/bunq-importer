@@ -55,7 +55,7 @@ class TokenController extends Controller
         }
 
         if (isset($result)) {
-            $minimum = config('csv_importer.minimum_version');
+            $minimum = config('bunq.minimum_version');
             $compare = version_compare($minimum, $result->version);
             if (1 === $compare) {
                 $errorMessage = sprintf('Your Firefly III version %s is below the minimum required version %s', $result->version, $minimum);

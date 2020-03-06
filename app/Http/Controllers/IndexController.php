@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ImportException;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\View\View;
 use Log;

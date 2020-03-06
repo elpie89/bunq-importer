@@ -55,6 +55,7 @@ class Payment
             $result = BunqPayment::listing($monetaryAccountId, $params, $customHeaders);
         } catch (Exception $e) {
             Log::error(sprintf('Exception: %s', $e->getMessage()));
+            Log::error($e->getTraceAsString());
             throw new ImportException($e->getMessage());
         }
 

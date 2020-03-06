@@ -35,35 +35,29 @@ class Configuration
     /** @var int */
     public const VERSION = 1;
     /** @var array */
+    private $accountTypes;
+    /** @var array */
     private $accounts;
+    /** @var string */
+    private $dateNotAfter;
+    /** @var string */
+    private $dateNotBefore;
+    /** @var string */
+    private $dateRange;
+    /** @var int */
+    private $dateRangeNumber;
+    /** @var string */
+    private $dateRangeUnit;
+    /** @var bool */
+    private $doMapping;
+    /** @var array */
+    private $mapping;
     /** @var bool */
     private $rules;
     /** @var bool */
     private $skipForm;
     /** @var int */
     private $version;
-    /** @var array */
-    private $mapping;
-    /** @var array */
-    private $accountTypes;
-
-    /** @var bool */
-    private $doMapping;
-
-    /** @var string */
-    private $dateRange;
-
-    /** @var int */
-    private $dateRangeNumber;
-
-    /** @var string */
-    private $dateRangeUnit;
-
-    /** @var string */
-    private $dateNotBefore;
-
-    /** @var string */
-    private $dateNotAfter;
 
     /**
      * Configuration constructor.
@@ -83,23 +77,6 @@ class Configuration
         $this->dateNotBefore   = '';
         $this->dateNotAfter    = '';
     }
-
-    /**
-     * @return array
-     */
-    public function getAccountTypes(): array
-    {
-        return $this->accountTypes;
-    }
-
-    /**
-     * @param array $accountTypes
-     */
-    public function setAccountTypes(array $accountTypes): void
-    {
-        $this->accountTypes = $accountTypes;
-    }
-
 
     /**
      * @param array $array
@@ -129,7 +106,6 @@ class Configuration
         return $object;
     }
 
-
     /**
      * @param array $data
      *
@@ -152,11 +128,11 @@ class Configuration
      */
     public static function fromRequest(array $array): self
     {
-        $object                  = new self;
-        $object->version         = self::VERSION;
-        $object->rules           = $array['rules'];
-        $object->skipForm        = $array['skip_form'];
-        $object->accounts        = $array['accounts'];
+        $object           = new self;
+        $object->version  = self::VERSION;
+        $object->rules    = $array['rules'];
+        $object->skipForm = $array['skip_form'];
+
         $object->mapping         = $array['mapping'];
         $object->accountTypes    = $array['account_types'] ?? [];
         $object->dateRange       = $array['date_range'];
@@ -165,6 +141,16 @@ class Configuration
         $object->dateNotBefore   = $array['date_not_before'];
         $object->dateNotAfter    = $array['date_not_after'];
         $object->doMapping       = $array['do_mapping'];
+
+        $doImport = $array['do_import'] ?? [];
+        $accounts = [];
+        foreach ($doImport as $bunqId => $selected) {
+            $selected = (int)$selected;
+            if (1 === $selected) {
+                $accounts[(int)$bunqId] = (int)($array['accounts'][$bunqId] ?? 0);
+            }
+        }
+        $object->accounts = $accounts;
 
         switch ($object->dateRange) {
             case 'all':
@@ -248,26 +234,59 @@ class Configuration
         return $object;
     }
 
+    /**
+     * @return array
+     */
+    public function getAccountTypes(): array
+    {
+        return $this->accountTypes;
+    }
+
+    /**
+     * @param array $accountTypes
+     */
+    public function setAccountTypes(array $accountTypes): void
+    {
+        $this->accountTypes = $accountTypes;
+    }
 
     /**
      * @return array
      */
-    public function toArray(): array
+    public function getAccounts(): array
     {
-        return [
-            'rules'             => $this->rules,
-            'skip_form'         => $this->skipForm,
-            'accounts'          => $this->accounts,
-            'version'           => $this->version,
-            'mapping'           => $this->mapping,
-            'account_types'     => $this->accountTypes,
-            'date_range'        => $this->dateRange,
-            'date_range_number' => $this->dateRangeNumber,
-            'date_range_unit'   => $this->dateRangeUnit,
-            'date_not_before'   => $this->dateNotBefore,
-            'date_not_after'    => $this->dateNotAfter,
-            'do_mapping'        => $this->doMapping,
-        ];
+        return $this->accounts;
+    }
+
+    /**
+     * @param array $accounts
+     */
+    public function setAccounts(array $accounts): void
+    {
+        $this->accounts = $accounts;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateNotAfter(): ?string
+    {
+        if (null === $this->dateNotAfter) {
+            return null;
+        }
+        if ('' === $this->dateNotAfter) {
+            return null;
+        }
+
+        return $this->dateNotAfter;
+    }
+
+    /**
+     * @param string $dateNotAfter
+     */
+    public function setDateNotAfter(string $dateNotAfter): void
+    {
+        $this->dateNotAfter = $dateNotAfter;
     }
 
     /**
@@ -296,40 +315,17 @@ class Configuration
     /**
      * @return string
      */
-    public function getDateNotAfter(): ?string
+    public function getDateRange(): string
     {
-        if (null === $this->dateNotAfter) {
-            return null;
-        }
-        if ('' === $this->dateNotAfter) {
-            return null;
-        }
-
-        return $this->dateNotAfter;
+        return $this->dateRange;
     }
 
     /**
-     * @param string $dateNotAfter
+     * @param string $dateRange
      */
-    public function setDateNotAfter(string $dateNotAfter): void
+    public function setDateRange(string $dateRange): void
     {
-        $this->dateNotAfter = $dateNotAfter;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDateRangeUnit(): string
-    {
-        return $this->dateRangeUnit;
-    }
-
-    /**
-     * @param string $dateRangeUnit
-     */
-    public function setDateRangeUnit(string $dateRangeUnit): void
-    {
-        $this->dateRangeUnit = $dateRangeUnit;
+        $this->dateRange = $dateRange;
     }
 
     /**
@@ -351,17 +347,17 @@ class Configuration
     /**
      * @return string
      */
-    public function getDateRange(): string
+    public function getDateRangeUnit(): string
     {
-        return $this->dateRange;
+        return $this->dateRangeUnit;
     }
 
     /**
-     * @param string $dateRange
+     * @param string $dateRangeUnit
      */
-    public function setDateRange(string $dateRange): void
+    public function setDateRangeUnit(string $dateRangeUnit): void
     {
-        $this->dateRange = $dateRange;
+        $this->dateRangeUnit = $dateRangeUnit;
     }
 
     /**
@@ -380,7 +376,6 @@ class Configuration
         $this->mapping = $mapping;
     }
 
-
     /**
      * @return bool
      */
@@ -388,7 +383,6 @@ class Configuration
     {
         return $this->doMapping;
     }
-
 
     /**
      * @return bool
@@ -409,17 +403,22 @@ class Configuration
     /**
      * @return array
      */
-    public function getAccounts(): array
+    public function toArray(): array
     {
-        return $this->accounts;
-    }
-
-    /**
-     * @param array $accounts
-     */
-    public function setAccounts(array $accounts): void
-    {
-        $this->accounts = $accounts;
+        return [
+            'rules'             => $this->rules,
+            'skip_form'         => $this->skipForm,
+            'accounts'          => $this->accounts,
+            'version'           => $this->version,
+            'mapping'           => $this->mapping,
+            'account_types'     => $this->accountTypes,
+            'date_range'        => $this->dateRange,
+            'date_range_number' => $this->dateRangeNumber,
+            'date_range_unit'   => $this->dateRangeUnit,
+            'date_not_before'   => $this->dateNotBefore,
+            'date_not_after'    => $this->dateNotAfter,
+            'do_mapping'        => $this->doMapping,
+        ];
     }
 
 

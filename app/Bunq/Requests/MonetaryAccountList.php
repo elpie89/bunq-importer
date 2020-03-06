@@ -24,12 +24,14 @@ declare(strict_types=1);
 namespace App\Bunq\Requests;
 
 use App\Exceptions\BunqImporterException;
+use App\Exceptions\ImportException;
 use bunq\Exception\BunqException;
 use bunq\Model\Core\BunqModel;
 use bunq\Model\Generated\Endpoint\MonetaryAccount as BunqMonetaryAccount;
 use bunq\Model\Generated\Endpoint\MonetaryAccountBank;
 use bunq\Model\Generated\Endpoint\MonetaryAccountSavings;
 use bunq\Model\Generated\Object\Pointer;
+use Log;
 
 /**
  * Class MonetaryAccount
@@ -45,16 +47,24 @@ class MonetaryAccountList
      * @param array $customHeaders
      *
      * @return array
+     * @throws ImportException
      */
     public function listing(array $params = null, array $customHeaders = null): array
     {
+        Log::debug('Now calling bunq listing.');
         $params        = $params ?? [];
         $customHeaders = $customHeaders ?? [];
         $listing       = BunqMonetaryAccount::listing($params, $customHeaders);
         $return        = [];
         /** @var BunqMonetaryAccount $entry */
         foreach ($listing->getValue() as $entry) {
-            $return[] = $this->processEntry($entry);
+            try {
+                $return[] = $this->processEntry($entry);
+            } catch (BunqImporterException $e) {
+                Log::error($e->getMessage());
+                Log::error($e->getTraceAsString());
+                throw new ImportException($e);
+            }
         }
 
         return $return;
@@ -92,7 +102,7 @@ class MonetaryAccountList
      * @param BunqMonetaryAccount $entry
      *
      * @return array
-     * @throws BunqImporterException
+     * @throws ImportException
      */
     private function processEntry(BunqMonetaryAccount $entry): array
     {
@@ -100,7 +110,7 @@ class MonetaryAccountList
         try {
             $object = $entry->getReferencedObject();
         } catch (BunqException $e) {
-            throw new BunqImporterException($e->getMessage());
+            throw new ImportException($e->getMessage());
         }
         switch (get_class($object)) {
             case MonetaryAccountBank::class:
@@ -121,7 +131,7 @@ class MonetaryAccountList
                 return $return;
                 break;
         }
-        throw new BunqImporterException(sprintf('Bunq monetary account is unexpectedly of type "%s".', get_class($object)));
+        throw new ImportException(sprintf('Bunq monetary account is unexpectedly of type "%s".', get_class($object)));
     }
 
 }

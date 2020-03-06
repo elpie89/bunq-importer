@@ -57,7 +57,7 @@ class ConfigurationController extends Controller
     public function download() {
         // do something
         $config = Configuration::fromArray(session()->get(Constants::CONFIGURATION))->toArray();
-        $result = json_encode($config, JSON_PRETTY_PRINT);
+        $result = json_encode($config, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT, 512);
 
         $response = response($result);
         $name     = sprintf('bunq_import_config_%s.json', date('Y-m-d'));
@@ -81,7 +81,6 @@ class ConfigurationController extends Controller
         Log::debug(sprintf('Now at %s', __METHOD__));
         $mainTitle = 'Import routine';
         $subTitle  = 'Configure your bunq file import';
-        //$accounts  = [];
 
         $configuration = Configuration::fromArray([]);
         if (session()->has(Constants::CONFIGURATION)) {
@@ -92,13 +91,12 @@ class ConfigurationController extends Controller
             // skipForm
             return redirect()->route('import.download.index');
         }
-
         // get list of asset accounts in Firefly III
         $uri     = (string)config('bunq.uri');
         $token   = (string)config('bunq.access_token');
         $request = new GetAccountsRequest($uri, $token);
         $request->setType(GetAccountsRequest::ASSET);
-        $response = $request->get();
+        $ff3Accounts = $request->get();
 
         // get the user's bunq accounts.
         ApiContextManager::getApiContext();
@@ -114,7 +112,7 @@ class ConfigurationController extends Controller
             $bunqAccount['ff3_iban']     = null;
             $bunqAccount['ff3_currency'] = null;
             /** @var Account $ff3Account */
-            foreach ($response as $ff3Account) {
+            foreach ($ff3Accounts as $ff3Account) {
                 if ($bunqAccount['currency'] === $ff3Account->currencyCode && $bunqAccount['iban'] === $ff3Account->iban
                     && 'CANCELLED' !== $bunqAccount['status']
                 ) {
@@ -128,14 +126,13 @@ class ConfigurationController extends Controller
             }
             $combinedAccounts[] = $bunqAccount;
         }
-        // update configuration with old values if present? TODO
 
         $mapping = '{}';
         if (null !== $configuration) {
             $mapping = base64_encode(json_encode($configuration->getMapping(), JSON_THROW_ON_ERROR, 512));
         }
 
-        return view('import.configuration.index', compact('mainTitle', 'subTitle', 'combinedAccounts', 'configuration', 'bunqAccounts', 'mapping'));
+        return view('import.configuration.index', compact('mainTitle', 'subTitle','ff3Accounts', 'combinedAccounts', 'configuration', 'bunqAccounts', 'mapping'));
     }
 
     /**
@@ -147,8 +144,10 @@ class ConfigurationController extends Controller
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
         // store config on drive.
+
         $fromRequest   = $request->getAll();
         $configuration = Configuration::fromRequest($fromRequest);
+        var_dump($configuration);exit;
         $config        = StorageService::storeContent(json_encode($configuration, JSON_THROW_ON_ERROR, 512));
 
         session()->put(Constants::CONFIGURATION, $configuration->toArray());
