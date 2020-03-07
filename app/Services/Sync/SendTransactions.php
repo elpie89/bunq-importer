@@ -92,7 +92,8 @@ class SendTransactions
             foreach($response->errors->getMessages() as $key => $errors) {
                 foreach($errors as $error) {
                     // +1 so the line numbers match.
-                    $this->addError($index+1, $error);
+                    $this->addError($index + 1, $error);
+                    Log::error(sprintf('Could not create transaction: %s', $error), $transaction);
                 }
             }
             return [];
@@ -100,7 +101,7 @@ class SendTransactions
         /** @var PostTransactionResponse $group */
         $group = $response->getTransactionGroup();
         if (null === $group) {
-            $this->addError($index, 'Group is unexpectedly NULL.');
+            $this->addError($index + 1, 'Group is unexpectedly NULL.');
 
             return [];
         }

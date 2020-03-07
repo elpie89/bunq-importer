@@ -54,8 +54,8 @@ class MappingController extends Controller
      */
     public function index()
     {
-        $mainTitle = 'Map date';
-        $subTitle  = 'Link to Firefly III data.';
+        $mainTitle = 'Map data';
+        $subTitle  = 'Link bunq information to Firefly III data.';
 
         $configuration = Configuration::fromArray([]);
         if (session()->has(Constants::CONFIGURATION)) {
@@ -115,8 +115,8 @@ class MappingController extends Controller
      */
     private function getFireflyIIIAccounts(): array
     {
-        $token   = config('bunq.access_token');
-        $uri     = config('bunq.uri');
+        $token   = (string)config('bunq.access_token');
+        $uri     = (string)config('bunq.uri');
         $request = new GetAccountsRequest($uri, $token);
         /** @var GetAccountsResponse $result */
         $result = $request->get();
@@ -153,10 +153,10 @@ class MappingController extends Controller
         /** @var array $account */
         foreach ($array as $account) {
             foreach ($account as $entry) {
-                if ('' === trim($entry['counter_party']['iban'])) {
+                if ('' === trim((string)$entry['counter_party']['iban'])) {
                     $opposing[] = trim($entry['counter_party']['display_name']);
                 }
-                if ('' !== trim($entry['counter_party']['iban'])) {
+                if ('' !== trim((string)$entry['counter_party']['iban'])) {
                     $opposing[] = sprintf('%s (%s)', trim($entry['counter_party']['display_name']), trim($entry['counter_party']['iban']));
                 }
             }

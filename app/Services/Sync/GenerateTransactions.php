@@ -181,8 +181,11 @@ class GenerateTransactions
         if ('' !== $iban) {
             $fullName = sprintf('%s (%s)', $name, $iban);
         }
+        if (isset($this->configuration->getMapping()[$fullName])) {
+            return (int)$this->configuration->getMapping()[$fullName];
+        }
 
-        return $this->configuration->getMapping()[$fullName] ?? null;
+        return null;
     }
 
     /**

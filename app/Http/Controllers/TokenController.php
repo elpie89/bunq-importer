@@ -46,8 +46,8 @@ class TokenController extends Controller
     public function doValidate(): JsonResponse
     {
         $response = ['result' => 'OK', 'message' => null];
-        $token    = config('bunq.access_token');
-        $uri      = config('bunq.uri');
+        $token    = (string)config('bunq.access_token');
+        $uri      = (string)config('bunq.uri');
         Log::debug(sprintf('Going to try and access %s', $uri));
         $request = new SystemInformationRequest($uri, $token);
         try {
