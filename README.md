@@ -109,7 +109,7 @@ Thank you for considering donating to Firefly III, and the bunq Importer.
 [![Requires PHP7.3][php-shield]][php-uri]
 
 [scrutinizer-shield]: https://img.shields.io/scrutinizer/g/firefly-iii/bunq-importer.svg?style=flat-square
-[scrutinizer-uri]: https://scrutinizer-ci.com/g/firefly-iii/bunq-importer/
+[scrutinizer-url]: https://scrutinizer-ci.com/g/firefly-iii/bunq-importer/
 [php-shield]: https://img.shields.io/badge/php-7.3-red.svg?style=flat-square
 [php-uri]: https://secure.php.net/downloads.php
 [packagist-shield]: https://img.shields.io/packagist/v/firefly-iii/bunq-importer.svg?style=flat-square
