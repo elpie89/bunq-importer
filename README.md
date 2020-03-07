@@ -85,7 +85,7 @@ For all other contributions, see below.
 
 ### Versioning
 
-The Firefly III CSV Importer uses [SemVer](https://semver.org/) for versioning. For the versions available, see [the tags](https://github.com/firefly-iii/csv-importer/tags) on this repository.
+The Firefly III bunq Importer uses [SemVer](https://semver.org/) for versioning. For the versions available, see [the tags](https://github.com/firefly-iii/bunq-importer/tags) on this repository.
 
 ### License
 
@@ -108,15 +108,15 @@ Thank you for considering donating to Firefly III, and the bunq Importer.
 [![Scrutinizer][scrutinizer-shield]][scrutinizer-url]
 [![Requires PHP7.3][php-shield]][php-uri]
 
-[scrutinizer-shield]: https://img.shields.io/scrutinizer/g/firefly-iii/csv-importer.svg?style=flat-square
-[scrutinizer-uri]: https://scrutinizer-ci.com/g/firefly-iii/csv-importer/
+[scrutinizer-shield]: https://img.shields.io/scrutinizer/g/firefly-iii/bunq-importer.svg?style=flat-square
+[scrutinizer-uri]: https://scrutinizer-ci.com/g/firefly-iii/bunq-importer/
 [php-shield]: https://img.shields.io/badge/php-7.3-red.svg?style=flat-square
 [php-uri]: https://secure.php.net/downloads.php
-[packagist-shield]: https://img.shields.io/packagist/v/firefly-iii/csv-importer.svg?style=flat-square
-[packagist-uri]: https://packagist.org/packages/firefly-iii/csv-importer
-[license-shield]: https://img.shields.io/github/license/firefly-iii/csv-importer.svg?style=flat-square
+[packagist-shield]: https://img.shields.io/packagist/v/firefly-iii/bunq-importer.svg?style=flat-square
+[packagist-uri]: https://packagist.org/packages/firefly-iii/bunq-importer
+[license-shield]: https://img.shields.io/github/license/firefly-iii/bunq-importer.svg?style=flat-square
 [license-uri]: https://www.gnu.org/licenses/agpl-3.0.html
-[stars-shield]: https://img.shields.io/github/stars/firefly-iii/csv-importer.svg?style=flat-square
-[stars-url]: https://github.com/firefly-iii/csv-importer/stargazers
+[stars-shield]: https://img.shields.io/github/stars/firefly-iii/bunq-importer.svg?style=flat-square
+[stars-url]: https://github.com/firefly-iii/bunq-importer/stargazers
 [donate-shield]: https://img.shields.io/badge/donate-%24%20%E2%82%AC-brightgreen?style=flat-square
 [donate-uri]: #support
