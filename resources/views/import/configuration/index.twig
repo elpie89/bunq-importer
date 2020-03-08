@@ -49,7 +49,7 @@
                                             <label class="form-check-label" for="do_import_{{ combinedAccount.id }}">"{{ combinedAccount.description }}"
                                                 {% if '' != combinedAccount.iban %} <small>({{ combinedAccount.iban }})</small>{% endif %}
                                                 will be imported in:
-                                                {% if 'CANCELLED' == combinedAccount.status %}
+                                                {% if 'CANCELLED' == combinedAccount.status or null == combinedAccount.ff3_id %}
                                                     <select class="form-control form-control-sm" name="accounts[{{ combinedAccount.id }}]">
                                                         {% for ff3Account in ff3Accounts %}
                                                             <option value="{{ ff3Account.id }}"
@@ -61,9 +61,7 @@
                                                         {% endfor %}
                                                     </select>
                                                 {% endif %}
-                                                {% if 'CANCELLED' != combinedAccount.status and null == combinedAccount.ff3_id %}
-                                                    <br/><span class="text-warning">You have no Firefly III asset account with this IBAN and currency.</span>
-                                                {% endif %}
+
                                                 {% if 'ACTIVE' == combinedAccount.status and null != combinedAccount.ff3_id %}
                                                     <br/><span class="text-success">This bunq account will be imported into <a
                                                         href="{{ combinedAccount.ff3_uri }}"
