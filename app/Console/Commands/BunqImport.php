@@ -78,7 +78,7 @@ class BunqImport extends Command
         }
 
 
-        $this->info(sprintf('Welcome to the Firefly III CSV importer, v%s', config('csv_importer.version')));
+        $this->info(sprintf('Welcome to the Firefly III bunq importer, v%s', config('bunq.version')));
         Log::debug(sprintf('Now in %s', __METHOD__));
         $config = $this->argument('config');
 

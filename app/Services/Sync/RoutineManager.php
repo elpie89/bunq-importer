@@ -207,11 +207,6 @@ class RoutineManager
      */
     private function mergeErrors(int $count): void
     {
-        //        $one   = $this->csvFileProcessor->getErrors();
-        //        $two   = $this->lineProcessor->getErrors();
-        //        $three = $this->columnValueConverter->getErrors();
-        //        $four  = $this->pseudoTransactionProcessor->getErrors();
-        //        $five  = $this->apiSubmitter->getErrors();
         $total = [];
         for ($i = 0; $i < $count; $i++) {
             $total[$i] = array_merge(
@@ -231,11 +226,6 @@ class RoutineManager
      */
     private function mergeMessages(int $count): void
     {
-        //$one   = $this->csvFileProcessor->getMessages();
-        //$two   = $this->lineProcessor->getMessages();
-        //$three = $this->columnValueConverter->getMessages();
-        //$four  = $this->pseudoTransactionProcessor->getMessages();
-        //$five  = $this->apiSubmitter->getMessages();
         $total = [];
         for ($i = 0; $i < $count; $i++) {
             $total[$i] = array_merge(
@@ -255,10 +245,6 @@ class RoutineManager
      */
     private function mergeWarnings(int $count): void
     {
-        //        $one   = $this->csvFileProcessor->getWarnings();
-        //        $two   = $this->lineProcessor->getWarnings();
-        //        $three = $this->columnValueConverter->getWarnings();
-        //        $four  = $this->pseudoTransactionProcessor->getWarnings();
         //        $five  = $this->apiSubmitter->getWarnings();
         $total = [];
         for ($i = 0; $i < $count; $i++) {
