@@ -98,6 +98,13 @@ class GenerateTransactions
                 ],
             ],
         ];
+
+        // give "auto save" transactions a different description:
+        if ('SAVINGS' === $entry['type'] && 'PAYMENT' === $entry['sub_type']) {
+            $return['transactions'][0]['description'] = '(auto save transaction)';
+        }
+
+
         if (1 === bccomp($entry['amount'], '0')) {
             // amount is positive: deposit or transfer. Bunq account is destination
             $return['transactions'][0]['type']   = 'deposit';
