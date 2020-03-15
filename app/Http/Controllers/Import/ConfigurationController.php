@@ -65,7 +65,7 @@ class ConfigurationController extends Controller
 
         $response = response($result);
         $name     = sprintf('bunq_import_config_%s.json', date('Y-m-d'));
-        $response->header('Content-disposition', 'attachment; filename='.$name)
+        $response->header('Content-disposition', 'attachment; filename=' . $name)
                  ->header('Content-Type', 'application/json')
                  ->header('Content-Description', 'File Transfer')
                  ->header('Connection', 'Keep-Alive')
