@@ -47,8 +47,8 @@ class MonetaryAccountList
      * @param array $params
      * @param array $customHeaders
      *
-     * @return array
      * @throws ImportException
+     * @return array
      */
     public function listing(array $params = null, array $customHeaders = null): array
     {
@@ -101,8 +101,8 @@ class MonetaryAccountList
     /**
      * @param BunqMonetaryAccount $entry
      *
-     * @return array
      * @throws ImportException
+     * @return array
      */
     private function processEntry(BunqMonetaryAccount $entry): array
     {
