@@ -219,8 +219,8 @@ class GenerateTransactions
      * @param string $source
      * @param string $destination
      *
-     * @return string
      * @throws ImportException
+     * @return string
      */
     private function getTransactionType(string $source, string $destination): string
     {
