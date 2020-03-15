@@ -35,7 +35,7 @@ use Log;
 trait StartDownload
 {
     /**
-     * @param array  $configuration
+     * @param array $configuration
      *
      * @return int
      */
@@ -63,7 +63,7 @@ trait StartDownload
 
         $messages = $manager->getAllMessages();
         $warnings = $manager->getAllWarnings();
-        $errors = $manager->getAllErrors();
+        $errors   = $manager->getAllErrors();
 
         if (count($errors) > 0) {
             foreach ($errors as $index => $error) {

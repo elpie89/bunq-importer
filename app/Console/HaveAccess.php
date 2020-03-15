@@ -37,8 +37,8 @@ trait HaveAccess
      */
     private function haveAccess(): bool
     {
-        $uri = (string) config('bunq.uri');
-        $token = (string) config('bunq.access_token');
+        $uri     = (string)config('bunq.uri');
+        $token   = (string)config('bunq.access_token');
         $request = new SystemInformationRequest($uri, $token);
         try {
             $request->get();
