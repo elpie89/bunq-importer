@@ -35,7 +35,7 @@ use Log;
 trait StartSync
 {
     /**
-     * @param array  $configuration
+     * @param array $configuration
      *
      * @return int
      */

@@ -25,10 +25,15 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Bunq\ApiContext\ApiContextManager;
+use App\Exceptions\ImportException;
 use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 use GrumpyDictator\FFIIIApiSupport\Request\SystemInformationRequest;
 use GrumpyDictator\FFIIIApiSupport\Response\SystemInformationResponse;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
+use Illuminate\View\View;
 use Log;
 
 /**
@@ -39,7 +44,7 @@ class TokenController extends Controller
     /**
      * Check if the Firefly III API responds properly.
      *
-     * @throws \App\Exceptions\ImportException
+     * @throws ImportException
      * @return JsonResponse
      */
     public function doValidate(): JsonResponse
@@ -78,8 +83,8 @@ class TokenController extends Controller
     /**
      * Same thing but not over JSON.
      *
-     * @throws \App\Exceptions\ImportException
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     * @throws ImportException
+     * @return Factory|RedirectResponse|Redirector|View
      */
     public function index()
     {

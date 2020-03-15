@@ -46,14 +46,6 @@ class IndexController extends Controller
     }
 
     /**
-     * @return Factory|View
-     */
-    public function index()
-    {
-        return view('index');
-    }
-
-    /**
      * @return RedirectResponse|Redirector
      */
     public function flush()
@@ -64,5 +56,13 @@ class IndexController extends Controller
         Artisan::call('config:clear');
 
         return redirect(route('index'));
+    }
+
+    /**
+     * @return Factory|View
+     */
+    public function index()
+    {
+        return view('index');
     }
 }

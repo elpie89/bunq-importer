@@ -80,7 +80,7 @@ class BunqImport extends Command
         Log::debug(sprintf('Now in %s', __METHOD__));
         $config = $this->argument('config');
 
-        if (! file_exists($config) || (file_exists($config) && ! is_file($config))) {
+        if (!file_exists($config) || (file_exists($config) && !is_file($config))) {
             $message = sprintf('The importer can\'t import: configuration file "%s" does not exist or could not be read.', $config);
             $this->error($message);
             Log::error($message);

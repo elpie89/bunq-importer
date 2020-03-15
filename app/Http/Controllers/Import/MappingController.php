@@ -30,6 +30,7 @@ use App\Services\Session\Constants;
 use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 use GrumpyDictator\FFIIIApiSupport\Request\GetAccountsRequest;
 use GrumpyDictator\FFIIIApiSupport\Response\GetAccountsResponse;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Storage;
@@ -139,7 +140,7 @@ class MappingController extends Controller
     }
 
     /**
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @throws FileNotFoundException
      * @return array
      */
     private function getOpposingAccounts(): array
@@ -162,8 +163,8 @@ class MappingController extends Controller
         }
         $filtered = array_filter(
             $opposing, static function (string $value) {
-                return '' !== $value;
-            }
+            return '' !== $value;
+        }
         );
 
         return array_unique($filtered);

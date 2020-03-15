@@ -26,17 +26,21 @@ namespace App\Http\Controllers\Import;
 
 use App\Bunq\ApiContext\ApiContextManager;
 use App\Bunq\Requests\MonetaryAccountList;
+use App\Exceptions\ImportException;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\ConfigComplete;
 use App\Http\Middleware\ConfigurationPostRequest;
 use App\Services\Configuration\Configuration;
 use App\Services\Session\Constants;
 use App\Services\Storage\StorageService;
+use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 use GrumpyDictator\FFIIIApiSupport\Model\Account;
 use GrumpyDictator\FFIIIApiSupport\Request\GetAccountsRequest;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\View\View;
 use Log;
 
 /**
@@ -78,9 +82,9 @@ class ConfigurationController extends Controller
     }
 
     /**
-     * @throws \App\Exceptions\ImportException
-     * @throws \GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException
-     * @return \Illuminate\Contracts\View\Factory|RedirectResponse|\Illuminate\View\View
+     * @throws ApiHttpException
+     * @throws ImportException
+     * @return Factory|RedirectResponse|View
      */
     public function index()
     {
@@ -138,7 +142,9 @@ class ConfigurationController extends Controller
             $mapping = base64_encode(json_encode($configuration->getMapping(), JSON_THROW_ON_ERROR, 512));
         }
 
-        return view('import.configuration.index', compact('mainTitle', 'subTitle', 'ff3Accounts', 'combinedAccounts', 'configuration', 'bunqAccounts', 'mapping'));
+        return view(
+            'import.configuration.index', compact('mainTitle', 'subTitle', 'ff3Accounts', 'combinedAccounts', 'configuration', 'bunqAccounts', 'mapping')
+        );
     }
 
     /**
