@@ -95,10 +95,10 @@ class PaymentList
         }
         $totalCount = 0;
         foreach (array_keys($this->configuration->getAccounts()) as $bunqAccountId) {
-            $bunqAccountId = (int) $bunqAccountId;
+            $bunqAccountId = (int)$bunqAccountId;
             try {
                 $return[$bunqAccountId] = $this->getForAccount($bunqAccountId);
-                $totalCount += count($return[$bunqAccountId]);
+                $totalCount             += count($return[$bunqAccountId]);
             } catch (ImportException $e) {
                 Log::error($e->getMessage());
                 Log::error($e->getTraceAsString());
@@ -258,7 +258,7 @@ class PaymentList
             return null;
         }
 
-        $transaction = [
+        $transaction                                  = [
             // TODO country, bunqMe, isLight, swiftBic, swiftAccountNumber, transferwiseAccountNumber, transferwiseBankCode
             // TODO merchantCategoryCode, bunqtoStatus, bunqtoSubStatus, bunqtoExpiry, bunqtoTimeResponded
             // TODO merchantReference, batchId, scheduledId, addressShipping, addressBilling, geolocation, allowChat,

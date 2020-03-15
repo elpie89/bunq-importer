@@ -115,7 +115,7 @@ class MonetaryAccountList
         switch (get_class($object)) {
             case MonetaryAccountBank::class:
             case MonetaryAccountSavings::class:
-                $return = [
+                $return          = [
                     'id'          => $object->getId(),
                     'currency'    => $object->getCurrency(),
                     'description' => $object->getDescription(),
