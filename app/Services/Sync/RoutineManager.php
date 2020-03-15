@@ -41,15 +41,14 @@ class RoutineManager
     private $allMessages;
     /** @var array */
     private $allWarnings;
+    /** @var ParseBunqDownload */
+    private $bunqParser;
     /** @var Configuration */
     private $configuration;
     /** @var string */
-    private $syncIdentifier;
-    /** @var string */
     private $downloadIdentifier;
-
-    /** @var ParseBunqDownload */
-    private $bunqParser;
+    /** @var string */
+    private $syncIdentifier;
     /** @var GenerateTransactions */
     private $transactionGenerator;
     /** @var SendTransactions */
@@ -88,38 +87,6 @@ class RoutineManager
     }
 
     /**
-     * @param string $downloadIdentifier
-     */
-    public function setDownloadIdentifier(string $downloadIdentifier): void
-    {
-        $this->downloadIdentifier = $downloadIdentifier;
-    }
-
-    /**
-     * @param string $syncIdentifier
-     */
-    public function setSyncIdentifier(string $syncIdentifier): void
-    {
-        $this->syncIdentifier = $syncIdentifier;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSyncIdentifier(): string
-    {
-        return $this->syncIdentifier;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDownloadIdentifier(): string
-    {
-        return $this->downloadIdentifier;
-    }
-
-    /**
      * @return array
      */
     public function getAllErrors(): array
@@ -141,6 +108,38 @@ class RoutineManager
     public function getAllWarnings(): array
     {
         return $this->allWarnings;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDownloadIdentifier(): string
+    {
+        return $this->downloadIdentifier;
+    }
+
+    /**
+     * @param string $downloadIdentifier
+     */
+    public function setDownloadIdentifier(string $downloadIdentifier): void
+    {
+        $this->downloadIdentifier = $downloadIdentifier;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSyncIdentifier(): string
+    {
+        return $this->syncIdentifier;
+    }
+
+    /**
+     * @param string $syncIdentifier
+     */
+    public function setSyncIdentifier(string $syncIdentifier): void
+    {
+        $this->syncIdentifier = $syncIdentifier;
     }
 
     /**

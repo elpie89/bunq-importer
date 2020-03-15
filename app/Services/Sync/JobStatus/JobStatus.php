@@ -37,15 +37,14 @@ class JobStatus
     public const JOB_ERRORED = 'job_errored';
     /** @var string */
     public const JOB_DONE = 'job_done';
-
-    /** @var string */
-    public $status;
     /** @var array */
     public $errors;
     /** @var array */
-    public $warnings;
-    /** @var array */
     public $messages;
+    /** @var string */
+    public $status;
+    /** @var array */
+    public $warnings;
 
     /**
      * ImportJobStatus constructor.

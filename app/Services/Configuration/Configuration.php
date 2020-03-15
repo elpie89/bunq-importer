@@ -180,6 +180,62 @@ class Configuration
     }
 
     /**
+     * @param string $unit
+     * @param int    $number
+     *
+     * @return string|null
+     */
+    private static function calcDateNotBefore(string $unit, int $number): ?string
+    {
+        $functions = [
+            'd' => 'subDays',
+            'w' => 'subWeeks',
+            'm' => 'subMonths',
+            'y' => 'subYears',
+        ];
+        if (isset($functions[$unit])) {
+            $today    = Carbon::now();
+            $function = $functions[$unit];
+            $today->$function($number);
+
+            return $today->format('Y-m-d');
+        }
+        Log::error(sprintf('Could not parse date setting. Unknown key "%s"', $unit));
+
+        return null;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return static
+     */
+    private static function fromDefaultFile(array $data): self
+    {
+        $object                  = new self;
+        $object->rules           = $data['rules'] ?? true;
+        $object->skipForm        = $data['skip_form'] ?? false;
+        $object->dateRange       = $data['date_range'] ?? 'all';
+        $object->dateRangeNumber = $data['date_range_number'] ?? 30;
+        $object->dateRangeUnit   = $data['date_range_unit'] ?? 'd';
+        $object->dateNotBefore   = $data['date_not_before'] ?? '';
+        $object->accountTypes    = $array['account_types'] ?? [];
+        $object->dateNotAfter    = $data['date_not_after'] ?? '';
+        $object->doMapping       = $data['do_mapping'] ?? false;
+        $object->mapping         = $data['mapping'] ?? [];
+        $object->accounts        = $data['accounts'] ?? [];
+
+        // TODO recalculate the date if 'partial'
+        if ('partial' === $data['date_range']) {
+            $object->dateNotBefore = self::calcDateNotBefore($object->dateRangeUnit, $object->dateRangeNumber);
+        }
+        // set version to "1" and return.
+        $object->version = 1;
+
+        return $object;
+    }
+
+    /**
      * @return array
      */
     public function getAccountTypes(): array
@@ -364,61 +420,5 @@ class Configuration
             'date_not_after'    => $this->dateNotAfter,
             'do_mapping'        => $this->doMapping,
         ];
-    }
-
-    /**
-     * @param string $unit
-     * @param int    $number
-     *
-     * @return string|null
-     */
-    private static function calcDateNotBefore(string $unit, int $number): ?string
-    {
-        $functions = [
-            'd' => 'subDays',
-            'w' => 'subWeeks',
-            'm' => 'subMonths',
-            'y' => 'subYears',
-        ];
-        if (isset($functions[$unit])) {
-            $today    = Carbon::now();
-            $function = $functions[$unit];
-            $today->$function($number);
-
-            return $today->format('Y-m-d');
-        }
-        Log::error(sprintf('Could not parse date setting. Unknown key "%s"', $unit));
-
-        return null;
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return static
-     */
-    private static function fromDefaultFile(array $data): self
-    {
-        $object                  = new self;
-        $object->rules           = $data['rules'] ?? true;
-        $object->skipForm        = $data['skip_form'] ?? false;
-        $object->dateRange       = $data['date_range'] ?? 'all';
-        $object->dateRangeNumber = $data['date_range_number'] ?? 30;
-        $object->dateRangeUnit   = $data['date_range_unit'] ?? 'd';
-        $object->dateNotBefore   = $data['date_not_before'] ?? '';
-        $object->accountTypes    = $array['account_types'] ?? [];
-        $object->dateNotAfter    = $data['date_not_after'] ?? '';
-        $object->doMapping       = $data['do_mapping'] ?? false;
-        $object->mapping         = $data['mapping'] ?? [];
-        $object->accounts        = $data['accounts'] ?? [];
-
-        // TODO recalculate the date if 'partial'
-        if ('partial' === $data['date_range']) {
-            $object->dateNotBefore = self::calcDateNotBefore($object->dateRangeUnit, $object->dateRangeNumber);
-        }
-        // set version to "1" and return.
-        $object->version = 1;
-
-        return $object;
     }
 }

@@ -114,7 +114,8 @@ class SendTransactions
         /** @var Transaction $tr */
         foreach ($group->transactions as $tr) {
             $this->addMessage(
-                $index + 1, sprintf('Created transaction #%d: <a href="%s">%s</a> (%s %s)', $groupId, $groupUri, $tr->description, $tr->currencyCode, round($tr->amount, 2))
+                $index + 1,
+                sprintf('Created transaction #%d: <a href="%s">%s</a> (%s %s)', $groupId, $groupUri, $tr->description, $tr->currencyCode, round($tr->amount, 2))
             );
         }
 

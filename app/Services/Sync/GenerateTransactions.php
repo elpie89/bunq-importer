@@ -27,6 +27,7 @@ namespace App\Services\Sync;
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
 use App\Services\Sync\JobStatus\ProgressInformation;
+use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 use GrumpyDictator\FFIIIApiSupport\Request\GetAccountRequest;
 use GrumpyDictator\FFIIIApiSupport\Response\GetAccountResponse;
 use Log;
@@ -156,7 +157,7 @@ class GenerateTransactions
     /**
      * @param int $accountId
      *
-     * @throws \GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException
+     * @throws ApiHttpException
      * @return string
      */
     private function getAccountType(int $accountId): string
@@ -201,7 +202,7 @@ class GenerateTransactions
      */
     private function getMappedType(int $mappedId): string
     {
-        if (! isset($this->configuration->getAccountTypes()[$mappedId])) {
+        if (!isset($this->configuration->getAccountTypes()[$mappedId])) {
             Log::warning(sprintf('Cannot find account type for Firefly III account #%d.', $mappedId));
             $accountType             = $this->getAccountType($mappedId);
             $accountTypes            = $this->configuration->getAccountTypes();
@@ -218,8 +219,8 @@ class GenerateTransactions
      * @param string $source
      * @param string $destination
      *
-     * @throws ImportException
      * @return string
+     * @throws ImportException
      */
     private function getTransactionType(string $source, string $destination): string
     {

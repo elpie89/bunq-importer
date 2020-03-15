@@ -35,20 +35,6 @@ use Str;
 class StorageService
 {
     /**
-     * @param string $content
-     *
-     * @return string
-     */
-    public static function storeContent(string $content): string
-    {
-        $fileName = Str::random(20);
-        $disk     = Storage::disk('uploads');
-        $disk->put($fileName, $content);
-
-        return $fileName;
-    }
-
-    /**
      * @param string $name
      *
      * @throws FileNotFoundException
@@ -61,5 +47,19 @@ class StorageService
             return $disk->get($name);
         }
         throw new RuntimeException(sprintf('No such file %s', $name));
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return string
+     */
+    public static function storeContent(string $content): string
+    {
+        $fileName = Str::random(20);
+        $disk     = Storage::disk('uploads');
+        $disk->put($fileName, $content);
+
+        return $fileName;
     }
 }

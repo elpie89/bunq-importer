@@ -162,9 +162,10 @@ class MappingController extends Controller
             }
         }
         $filtered = array_filter(
-            $opposing, static function (string $value) {
-            return '' !== $value;
-        }
+            $opposing,
+            static function (string $value) {
+                return '' !== $value;
+            }
         );
 
         return array_unique($filtered);

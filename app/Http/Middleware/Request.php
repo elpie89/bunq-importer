@@ -167,7 +167,7 @@ class Request extends FormRequest
      */
     public function nullableInteger(string $field): ?int
     {
-        if (! $this->has($field)) {
+        if (!$this->has($field)) {
             return null;
         }
 
@@ -188,7 +188,7 @@ class Request extends FormRequest
      */
     public function nullableString(string $field): ?string
     {
-        if (! $this->has($field)) {
+        if (!$this->has($field)) {
             return null;
         }
 

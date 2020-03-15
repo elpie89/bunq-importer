@@ -33,20 +33,12 @@ trait ProgressInformation
 {
     /** @var array */
     protected $errors;
+    /** @var string */
+    protected $identifier;
     /** @var array */
     protected $messages;
     /** @var array */
     protected $warnings;
-    /** @var string */
-    protected $identifier;
-
-    /**
-     * @param string $identifier
-     */
-    public function setIdentifier(string $identifier): void
-    {
-        $this->identifier = $identifier;
-    }
 
     /**
      * @return array
@@ -70,6 +62,14 @@ trait ProgressInformation
     public function getWarnings(): array
     {
         return $this->warnings ?? [];
+    }
+
+    /**
+     * @param string $identifier
+     */
+    public function setIdentifier(string $identifier): void
+    {
+        $this->identifier = $identifier;
     }
 
     /**

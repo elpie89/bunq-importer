@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace App\Services\Configuration;
 
 use App\Services\Storage\StorageService;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Log;
 
 /**
@@ -37,7 +38,7 @@ class ConfigFileProcessor
      *
      * @param string $fileName
      *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @throws FileNotFoundException
      * @return Configuration
      */
     public static function convertConfigFile(string $fileName): Configuration
