@@ -64,7 +64,7 @@ class ConfigurationController extends Controller
         $result = json_encode($config, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT, 512);
 
         $response = response($result);
-        $name = sprintf('bunq_import_config_%s.json', date('Y-m-d'));
+        $name     = sprintf('bunq_import_config_%s.json', date('Y-m-d'));
         $response->header('Content-disposition', 'attachment; filename='.$name)
                  ->header('Content-Type', 'application/json')
                  ->header('Content-Description', 'File Transfer')
@@ -86,7 +86,7 @@ class ConfigurationController extends Controller
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
         $mainTitle = 'Import from bunq';
-        $subTitle = 'Configure your bunq import';
+        $subTitle  = 'Configure your bunq import';
 
         $configuration = Configuration::fromArray([]);
         if (session()->has(Constants::CONFIGURATION)) {
@@ -98,8 +98,8 @@ class ConfigurationController extends Controller
             return redirect()->route('import.download.index');
         }
         // get list of asset accounts in Firefly III
-        $uri = (string) config('bunq.uri');
-        $token = (string) config('bunq.access_token');
+        $uri     = (string) config('bunq.uri');
+        $token   = (string) config('bunq.access_token');
         $request = new GetAccountsRequest($uri, $token);
         $request->setType(GetAccountsRequest::ASSET);
         $ff3Accounts = $request->get();
@@ -108,26 +108,26 @@ class ConfigurationController extends Controller
         ApiContextManager::getApiContext();
 
         /** @var MonetaryAccountList $lister */
-        $lister = app(MonetaryAccountList::class);
-        $bunqAccounts = $lister->listing();
+        $lister           = app(MonetaryAccountList::class);
+        $bunqAccounts     = $lister->listing();
         $combinedAccounts = [];
         foreach ($bunqAccounts as $bunqAccount) {
-            $bunqAccount['ff3_id'] = null;
-            $bunqAccount['ff3_name'] = null;
-            $bunqAccount['ff3_type'] = null;
-            $bunqAccount['ff3_iban'] = null;
+            $bunqAccount['ff3_id']       = null;
+            $bunqAccount['ff3_name']     = null;
+            $bunqAccount['ff3_type']     = null;
+            $bunqAccount['ff3_iban']     = null;
             $bunqAccount['ff3_currency'] = null;
             /** @var Account $ff3Account */
             foreach ($ff3Accounts as $ff3Account) {
                 if ($bunqAccount['currency'] === $ff3Account->currencyCode && $bunqAccount['iban'] === $ff3Account->iban
                     && 'CANCELLED' !== $bunqAccount['status']
                 ) {
-                    $bunqAccount['ff3_id'] = $ff3Account->id;
-                    $bunqAccount['ff3_name'] = $ff3Account->name;
-                    $bunqAccount['ff3_type'] = $ff3Account->type;
-                    $bunqAccount['ff3_iban'] = $ff3Account->iban;
+                    $bunqAccount['ff3_id']       = $ff3Account->id;
+                    $bunqAccount['ff3_name']     = $ff3Account->name;
+                    $bunqAccount['ff3_type']     = $ff3Account->type;
+                    $bunqAccount['ff3_iban']     = $ff3Account->iban;
                     $bunqAccount['ff3_currency'] = $ff3Account->currencyCode;
-                    $bunqAccount['ff3_uri'] = sprintf('%saccounts/show/%d', $uri, $ff3Account->id);
+                    $bunqAccount['ff3_uri']      = sprintf('%saccounts/show/%d', $uri, $ff3Account->id);
                 }
             }
             $combinedAccounts[] = $bunqAccount;
@@ -151,9 +151,9 @@ class ConfigurationController extends Controller
         Log::debug(sprintf('Now at %s', __METHOD__));
         // store config on drive.
 
-        $fromRequest = $request->getAll();
+        $fromRequest   = $request->getAll();
         $configuration = Configuration::fromRequest($fromRequest);
-        $config = StorageService::storeContent(json_encode($configuration, JSON_THROW_ON_ERROR, 512));
+        $config        = StorageService::storeContent(json_encode($configuration, JSON_THROW_ON_ERROR, 512));
 
         session()->put(Constants::CONFIGURATION, $configuration->toArray());
 

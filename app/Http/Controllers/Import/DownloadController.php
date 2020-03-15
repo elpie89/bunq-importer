@@ -52,7 +52,7 @@ class DownloadController extends Controller
     public function index()
     {
         $mainTitle = 'Downloading transactions...';
-        $subTitle = 'Connecting to bunq and downloading your data...';
+        $subTitle  = 'Connecting to bunq and downloading your data...';
 
         // job ID may be in session:
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
@@ -62,7 +62,7 @@ class DownloadController extends Controller
         }
         if (null === $downloadIdentifier) {
             // create a new import job:
-            $routine = new RoutineManager();
+            $routine            = new RoutineManager();
             $downloadIdentifier = $routine->getDownloadIdentifier();
         }
 
@@ -84,7 +84,7 @@ class DownloadController extends Controller
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
         $downloadIdentifier = $request->get('downloadIdentifier');
-        $routine = new RoutineManager($downloadIdentifier);
+        $routine            = new RoutineManager($downloadIdentifier);
 
         // store identifier in session so the status can get it.
         session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $downloadIdentifier);

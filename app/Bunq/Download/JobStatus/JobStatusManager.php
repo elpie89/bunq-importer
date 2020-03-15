@@ -47,7 +47,7 @@ class JobStatusManager
             Log::debug(sprintf('Try to see if file exists for download job %s.', $downloadIdentifier));
             if ($disk->exists($downloadIdentifier)) {
                 Log::debug(sprintf('Status file exists for download job %s.', $downloadIdentifier));
-                $array = json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR);
+                $array  = json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR);
                 $status = JobStatus::fromArray($array);
                 Log::debug(sprintf('Status found for download job %s', $downloadIdentifier), $array);
 
@@ -76,8 +76,8 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($downloadIdentifier)) {
-                $status = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
-                $status->errors[$index] = $status->errors[$index] ?? [];
+                $status                   = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
+                $status->errors[$index]   = $status->errors[$index] ?? [];
                 $status->errors[$index][] = $error;
                 self::storeJobStatus($downloadIdentifier, $status);
             }
@@ -97,8 +97,8 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($downloadIdentifier)) {
-                $status = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
-                $status->warnings[$index] = $status->warnings[$index] ?? [];
+                $status                     = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
+                $status->warnings[$index]   = $status->warnings[$index] ?? [];
                 $status->warnings[$index][] = $warning;
                 self::storeJobStatus($downloadIdentifier, $status);
             }
@@ -118,8 +118,8 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($downloadIdentifier)) {
-                $status = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
-                $status->messages[$index] = $status->messages[$index] ?? [];
+                $status                     = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
+                $status->messages[$index]   = $status->messages[$index] ?? [];
                 $status->messages[$index][] = $message;
                 self::storeJobStatus($downloadIdentifier, $status);
             }
@@ -139,7 +139,7 @@ class JobStatusManager
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
         Log::debug(sprintf('Now in download setJobStatus(%s) for job %s', $status, $downloadIdentifier));
 
-        $jobStatus = self::startOrFindJob($downloadIdentifier);
+        $jobStatus         = self::startOrFindJob($downloadIdentifier);
         $jobStatus->status = $status;
 
         self::storeJobStatus($downloadIdentifier, $jobStatus);

@@ -54,7 +54,7 @@ class MappingController extends Controller
     public function index()
     {
         $mainTitle = 'Map data';
-        $subTitle = 'Link bunq information to Firefly III data.';
+        $subTitle  = 'Link bunq information to Firefly III data.';
 
         $configuration = Configuration::fromArray([]);
         if (session()->has(Constants::CONFIGURATION)) {
@@ -85,8 +85,8 @@ class MappingController extends Controller
     public function postIndex(Request $request)
     {
         // post mapping is not particularly complex.
-        $result = $request->all();
-        $mapping = $result['mapping'] ?? [];
+        $result       = $request->all();
+        $mapping      = $result['mapping'] ?? [];
         $accountTypes = $result['account_type'] ?? [];
 
         $configuration = Configuration::fromArray([]);
@@ -114,8 +114,8 @@ class MappingController extends Controller
      */
     private function getFireflyIIIAccounts(): array
     {
-        $token = (string) config('bunq.access_token');
-        $uri = (string) config('bunq.uri');
+        $token   = (string) config('bunq.access_token');
+        $uri     = (string) config('bunq.uri');
         $request = new GetAccountsRequest($uri, $token);
         /** @var GetAccountsResponse $result */
         $result = $request->get();
@@ -125,7 +125,7 @@ class MappingController extends Controller
             if ('reconciliation' === $type || 'initial-balance' === $type) {
                 continue;
             }
-            $id = (int) $entry->id;
+            $id                 = (int) $entry->id;
             $return[$type][$id] = $entry->name;
             if ('' !== (string) $entry->iban) {
                 $return[$type][$id] = sprintf('%s (%s)', $entry->name, $entry->iban);
@@ -145,10 +145,10 @@ class MappingController extends Controller
     private function getOpposingAccounts(): array
     {
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
-        $disk = Storage::disk('downloads');
-        $json = $disk->get($downloadIdentifier);
-        $array = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-        $opposing = [];
+        $disk               = Storage::disk('downloads');
+        $json               = $disk->get($downloadIdentifier);
+        $array              = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        $opposing           = [];
         /** @var array $account */
         foreach ($array as $account) {
             foreach ($account as $entry) {

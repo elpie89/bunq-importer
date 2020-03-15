@@ -42,7 +42,7 @@ class StorageService
     public static function storeContent(string $content): string
     {
         $fileName = Str::random(20);
-        $disk = Storage::disk('uploads');
+        $disk     = Storage::disk('uploads');
         $disk->put($fileName, $content);
 
         return $fileName;

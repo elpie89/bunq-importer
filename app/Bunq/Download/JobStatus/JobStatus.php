@@ -55,8 +55,8 @@ class JobStatus
     public function __construct()
     {
         Log::debug('Constructed download JobStatus');
-        $this->status = self::JOB_WAITING;
-        $this->errors = [];
+        $this->status   = self::JOB_WAITING;
+        $this->errors   = [];
         $this->warnings = [];
         $this->messages = [];
     }
@@ -68,9 +68,9 @@ class JobStatus
      */
     public static function fromArray(array $array): self
     {
-        $config = new self;
-        $config->status = $array['status'];
-        $config->errors = $array['errors'] ?? [];
+        $config           = new self;
+        $config->status   = $array['status'];
+        $config->errors   = $array['errors'] ?? [];
         $config->warnings = $array['warnings'] ?? [];
         $config->messages = $array['messages'] ?? [];
 

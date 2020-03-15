@@ -53,10 +53,10 @@ class MonetaryAccountList
     public function listing(array $params = null, array $customHeaders = null): array
     {
         Log::debug('Now calling bunq listing.');
-        $params = $params ?? [];
+        $params        = $params ?? [];
         $customHeaders = $customHeaders ?? [];
-        $listing = BunqMonetaryAccount::listing($params, $customHeaders);
-        $return = [];
+        $listing       = BunqMonetaryAccount::listing($params, $customHeaders);
+        $return        = [];
         /** @var BunqMonetaryAccount $entry */
         foreach ($listing->getValue() as $entry) {
             try {
@@ -125,7 +125,7 @@ class MonetaryAccountList
                     'iban'        => null,
                     'color'       => null,
                 ];
-                $return['iban'] = $this->getIban($object);
+                $return['iban']  = $this->getIban($object);
                 $return['color'] = $this->getColor($object);
 
                 return $return;

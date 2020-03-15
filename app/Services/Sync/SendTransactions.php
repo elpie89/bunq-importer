@@ -50,7 +50,7 @@ class SendTransactions
      */
     public function send(array $transactions): array
     {
-        $uri = (string) config('bunq.uri');
+        $uri   = (string) config('bunq.uri');
         $token = (string) config('bunq.access_token');
         foreach ($transactions as $index => $transaction) {
             Log::debug(sprintf('Trying to send transaction #%d', $index));
@@ -107,8 +107,8 @@ class SendTransactions
 
             return [];
         }
-        $groupId = $group->id;
-        $uri = (string) config('bunq.uri');
+        $groupId  = $group->id;
+        $uri      = (string) config('bunq.uri');
         $groupUri = (string) sprintf('%s/transactions/show/%d', $uri, $groupId);
 
         /** @var Transaction $tr */

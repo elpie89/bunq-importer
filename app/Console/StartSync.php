@@ -64,7 +64,7 @@ trait StartSync
 
         $messages = $manager->getAllMessages();
         $warnings = $manager->getAllWarnings();
-        $errors = $manager->getAllErrors();
+        $errors   = $manager->getAllErrors();
 
         if (count($errors) > 0) {
             foreach ($errors as $index => $error) {

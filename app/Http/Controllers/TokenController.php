@@ -45,8 +45,8 @@ class TokenController extends Controller
     public function doValidate(): JsonResponse
     {
         $response = ['result' => 'OK', 'message' => null];
-        $token = (string) config('bunq.access_token');
-        $uri = (string) config('bunq.uri');
+        $token    = (string) config('bunq.access_token');
+        $uri      = (string) config('bunq.uri');
         Log::debug(sprintf('Going to try and access %s', $uri));
         $request = new SystemInformationRequest($uri, $token);
         try {
@@ -60,7 +60,7 @@ class TokenController extends Controller
             $compare = version_compare($minimum, $result->version);
             if (1 === $compare) {
                 $errorMessage = sprintf('Your Firefly III version %s is below the minimum required version %s', $result->version, $minimum);
-                $response = ['result' => 'NOK', 'message' => $errorMessage];
+                $response     = ['result' => 'NOK', 'message' => $errorMessage];
             }
         }
 
@@ -69,7 +69,7 @@ class TokenController extends Controller
             ApiContextManager::getApiContext();
         } catch (ApiHttpException $e) {
             $errorMessage = sprintf('bunq complained: %s', $e->getMessage());
-            $response = ['result' => 'NOK', 'message' => $errorMessage];
+            $response     = ['result' => 'NOK', 'message' => $errorMessage];
         }
 
         return response()->json($response);
@@ -84,19 +84,19 @@ class TokenController extends Controller
     public function index()
     {
         $token = config('bunq.access_token');
-        $uri = config('bunq.uri');
+        $uri   = config('bunq.uri');
         Log::debug(sprintf('Going to try and access %s', $uri));
-        $request = new SystemInformationRequest($uri, $token);
+        $request      = new SystemInformationRequest($uri, $token);
         $errorMessage = 'No error message.';
-        $isError = false;
-        $result = null;
-        $compare = 1;
+        $isError      = false;
+        $result       = null;
+        $compare      = 1;
         try {
             /** @var SystemInformationResponse $result */
             $result = $request->get();
         } catch (ApiHttpException $e) {
             $errorMessage = $e->getMessage();
-            $isError = true;
+            $isError      = true;
         }
 
         if (false === $isError) {
@@ -105,7 +105,7 @@ class TokenController extends Controller
         }
         if (false === $isError && 1 === $compare) {
             $errorMessage = sprintf('Your Firefly III version %s is below the minimum required version %s', $result->version, $minimum);
-            $isError = true;
+            $isError      = true;
         }
 
         // validate connection to bunq, create API context.
@@ -113,7 +113,7 @@ class TokenController extends Controller
             ApiContextManager::getApiContext();
         } catch (ApiHttpException $e) {
             $errorMessage = sprintf('bunq complained: %s', $e->getMessage());
-            $isError = true;
+            $isError      = true;
         }
 
         if (false === $isError) {

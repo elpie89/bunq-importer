@@ -48,7 +48,7 @@ class StartController extends Controller
     public function index()
     {
         $mainTitle = 'Import from bunq';
-        $subTitle = 'Start page and instructions';
+        $subTitle  = 'Start page and instructions';
 
         return view('import.start.index', compact('mainTitle', 'subTitle'));
     }
