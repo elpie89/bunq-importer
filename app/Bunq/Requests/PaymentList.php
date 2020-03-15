@@ -98,7 +98,7 @@ class PaymentList
             $bunqAccountId = (int)$bunqAccountId;
             try {
                 $return[$bunqAccountId] = $this->getForAccount($bunqAccountId);
-                $totalCount             += count($return[$bunqAccountId]);
+                $totalCount += count($return[$bunqAccountId]);
             } catch (ImportException $e) {
                 Log::error($e->getMessage());
                 Log::error($e->getTraceAsString());
