@@ -37,16 +37,16 @@ use Str;
  */
 class RoutineManager
 {
-    /** @var Configuration */
-    private $configuration;
-    /** @var string */
-    private $downloadIdentifier;
+    /** @var array */
+    private $allErrors;
     /** @var array */
     private $allMessages;
     /** @var array */
     private $allWarnings;
-    /** @var array */
-    private $allErrors;
+    /** @var Configuration */
+    private $configuration;
+    /** @var string */
+    private $downloadIdentifier;
     /** @var PaymentList */
     private $paymentList;
 
@@ -77,15 +77,11 @@ class RoutineManager
     }
 
     /**
-     * @param Configuration $configuration
+     * @return array
      */
-    public function setConfiguration(Configuration $configuration): void
+    public function getAllErrors(): array
     {
-        $this->configuration = $configuration;
-        $this->paymentList   = new PaymentList($configuration);
-        $this->paymentList->setDownloadIdentifier($this->downloadIdentifier);
-
-        Log::debug(sprintf('Download ImportRoutineManager: created new payment list with download identifier "%s"', $this->downloadIdentifier));
+        return $this->allErrors;
     }
 
     /**
@@ -105,11 +101,23 @@ class RoutineManager
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getAllErrors(): array
+    public function getDownloadIdentifier(): string
     {
-        return $this->allErrors;
+        return $this->downloadIdentifier;
+    }
+
+    /**
+     * @param Configuration $configuration
+     */
+    public function setConfiguration(Configuration $configuration): void
+    {
+        $this->configuration = $configuration;
+        $this->paymentList   = new PaymentList($configuration);
+        $this->paymentList->setDownloadIdentifier($this->downloadIdentifier);
+
+        Log::debug(sprintf('Download ImportRoutineManager: created new payment list with download identifier "%s"', $this->downloadIdentifier));
     }
 
     public function start(): void
@@ -144,11 +152,17 @@ class RoutineManager
     }
 
     /**
-     * @return string
+     * @param int $count
      */
-    public function getDownloadIdentifier(): string
+    private function mergeErrors(int $count): void
     {
-        return $this->downloadIdentifier;
+        $one   = $this->paymentList->getErrors();
+        $total = [];
+        for ($i = 0; $i < $count; $i++) {
+            $total[$i] = array_merge($one[$i] ?? []);
+        }
+
+        $this->allErrors = $total;
     }
 
     /**
@@ -177,19 +191,5 @@ class RoutineManager
         }
 
         $this->allWarnings = $total;
-    }
-
-    /**
-     * @param int $count
-     */
-    private function mergeErrors(int $count): void
-    {
-        $one   = $this->paymentList->getErrors();
-        $total = [];
-        for ($i = 0; $i < $count; $i++) {
-            $total[$i] = array_merge($one[$i] ?? []);
-        }
-
-        $this->allErrors = $total;
     }
 }
