@@ -1,7 +1,7 @@
 <?php
 /**
  * ConfigurationPostRequest.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -27,7 +27,7 @@ namespace App\Http\Middleware;
 use Illuminate\Validation\Validator;
 
 /**
- * Class ConfigurationPostRequest
+ * Class ConfigurationPostRequest.
  */
 class ConfigurationPostRequest extends Request
 {
@@ -47,7 +47,7 @@ class ConfigurationPostRequest extends Request
     public function getAll(): array
     {
         // parse entire config file.
-        $mapping  = $this->get('mapping') ? json_decode(base64_decode($this->get('mapping')), true, 512, JSON_THROW_ON_ERROR) : null;
+        $mapping = $this->get('mapping') ? json_decode(base64_decode($this->get('mapping')), true, 512, JSON_THROW_ON_ERROR) : null;
         $doImport = $this->get('do_import') ?? [];
 
         return [

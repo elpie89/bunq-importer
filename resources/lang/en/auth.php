@@ -1,7 +1,7 @@
 <?php
 /**
  * auth.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -33,7 +33,7 @@ return [
     |
     */
 
-    'failed' => 'These credentials do not match our records.',
+    'failed'   => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
 ];

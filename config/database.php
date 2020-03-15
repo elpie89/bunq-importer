@@ -1,7 +1,7 @@
 <?php
 /**
  * database.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -145,7 +145,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix'  => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
+            'prefix'  => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
         ],
 
         'default' => [

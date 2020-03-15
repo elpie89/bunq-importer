@@ -1,7 +1,7 @@
 <?php
 /**
  * IndexController.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -24,16 +24,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\ImportException;
+use Artisan;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
 use Log;
-use Artisan;
+
 /**
- *
- * Class IndexController
+ * Class IndexController.
  */
 class IndexController extends Controller
 {

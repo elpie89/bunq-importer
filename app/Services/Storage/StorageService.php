@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * StorageService.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -29,7 +30,7 @@ use Storage;
 use Str;
 
 /**
- * Class StorageService
+ * Class StorageService.
  */
 class StorageService
 {
@@ -41,7 +42,7 @@ class StorageService
     public static function storeContent(string $content): string
     {
         $fileName = Str::random(20);
-        $disk     = Storage::disk('uploads');
+        $disk = Storage::disk('uploads');
         $disk->put($fileName, $content);
 
         return $fileName;
@@ -61,5 +62,4 @@ class StorageService
         }
         throw new RuntimeException(sprintf('No such file %s', $name));
     }
-
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Payment.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -24,7 +24,6 @@ declare(strict_types=1);
 
 namespace App\Bunq\Requests;
 
-
 use App\Exceptions\ImportException;
 use bunq\Model\Generated\Endpoint\BunqResponsePaymentList;
 use bunq\Model\Generated\Endpoint\Payment as BunqPayment;
@@ -32,7 +31,7 @@ use Exception;
 use Log;
 
 /**
- * Class Payment
+ * Class Payment.
  *
  * @codeCoverageIgnore
  */
@@ -50,8 +49,8 @@ class Payment
     {
         Log::debug('Now in Payment::listing()');
         $monetaryAccountId = $monetaryAccountId ?? 0;
-        $params            = $params ?? [];
-        $customHeaders     = $customHeaders ?? [];
+        $params = $params ?? [];
+        $customHeaders = $customHeaders ?? [];
         try {
             $result = BunqPayment::listing($monetaryAccountId, $params, $customHeaders);
         } catch (Exception $e) {
@@ -62,5 +61,4 @@ class Payment
 
         return $result;
     }
-
 }

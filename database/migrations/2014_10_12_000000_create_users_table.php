@@ -1,7 +1,7 @@
 <?php
 /**
  * 2014_10_12_000000_create_users_table.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).

@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * DownloadController.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -23,7 +24,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Import;
 
-
 use App\Bunq\Download\JobStatus\JobStatus;
 use App\Bunq\Download\JobStatus\JobStatusManager;
 use App\Bunq\Download\RoutineManager;
@@ -36,7 +36,7 @@ use Illuminate\Http\Request;
 use Log;
 
 /**
- * Class DownloadController
+ * Class DownloadController.
  */
 class DownloadController extends Controller
 {
@@ -49,13 +49,10 @@ class DownloadController extends Controller
         app('view')->share('pageTitle', 'Download transactions from bunq');
     }
 
-    /**
-     *
-     */
     public function index()
     {
         $mainTitle = 'Downloading transactions...';
-        $subTitle  = 'Connecting to bunq and downloading your data...';
+        $subTitle = 'Connecting to bunq and downloading your data...';
 
         // job ID may be in session:
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
@@ -65,7 +62,7 @@ class DownloadController extends Controller
         }
         if (null === $downloadIdentifier) {
             // create a new import job:
-            $routine            = new RoutineManager();
+            $routine = new RoutineManager();
             $downloadIdentifier = $routine->getDownloadIdentifier();
         }
 
@@ -87,7 +84,7 @@ class DownloadController extends Controller
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
         $downloadIdentifier = $request->get('downloadIdentifier');
-        $routine            = new RoutineManager($downloadIdentifier);
+        $routine = new RoutineManager($downloadIdentifier);
 
         // store identifier in session so the status can get it.
         session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $downloadIdentifier);
@@ -134,5 +131,4 @@ class DownloadController extends Controller
 
         return response()->json($importJobStatus->toArray());
     }
-
 }

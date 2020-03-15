@@ -1,7 +1,7 @@
 <?php
 /**
  * Controller.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -24,14 +24,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use Artisan;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-use Artisan;
 
 /**
- * Class Controller
+ * Class Controller.
  */
 class Controller extends BaseController
 {
@@ -42,7 +42,6 @@ class Controller extends BaseController
      */
     public function __construct()
     {
-
         $variables = [
             'FIREFLY_III_ACCESS_TOKEN' => 'bunq.access_token',
             'FIREFLY_III_URI'          => 'bunq.uri',
@@ -50,7 +49,7 @@ class Controller extends BaseController
             'BUNQ_API_URI'             => 'bunq.api_uri',
         ];
         foreach ($variables as $env => $config) {
-            $value = (string)config($config);
+            $value = (string) config($config);
             if ('' === $value) {
                 echo sprintf('Please set a valid value for "%s" in the env file.', $env);
                 Artisan::call('config:clear');

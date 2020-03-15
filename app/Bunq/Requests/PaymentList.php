@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * PaymentList.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -34,7 +35,7 @@ use Log;
 use Storage;
 
 /**
- * Class PaymentList
+ * Class PaymentList.
  */
 class PaymentList
 {
@@ -59,9 +60,9 @@ class PaymentList
     public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
-        $this->count         = 0;
-        $this->notBefore     = null === $configuration->getDateNotBefore() ? null : Carbon::createFromFormat('Y-m-d', $configuration->getDateNotBefore());
-        $this->notAfter      = null === $configuration->getDateNotAfter() ? null : Carbon::createFromFormat('Y-m-d', $configuration->getDateNotAfter());
+        $this->count = 0;
+        $this->notBefore = null === $configuration->getDateNotBefore() ? null : Carbon::createFromFormat('Y-m-d', $configuration->getDateNotBefore());
+        $this->notAfter = null === $configuration->getDateNotAfter() ? null : Carbon::createFromFormat('Y-m-d', $configuration->getDateNotAfter());
         if (null !== $this->notBefore) {
             $this->notBefore->startOfDay();
         }
@@ -71,8 +72,6 @@ class PaymentList
         Log::debug('Created Requests\\PaymentList');
     }
 
-    /**
-     */
     public function getPaymentList(): array
     {
         Log::debug('Start of PaymentList::getPaymentList()');
@@ -96,10 +95,10 @@ class PaymentList
         }
         $totalCount = 0;
         foreach (array_keys($this->configuration->getAccounts()) as $bunqAccountId) {
-            $bunqAccountId = (int)$bunqAccountId;
+            $bunqAccountId = (int) $bunqAccountId;
             try {
                 $return[$bunqAccountId] = $this->getForAccount($bunqAccountId);
-                $totalCount             += count($return[$bunqAccountId]);
+                $totalCount += count($return[$bunqAccountId]);
             } catch (ImportException $e) {
                 Log::error($e->getMessage());
                 Log::error($e->getTraceAsString());
@@ -119,7 +118,7 @@ class PaymentList
     public function setDownloadIdentifier(string $downloadIdentifier): void
     {
         $this->downloadIdentifier = $downloadIdentifier;
-        $this->identifier         = $downloadIdentifier;
+        $this->identifier = $downloadIdentifier;
     }
 
     /**
@@ -150,8 +149,8 @@ class PaymentList
     {
         Log::debug(sprintf('Now in getForAccount(%d)', $bunqAccountId));
         $hasMoreTransactions = true;
-        $olderId             = null;
-        $return              = [];
+        $olderId = null;
+        $return = [];
 
         /*
          * Do a loop during which we run:
@@ -164,9 +163,9 @@ class PaymentList
              */
             /** @var Payment $paymentRequest */
             $paymentRequest = app(Payment::class);
-            $params         = ['count' => 197, 'older_id' => $olderId];
-            $response       = $paymentRequest->listing($bunqAccountId, $params);
-            $pagination     = $response->getPagination();
+            $params = ['count' => 197, 'older_id' => $olderId];
+            $response = $paymentRequest->listing($bunqAccountId, $params);
+            $pagination = $response->getPagination();
             Log::debug('Params for the request to bunq are: ', $params);
 
             /*
@@ -259,7 +258,7 @@ class PaymentList
             return null;
         }
 
-        $transaction                                  = [
+        $transaction = [
             // TODO country, bunqMe, isLight, swiftBic, swiftAccountNumber, transferwiseAccountNumber, transferwiseBankCode
             // TODO merchantCategoryCode, bunqtoStatus, bunqtoSubStatus, bunqtoExpiry, bunqtoTimeResponded
             // TODO merchantReference, batchId, scheduledId, addressShipping, addressBilling, geolocation, allowChat,
@@ -281,11 +280,11 @@ class PaymentList
             'sub_type'        => $payment->getSubType(),
             'balance_after'   => $payment->getBalanceAfterMutation()->getValue(),
         ];
-        $counterParty                                 = $payment->getCounterpartyAlias();
-        $transaction['counter_party']['iban']         = $counterParty->getIban();
+        $counterParty = $payment->getCounterpartyAlias();
+        $transaction['counter_party']['iban'] = $counterParty->getIban();
         $transaction['counter_party']['display_name'] = $counterParty->getDisplayName();
-        $transaction['counter_party']['nick_name']    = $counterParty->getLabelUser()->getDisplayName();
-        $transaction['counter_party']['country']      = $counterParty->getCountry();
+        $transaction['counter_party']['nick_name'] = $counterParty->getLabelUser()->getDisplayName();
+        $transaction['counter_party']['country'] = $counterParty->getCountry();
         if ('' === $transaction['description']) {
             $transaction['description'] = '(empty description)';
         }
@@ -309,6 +308,4 @@ class PaymentList
         $disk = Storage::disk('downloads');
         $disk->put($this->downloadIdentifier, json_encode($data, JSON_THROW_ON_ERROR, 512));
     }
-
-
 }

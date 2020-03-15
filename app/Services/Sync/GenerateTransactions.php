@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * GenerateTransactions.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -31,7 +32,7 @@ use GrumpyDictator\FFIIIApiSupport\Response\GetAccountResponse;
 use Log;
 
 /**
- * Class GenerateTransactions
+ * Class GenerateTransactions.
  */
 class GenerateTransactions
 {
@@ -52,7 +53,7 @@ class GenerateTransactions
         $return = [];
         /** @var array $entry */
         foreach ($bunq as $bunqAccountId => $entries) {
-            $bunqAccountId = (int)$bunqAccountId;
+            $bunqAccountId = (int) $bunqAccountId;
             Log::debug(sprintf('Going to parse account #%d', $bunqAccountId));
             foreach ($entries as $entry) {
                 $return[] = $this->generateTransaction($bunqAccountId, $entry);
@@ -64,14 +65,13 @@ class GenerateTransactions
         return $return;
     }
 
-
     /**
      * @param Configuration $configuration
      */
     public function setConfiguration(Configuration $configuration): void
     {
         $this->configuration = $configuration;
-        $this->accounts      = $configuration->getAccounts();
+        $this->accounts = $configuration->getAccounts();
     }
 
     /**
@@ -104,23 +104,22 @@ class GenerateTransactions
             $return['transactions'][0]['description'] = '(auto save transaction)';
         }
 
-
         if (1 === bccomp($entry['amount'], '0')) {
             // amount is positive: deposit or transfer. Bunq account is destination
-            $return['transactions'][0]['type']   = 'deposit';
+            $return['transactions'][0]['type'] = 'deposit';
             $return['transactions'][0]['amount'] = $entry['amount'];
 
             // destination is bunq
-            $return['transactions'][0]['destination_id'] = (int)$this->accounts[$bunqAccountId];
+            $return['transactions'][0]['destination_id'] = (int) $this->accounts[$bunqAccountId];
 
             // source is the other side:
             $return['transactions'][0]['source_iban'] = $entry['counter_party']['iban'];
             $return['transactions'][0]['source_name'] = $entry['counter_party']['display_name'];
 
-            $mappedId = $this->getMappedId($entry['counter_party']['display_name'], (string)$entry['counter_party']['iban']);
+            $mappedId = $this->getMappedId($entry['counter_party']['display_name'], (string) $entry['counter_party']['iban']);
             if (null !== $mappedId && 0 !== $mappedId) {
-                $mappedType                             = $this->getMappedType($mappedId);
-                $return['transactions'][0]['type']      = $this->getTransactionType($mappedType, 'asset');
+                $mappedType = $this->getMappedType($mappedId);
+                $return['transactions'][0]['type'] = $this->getTransactionType($mappedType, 'asset');
                 $return['transactions'][0]['source_id'] = $mappedId;
                 unset($return['transactions'][0]['source_iban'], $return['transactions'][0]['source_name']);
             }
@@ -130,16 +129,16 @@ class GenerateTransactions
             $return['transactions'][0]['amount'] = bcmul($entry['amount'], '-1');
 
             // source is bunq:
-            $return['transactions'][0]['source_id'] = (int)$this->accounts[$bunqAccountId];
+            $return['transactions'][0]['source_id'] = (int) $this->accounts[$bunqAccountId];
 
             // dest is shop
-            $return['transactions'][0]['destination_iban']   = $entry['counter_party']['iban'];
-            $return['transactions'][0]['destination_name']   = $entry['counter_party']['display_name'];
-            $return['transactions'][0]['bunq_payment_id']    = $entry['id'];
-            $return['transactions'][0]['external_id']        = $entry['id'];
+            $return['transactions'][0]['destination_iban'] = $entry['counter_party']['iban'];
+            $return['transactions'][0]['destination_name'] = $entry['counter_party']['display_name'];
+            $return['transactions'][0]['bunq_payment_id'] = $entry['id'];
+            $return['transactions'][0]['external_id'] = $entry['id'];
             $return['transactions'][0]['internal_reference'] = $bunqAccountId;
 
-            $mappedId = $this->getMappedId($entry['counter_party']['display_name'], (string)$entry['counter_party']['iban']);
+            $mappedId = $this->getMappedId($entry['counter_party']['display_name'], (string) $entry['counter_party']['iban']);
             if (null !== $mappedId && 0 !== $mappedId) {
                 $return['transactions'][0]['destination_id'] = $mappedId;
                 // source is asset, destination is ??, set the transaction type:
@@ -162,14 +161,14 @@ class GenerateTransactions
      */
     private function getAccountType(int $accountId): string
     {
-        $uri   = (string)config('bunq.uri');
-        $token = (string)config('bunq.access_token');
+        $uri = (string) config('bunq.uri');
+        $token = (string) config('bunq.access_token');
         Log::debug(sprintf('Going to download account #%d', $accountId));
         $request = new GetAccountRequest($uri, $token);
         $request->setId($accountId);
         /** @var GetAccountResponse $result */
         $result = $request->get();
-        $type   = $result->getAccount()->type;
+        $type = $result->getAccount()->type;
 
         Log::debug(sprintf('Discovered that account #%d is of type "%s"', $accountId, $type));
 
@@ -189,7 +188,7 @@ class GenerateTransactions
             $fullName = sprintf('%s (%s)', $name, $iban);
         }
         if (isset($this->configuration->getMapping()[$fullName])) {
-            return (int)$this->configuration->getMapping()[$fullName];
+            return (int) $this->configuration->getMapping()[$fullName];
         }
 
         return null;
@@ -202,10 +201,10 @@ class GenerateTransactions
      */
     private function getMappedType(int $mappedId): string
     {
-        if (!isset($this->configuration->getAccountTypes()[$mappedId])) {
+        if (! isset($this->configuration->getAccountTypes()[$mappedId])) {
             Log::warning(sprintf('Cannot find account type for Firefly III account #%d.', $mappedId));
-            $accountType             = $this->getAccountType($mappedId);
-            $accountTypes            = $this->configuration->getAccountTypes();
+            $accountType = $this->getAccountType($mappedId);
+            $accountTypes = $this->configuration->getAccountTypes();
             $accountTypes[$mappedId] = $accountType;
             $this->configuration->setAccountTypes($accountTypes);
 
@@ -236,5 +235,4 @@ class GenerateTransactions
                 return 'deposit';
         }
     }
-
 }

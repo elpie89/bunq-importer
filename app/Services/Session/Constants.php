@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * Constants.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -24,15 +25,15 @@ declare(strict_types=1);
 namespace App\Services\Session;
 
 /**
- * Class Constants
+ * Class Constants.
  */
 class Constants
 {
-    /** @var string  */
+    /** @var string */
     public const UPLOAD_CONFIG_FILE = 'config_file_path';
-    /** @var string  */
+    /** @var string */
     public const CONFIG_COMPLETE_INDICATOR = 'config_complete';
-    /** @var string  */
+    /** @var string */
     public const CONFIGURATION = 'configuration';
     /** @var string */
     public const DOWNLOAD_JOB_IDENTIFIER = 'download_job_id';

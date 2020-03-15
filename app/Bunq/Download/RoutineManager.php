@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * RoutineManager.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -32,7 +33,7 @@ use Storage;
 use Str;
 
 /**
- * Class ImportRoutineManager
+ * Class ImportRoutineManager.
  */
 class RoutineManager
 {
@@ -63,7 +64,7 @@ class RoutineManager
         // get line converter
         $this->allMessages = [];
         $this->allWarnings = [];
-        $this->allErrors   = [];
+        $this->allErrors = [];
         if (null === $downloadIdentifier) {
             Log::debug('Was given no download identifier, will generate one.');
             $this->generateDownloadIdentifier();
@@ -77,12 +78,11 @@ class RoutineManager
 
     /**
      * @param Configuration $configuration
-     *
      */
     public function setConfiguration(Configuration $configuration): void
     {
         $this->configuration = $configuration;
-        $this->paymentList   = new PaymentList($configuration);
+        $this->paymentList = new PaymentList($configuration);
         $this->paymentList->setDownloadIdentifier($this->downloadIdentifier);
 
         Log::debug(sprintf('Download ImportRoutineManager: created new payment list with download identifier "%s"', $this->downloadIdentifier));
@@ -112,19 +112,16 @@ class RoutineManager
         return $this->allErrors;
     }
 
-    /**
-     */
     public function start(): void
     {
         Log::debug(sprintf('Now in %s', __METHOD__));
         // download and store transactions from bunq.
         try {
             $transactions = $this->paymentList->getPaymentList();
-        } catch(ImportException $e) {
+        } catch (ImportException $e) {
             Log::error($e->getMessage());
             Log::error($e->getTraceAsString());
         }
-
 
         $count = count($transactions);
         $this->mergeMessages($count);
@@ -132,13 +129,10 @@ class RoutineManager
         $this->mergeErrors($count);
     }
 
-    /**
-     *
-     */
     private function generateDownloadIdentifier(): void
     {
         Log::debug('Going to generate download identifier.');
-        $disk  = Storage::disk('jobs');
+        $disk = Storage::disk('jobs');
         $count = 0;
         do {
             $downloadIdentifier = Str::random(16);
@@ -162,7 +156,7 @@ class RoutineManager
      */
     private function mergeMessages(int $count): void
     {
-        $one   = $this->paymentList->getMessages();
+        $one = $this->paymentList->getMessages();
         $total = [];
         for ($i = 0; $i < $count; $i++) {
             $total[$i] = array_merge($one[$i] ?? []);
@@ -176,7 +170,7 @@ class RoutineManager
      */
     private function mergeWarnings(int $count): void
     {
-        $one   = $this->paymentList->getWarnings();
+        $one = $this->paymentList->getWarnings();
         $total = [];
         for ($i = 0; $i < $count; $i++) {
             $total[$i] = array_merge($one[$i] ?? []);
@@ -185,20 +179,17 @@ class RoutineManager
         $this->allWarnings = $total;
     }
 
-
     /**
      * @param int $count
      */
     private function mergeErrors(int $count): void
     {
-        $one   = $this->paymentList->getErrors();
+        $one = $this->paymentList->getErrors();
         $total = [];
         for ($i = 0; $i < $count; $i++) {
             $total[$i] = array_merge($one[$i] ?? []);
         }
 
-
         $this->allErrors = $total;
     }
-
 }

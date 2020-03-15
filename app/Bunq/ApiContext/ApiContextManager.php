@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * ApiContextManager.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -32,26 +33,25 @@ use bunq\Util\BunqEnumApiEnvironmentType;
 use Log;
 
 /**
- * Class ApiContextManager
+ * Class ApiContextManager.
  */
 class ApiContextManager
 {
     /**
-     *
      * @throws ImportException
      */
     public static function getApiContext(): ApiContext
     {
-        $contextFile     = '';
+        $contextFile = '';
         $environmentType = BunqEnumApiEnvironmentType::SANDBOX();
         if (config('bunq.use_sandbox')) {
             $environmentType = BunqEnumApiEnvironmentType::SANDBOX();
-            $contextFile     = storage_path('context/bunq_sandbox.context');
+            $contextFile = storage_path('context/bunq_sandbox.context');
             Log::debug('Will create sandbox bunq API Context');
         }
         if (config('bunq.use_production')) {
             $environmentType = BunqEnumApiEnvironmentType::PRODUCTION();
-            $contextFile     = storage_path('context/bunq_pr.context');
+            $contextFile = storage_path('context/bunq_pr.context');
             Log::debug('Will create PR bunq API Context');
         }
         // restore if exists.
@@ -63,9 +63,9 @@ class ApiContextManager
             return $apiContext;
         }
         // create if not.
-        $apiKey            = config('bunq.api_code');
+        $apiKey = config('bunq.api_code');
         $deviceDescription = sprintf('Firefly III bunq importer v%s', config('bunq.version'));
-        $permittedIps      = []; // List the real expected IPs of this device or leave empty to use the current IP
+        $permittedIps = []; // List the real expected IPs of this device or leave empty to use the current IP
         try {
             Log::debug('Try to build API context with given parameters.');
             $apiContext = ApiContext::create(
@@ -90,7 +90,7 @@ class ApiContextManager
             throw new ImportException($e->getMessage());
         }
         Log::debug('Done! return API context.');
+
         return $apiContext;
     }
-
 }

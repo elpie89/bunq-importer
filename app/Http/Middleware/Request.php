@@ -1,7 +1,7 @@
 <?php
 /**
  * Request.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -34,7 +34,6 @@ use Log;
  * Class Request.
  *
  * @codeCoverageIgnore
- *
  */
 class Request extends FormRequest
 {
@@ -125,7 +124,7 @@ class Request extends FormRequest
             return null;
         }
 
-        return (float)$res;
+        return (float) $res;
     }
 
     /**
@@ -137,11 +136,11 @@ class Request extends FormRequest
      */
     public function integer(string $field): int
     {
-        return (int)$this->get($field);
+        return (int) $this->get($field);
     }
 
     /**
-     * Parse to integer
+     * Parse to integer.
      *
      * @param string|null $string
      *
@@ -156,7 +155,7 @@ class Request extends FormRequest
             return null;
         }
 
-        return (int)$string;
+        return (int) $string;
     }
 
     /**
@@ -168,16 +167,16 @@ class Request extends FormRequest
      */
     public function nullableInteger(string $field): ?int
     {
-        if (!$this->has($field)) {
+        if (! $this->has($field)) {
             return null;
         }
 
-        $value = (string)$this->get($field);
+        $value = (string) $this->get($field);
         if ('' === $value) {
             return null;
         }
 
-        return (int)$value;
+        return (int) $value;
     }
 
     /**
@@ -189,11 +188,11 @@ class Request extends FormRequest
      */
     public function nullableString(string $field): ?string
     {
-        if (!$this->has($field)) {
+        if (! $this->has($field)) {
             return null;
         }
 
-        return $this->cleanString((string)($this->get($field) ?? ''));
+        return $this->cleanString((string) ($this->get($field) ?? ''));
     }
 
     /**
@@ -205,7 +204,7 @@ class Request extends FormRequest
      */
     public function string(string $field): string
     {
-        return $this->cleanString((string)($this->get($field) ?? ''));
+        return $this->cleanString((string) ($this->get($field) ?? ''));
     }
 
     /**
@@ -223,7 +222,6 @@ class Request extends FormRequest
         $result = $this->cleanString($string);
 
         return '' === $result ? null : $result;
-
     }
 
     /**
@@ -257,7 +255,7 @@ class Request extends FormRequest
         if (null === $this->get($field)) {
             return null;
         }
-        $value = (string)$this->get($field);
+        $value = (string) $this->get($field);
         if (10 === strlen($value)) {
             // probably a date format.
             try {
@@ -291,7 +289,7 @@ class Request extends FormRequest
      */
     private function cleanString(string $string): string
     {
-        $search  = [
+        $search = [
             "\u{0001}", // start of heading
             "\u{0002}", // start of text
             "\u{0003}", // end of text
@@ -339,8 +337,8 @@ class Request extends FormRequest
             "\u{FEFF}", // zero width no -break space
         ];
         $replace = "\x20"; // plain old normal space
-        $string  = str_replace($search, $replace, $string);
-        $string  = str_replace(["\n", "\t", "\r"], "\x20", $string);
+        $string = str_replace($search, $replace, $string);
+        $string = str_replace(["\n", "\t", "\r"], "\x20", $string);
 
         return trim($string);
     }

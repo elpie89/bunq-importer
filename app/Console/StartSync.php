@@ -1,7 +1,7 @@
 <?php
 /**
  * StartSync.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -30,9 +30,7 @@ use App\Services\Sync\RoutineManager as SyncRoutineManager;
 use Log;
 
 /**
- * Trait StartSync
- *
- * @package App\Console
+ * Trait StartSync.
  */
 trait StartSync
 {
@@ -47,7 +45,7 @@ trait StartSync
         $configObject = Configuration::fromFile($configuration);
 
         // first download from bunq
-        $manager      = new SyncRoutineManager;
+        $manager = new SyncRoutineManager;
         $manager->setDownloadIdentifier($this->downloadIdentifier);
         try {
             $manager->setConfiguration($configObject);
@@ -66,7 +64,7 @@ trait StartSync
 
         $messages = $manager->getAllMessages();
         $warnings = $manager->getAllWarnings();
-        $errors   = $manager->getAllErrors();
+        $errors = $manager->getAllErrors();
 
         if (count($errors) > 0) {
             foreach ($errors as $index => $error) {

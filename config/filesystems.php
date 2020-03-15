@@ -1,7 +1,7 @@
 <?php
 /**
  * filesystems.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -71,7 +71,7 @@ return [
         'public' => [
             'driver'     => 'local',
             'root'       => storage_path('app/public'),
-            'url'        => env('APP_URL') . '/storage',
+            'url'        => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
 

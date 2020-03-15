@@ -1,7 +1,7 @@
 <?php
 /**
  * MonetaryAccountList.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -35,7 +35,7 @@ use bunq\Model\Generated\Object\Pointer;
 use Log;
 
 /**
- * Class MonetaryAccount
+ * Class MonetaryAccount.
  *
  * @codeCoverageIgnore
  */
@@ -53,10 +53,10 @@ class MonetaryAccountList
     public function listing(array $params = null, array $customHeaders = null): array
     {
         Log::debug('Now calling bunq listing.');
-        $params        = $params ?? [];
+        $params = $params ?? [];
         $customHeaders = $customHeaders ?? [];
-        $listing       = BunqMonetaryAccount::listing($params, $customHeaders);
-        $return        = [];
+        $listing = BunqMonetaryAccount::listing($params, $customHeaders);
+        $return = [];
         /** @var BunqMonetaryAccount $entry */
         foreach ($listing->getValue() as $entry) {
             try {
@@ -69,7 +69,6 @@ class MonetaryAccountList
         }
 
         return $return;
-
     }
 
     /**
@@ -116,7 +115,7 @@ class MonetaryAccountList
         switch (get_class($object)) {
             case MonetaryAccountBank::class:
             case MonetaryAccountSavings::class:
-                $return          = [
+                $return = [
                     'id'          => $object->getId(),
                     'currency'    => $object->getCurrency(),
                     'description' => $object->getDescription(),
@@ -126,7 +125,7 @@ class MonetaryAccountList
                     'iban'        => null,
                     'color'       => null,
                 ];
-                $return['iban']  = $this->getIban($object);
+                $return['iban'] = $this->getIban($object);
                 $return['color'] = $this->getColor($object);
 
                 return $return;
@@ -134,5 +133,4 @@ class MonetaryAccountList
         }
         throw new ImportException(sprintf('Bunq monetary account is unexpectedly of type "%s".', get_class($object)));
     }
-
 }
