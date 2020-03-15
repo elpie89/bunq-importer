@@ -49,8 +49,8 @@ class Payment
     {
         Log::debug('Now in Payment::listing()');
         $monetaryAccountId = $monetaryAccountId ?? 0;
-        $params = $params ?? [];
-        $customHeaders = $customHeaders ?? [];
+        $params            = $params ?? [];
+        $customHeaders     = $customHeaders ?? [];
         try {
             $result = BunqPayment::listing($monetaryAccountId, $params, $customHeaders);
         } catch (Exception $e) {

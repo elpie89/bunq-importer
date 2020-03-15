@@ -65,18 +65,18 @@ class Configuration
      */
     private function __construct()
     {
-        $this->rules = true;
-        $this->skipForm = false;
-        $this->doMapping = false;
-        $this->accounts = [];
-        $this->version = self::VERSION;
-        $this->mapping = [];
-        $this->accountTypes = [];
-        $this->dateRange = 'all';
+        $this->rules           = true;
+        $this->skipForm        = false;
+        $this->doMapping       = false;
+        $this->accounts        = [];
+        $this->version         = self::VERSION;
+        $this->mapping         = [];
+        $this->accountTypes    = [];
+        $this->dateRange       = 'all';
         $this->dateRangeNumber = 30;
-        $this->dateRangeUnit = 'd';
-        $this->dateNotBefore = '';
-        $this->dateNotAfter = '';
+        $this->dateRangeUnit   = 'd';
+        $this->dateNotBefore   = '';
+        $this->dateNotAfter    = '';
     }
 
     /**
@@ -90,19 +90,19 @@ class Configuration
 
         // TODO now have room to do version based array parsing.
 
-        $object = new self;
-        $object->rules = $array['rules'] ?? false;
-        $object->skipForm = $array['skip_form'] ?? false;
-        $object->accounts = $array['accounts'] ?? [];
-        $object->mapping = $array['mapping'] ?? [];
-        $object->accountTypes = $array['account_types'] ?? [];
-        $object->dateRange = $array['date_range'] ?? 'all';
+        $object                  = new self;
+        $object->rules           = $array['rules'] ?? false;
+        $object->skipForm        = $array['skip_form'] ?? false;
+        $object->accounts        = $array['accounts'] ?? [];
+        $object->mapping         = $array['mapping'] ?? [];
+        $object->accountTypes    = $array['account_types'] ?? [];
+        $object->dateRange       = $array['date_range'] ?? 'all';
         $object->dateRangeNumber = $array['date_range_number'] ?? 30;
-        $object->dateRangeUnit = $array['date_range_unit'] ?? 'd';
-        $object->dateNotBefore = $array['date_not_before'] ?? '';
-        $object->dateNotAfter = $array['date_not_after'] ?? '';
-        $object->doMapping = $array['do_mapping'] ?? false;
-        $object->version = $version;
+        $object->dateRangeUnit   = $array['date_range_unit'] ?? 'd';
+        $object->dateNotBefore   = $array['date_not_before'] ?? '';
+        $object->dateNotAfter    = $array['date_not_after'] ?? '';
+        $object->doMapping       = $array['do_mapping'] ?? false;
+        $object->version         = $version;
 
         return $object;
     }
@@ -129,19 +129,19 @@ class Configuration
      */
     public static function fromRequest(array $array): self
     {
-        $object = new self;
-        $object->version = self::VERSION;
-        $object->rules = $array['rules'];
+        $object           = new self;
+        $object->version  = self::VERSION;
+        $object->rules    = $array['rules'];
         $object->skipForm = $array['skip_form'];
 
-        $object->mapping = $array['mapping'];
-        $object->accountTypes = $array['account_types'] ?? [];
-        $object->dateRange = $array['date_range'];
+        $object->mapping         = $array['mapping'];
+        $object->accountTypes    = $array['account_types'] ?? [];
+        $object->dateRange       = $array['date_range'];
         $object->dateRangeNumber = $array['date_range_number'];
-        $object->dateRangeUnit = $array['date_range_unit'];
-        $object->dateNotBefore = $array['date_not_before'];
-        $object->dateNotAfter = $array['date_not_after'];
-        $object->doMapping = $array['do_mapping'];
+        $object->dateRangeUnit   = $array['date_range_unit'];
+        $object->dateNotBefore   = $array['date_not_before'];
+        $object->dateNotAfter    = $array['date_not_after'];
+        $object->doMapping       = $array['do_mapping'];
 
         $doImport = $array['do_import'] ?? [];
         $accounts = [];
@@ -155,25 +155,25 @@ class Configuration
 
         switch ($object->dateRange) {
             case 'all':
-                $object->dateRangeUnit = null;
+                $object->dateRangeUnit   = null;
                 $object->dateRangeNumber = null;
-                $object->dateNotBefore = null;
-                $object->dateNotAfter = null;
+                $object->dateNotBefore   = null;
+                $object->dateNotAfter    = null;
                 break;
             case 'partial':
-                $object->dateNotAfter = null;
+                $object->dateNotAfter  = null;
                 $object->dateNotBefore = self::calcDateNotBefore($object->dateRangeUnit, $object->dateRangeNumber);
                 break;
             case 'range':
                 $before = $object->dateNotBefore;
-                $after = $object->dateNotAfter;
+                $after  = $object->dateNotAfter;
 
                 if (null !== $before && null !== $after && $object->dateNotBefore > $object->dateNotAfter) {
                     [$before, $after] = [$after, $before];
                 }
 
                 $object->dateNotBefore = null === $before ? null : $before->format('Y-m-d');
-                $object->dateNotAfter = null === $after ? null : $after->format('Y-m-d');
+                $object->dateNotAfter  = null === $after ? null : $after->format('Y-m-d');
         }
 
         return $object;
@@ -194,7 +194,7 @@ class Configuration
             'y' => 'subYears',
         ];
         if (isset($functions[$unit])) {
-            $today = Carbon::now();
+            $today    = Carbon::now();
             $function = $functions[$unit];
             $today->$function($number);
 
@@ -212,18 +212,18 @@ class Configuration
      */
     private static function fromDefaultFile(array $data): self
     {
-        $object = new self;
-        $object->rules = $data['rules'] ?? true;
-        $object->skipForm = $data['skip_form'] ?? false;
-        $object->dateRange = $data['date_range'] ?? 'all';
+        $object                  = new self;
+        $object->rules           = $data['rules'] ?? true;
+        $object->skipForm        = $data['skip_form'] ?? false;
+        $object->dateRange       = $data['date_range'] ?? 'all';
         $object->dateRangeNumber = $data['date_range_number'] ?? 30;
-        $object->dateRangeUnit = $data['date_range_unit'] ?? 'd';
-        $object->dateNotBefore = $data['date_not_before'] ?? '';
-        $object->accountTypes = $array['account_types'] ?? [];
-        $object->dateNotAfter = $data['date_not_after'] ?? '';
-        $object->doMapping = $data['do_mapping'] ?? false;
-        $object->mapping = $data['mapping'] ?? [];
-        $object->accounts = $data['accounts'] ?? [];
+        $object->dateRangeUnit   = $data['date_range_unit'] ?? 'd';
+        $object->dateNotBefore   = $data['date_not_before'] ?? '';
+        $object->accountTypes    = $array['account_types'] ?? [];
+        $object->dateNotAfter    = $data['date_not_after'] ?? '';
+        $object->doMapping       = $data['do_mapping'] ?? false;
+        $object->mapping         = $data['mapping'] ?? [];
+        $object->accounts        = $data['accounts'] ?? [];
 
         // TODO recalculate the date if 'partial'
         if ('partial' === $data['date_range']) {

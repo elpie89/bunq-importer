@@ -47,7 +47,7 @@ class JobStatusManager
             Log::debug(sprintf('Try to see if file exists for sync job %s.', $identifier));
             if ($disk->exists($identifier)) {
                 Log::debug(sprintf('Status file exists for sync job %s.', $identifier));
-                $array = json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR);
+                $array  = json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR);
                 $status = JobStatus::fromArray($array);
                 Log::debug(sprintf('Status found for sync job %s', $identifier), $array);
 
@@ -76,8 +76,8 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($identifier)) {
-                $status = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
-                $status->errors[$index] = $status->errors[$index] ?? [];
+                $status                   = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
+                $status->errors[$index]   = $status->errors[$index] ?? [];
                 $status->errors[$index][] = $error;
                 self::storeJobStatus($identifier, $status);
             }
@@ -96,8 +96,8 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($identifier)) {
-                $status = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
-                $status->warnings[$index] = $status->warnings[$index] ?? [];
+                $status                     = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
+                $status->warnings[$index]   = $status->warnings[$index] ?? [];
                 $status->warnings[$index][] = $warning;
                 self::storeJobStatus($identifier, $status);
             }
@@ -116,8 +116,8 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($identifier)) {
-                $status = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
-                $status->messages[$index] = $status->messages[$index] ?? [];
+                $status                     = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
+                $status->messages[$index]   = $status->messages[$index] ?? [];
                 $status->messages[$index][] = $message;
                 self::storeJobStatus($identifier, $status);
             }
@@ -137,7 +137,7 @@ class JobStatusManager
         Log::debug(sprintf('Now in Sync setJobStatus(%s)', $status));
         Log::debug(sprintf('Found "%s" in the session', $syncIdentifier));
 
-        $jobStatus = self::startOrFindJob($syncIdentifier);
+        $jobStatus         = self::startOrFindJob($syncIdentifier);
         $jobStatus->status = $status;
 
         self::storeJobStatus($syncIdentifier, $jobStatus);

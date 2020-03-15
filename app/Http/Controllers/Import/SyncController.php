@@ -54,7 +54,7 @@ class SyncController extends Controller
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
         $mainTitle = 'Send data to Firefly III';
-        $subTitle = 'After download, comes import.';
+        $subTitle  = 'After download, comes import.';
 
         // get download job ID so we have the data to send to FF3
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
@@ -70,7 +70,7 @@ class SyncController extends Controller
         if (null === $syncIdentifier) {
             Log::debug('SyncController is creating new routine manager with NEW sync identifier');
             // create a new import job:
-            $routine = new RoutineManager(null);
+            $routine        = new RoutineManager(null);
             $syncIdentifier = $routine->getSyncIdentifier();
         }
 

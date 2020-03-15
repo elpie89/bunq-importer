@@ -337,8 +337,8 @@ class Request extends FormRequest
             "\u{FEFF}", // zero width no -break space
         ];
         $replace = "\x20"; // plain old normal space
-        $string = str_replace($search, $replace, $string);
-        $string = str_replace(["\n", "\t", "\r"], "\x20", $string);
+        $string  = str_replace($search, $replace, $string);
+        $string  = str_replace(["\n", "\t", "\r"], "\x20", $string);
 
         return trim($string);
     }

@@ -58,7 +58,7 @@ class UploadController extends Controller
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
         $configFile = $request->file('config_file');
-        $errors = new MessageBag;
+        $errors     = new MessageBag;
 
         // if present, and no errors, upload the config file and store it in the session.
         if (null !== $configFile) {

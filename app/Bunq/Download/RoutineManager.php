@@ -64,7 +64,7 @@ class RoutineManager
         // get line converter
         $this->allMessages = [];
         $this->allWarnings = [];
-        $this->allErrors = [];
+        $this->allErrors   = [];
         if (null === $downloadIdentifier) {
             Log::debug('Was given no download identifier, will generate one.');
             $this->generateDownloadIdentifier();
@@ -82,7 +82,7 @@ class RoutineManager
     public function setConfiguration(Configuration $configuration): void
     {
         $this->configuration = $configuration;
-        $this->paymentList = new PaymentList($configuration);
+        $this->paymentList   = new PaymentList($configuration);
         $this->paymentList->setDownloadIdentifier($this->downloadIdentifier);
 
         Log::debug(sprintf('Download ImportRoutineManager: created new payment list with download identifier "%s"', $this->downloadIdentifier));
@@ -132,7 +132,7 @@ class RoutineManager
     private function generateDownloadIdentifier(): void
     {
         Log::debug('Going to generate download identifier.');
-        $disk = Storage::disk('jobs');
+        $disk  = Storage::disk('jobs');
         $count = 0;
         do {
             $downloadIdentifier = Str::random(16);
@@ -156,7 +156,7 @@ class RoutineManager
      */
     private function mergeMessages(int $count): void
     {
-        $one = $this->paymentList->getMessages();
+        $one   = $this->paymentList->getMessages();
         $total = [];
         for ($i = 0; $i < $count; $i++) {
             $total[$i] = array_merge($one[$i] ?? []);
@@ -170,7 +170,7 @@ class RoutineManager
      */
     private function mergeWarnings(int $count): void
     {
-        $one = $this->paymentList->getWarnings();
+        $one   = $this->paymentList->getWarnings();
         $total = [];
         for ($i = 0; $i < $count; $i++) {
             $total[$i] = array_merge($one[$i] ?? []);
@@ -184,7 +184,7 @@ class RoutineManager
      */
     private function mergeErrors(int $count): void
     {
-        $one = $this->paymentList->getErrors();
+        $one   = $this->paymentList->getErrors();
         $total = [];
         for ($i = 0; $i < $count; $i++) {
             $total[$i] = array_merge($one[$i] ?? []);

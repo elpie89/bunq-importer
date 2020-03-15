@@ -44,9 +44,9 @@ class ParseBunqDownload
      */
     public function getDownload(string $downloadIdentifier): array
     {
-        $disk = Storage::disk('downloads');
+        $disk   = Storage::disk('downloads');
         $result = [];
-        $count = 0;
+        $count  = 0;
         if ($disk->exists($downloadIdentifier)) {
             try {
                 $this->addMessage(0, 'Decoded bunq download.');

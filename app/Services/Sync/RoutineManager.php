@@ -98,14 +98,14 @@ class RoutineManager
     {
         Log::debug('Constructed RoutineManager for sync');
 
-        $this->bunqParser = new ParseBunqDownload;
+        $this->bunqParser           = new ParseBunqDownload;
         $this->transactionGenerator = new GenerateTransactions;
-        $this->transactionSender = new SendTransactions;
+        $this->transactionSender    = new SendTransactions;
 
         // get line converter
         $this->allMessages = [];
         $this->allWarnings = [];
-        $this->allErrors = [];
+        $this->allErrors   = [];
         if (null === $syncIdentifier) {
             $this->generateSyncIdentifier();
         }
@@ -185,7 +185,7 @@ class RoutineManager
     private function generateSyncIdentifier(): void
     {
         Log::debug('Going to generate sync job identifier.');
-        $disk = Storage::disk('jobs');
+        $disk  = Storage::disk('jobs');
         $count = 0;
         do {
             $syncIdentifier = Str::random(16);
