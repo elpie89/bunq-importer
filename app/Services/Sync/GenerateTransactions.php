@@ -45,8 +45,8 @@ class GenerateTransactions
     /**
      * @param array $bunq
      *
-     * @return array
      * @throws ImportException
+     * @return array
      */
     public function getTransactions(array $bunq): array
     {
@@ -78,8 +78,8 @@ class GenerateTransactions
      * @param int   $bunqAccountId
      * @param array $entry
      *
-     * @return array
      * @throws ImportException
+     * @return array
      */
     private function generateTransaction(int $bunqAccountId, array $entry): array
     {
@@ -156,8 +156,8 @@ class GenerateTransactions
     /**
      * @param int $accountId
      *
-     * @return string
      * @throws \GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException
+     * @return string
      */
     private function getAccountType(int $accountId): string
     {
@@ -218,8 +218,8 @@ class GenerateTransactions
      * @param string $source
      * @param string $destination
      *
-     * @return string
      * @throws ImportException
+     * @return string
      */
     private function getTransactionType(string $source, string $destination): string
     {

@@ -49,6 +49,30 @@ trait ProgressInformation
     }
 
     /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors ?? [];
+    }
+
+    /**
+     * @return array
+     */
+    public function getMessages(): array
+    {
+        return $this->messages ?? [];
+    }
+
+    /**
+     * @return array
+     */
+    public function getWarnings(): array
+    {
+        return $this->warnings ?? [];
+    }
+
+    /**
      * @param int    $index
      * @param string $error
      */
@@ -91,29 +115,5 @@ trait ProgressInformation
         // write warning
         Log::warning(sprintf('Warning: %s %d: %s', $this->identifier, $index, $warning));
         JobStatusManager::addWarning($this->identifier, $index, $warning);
-    }
-
-    /**
-     * @return array
-     */
-    public function getErrors(): array
-    {
-        return $this->errors ?? [];
-    }
-
-    /**
-     * @return array
-     */
-    public function getMessages(): array
-    {
-        return $this->messages ?? [];
-    }
-
-    /**
-     * @return array
-     */
-    public function getWarnings(): array
-    {
-        return $this->warnings ?? [];
     }
 }

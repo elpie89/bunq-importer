@@ -109,8 +109,8 @@ class MappingController extends Controller
     }
 
     /**
-     * @return array
      * @throws ApiHttpException
+     * @return array
      */
     private function getFireflyIIIAccounts(): array
     {
@@ -139,8 +139,8 @@ class MappingController extends Controller
     }
 
     /**
-     * @return array
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return array
      */
     private function getOpposingAccounts(): array
     {

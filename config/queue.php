@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * queue.php
  * Copyright (c) 2020 james@firefly-iii.org.
@@ -21,7 +23,6 @@
  */
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Queue Connection Name

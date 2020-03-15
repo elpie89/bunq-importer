@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * passwords.php
  * Copyright (c) 2020 james@firefly-iii.org.
@@ -21,7 +23,6 @@
  */
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Password Reset Language Lines
