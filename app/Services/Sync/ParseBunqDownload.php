@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * ParseBunqDownload.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -30,7 +31,7 @@ use Log;
 use Storage;
 
 /**
- * Class ParseBunqDownload
+ * Class ParseBunqDownload.
  */
 class ParseBunqDownload
 {
@@ -43,18 +44,18 @@ class ParseBunqDownload
      */
     public function getDownload(string $downloadIdentifier): array
     {
-        $disk   = Storage::disk('downloads');
+        $disk = Storage::disk('downloads');
         $result = [];
-        $count  = 0;
+        $count = 0;
         if ($disk->exists($downloadIdentifier)) {
             try {
                 $this->addMessage(0, 'Decoded bunq download.');
                 $result = json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR);
-            } catch (FileNotFoundException|JsonException $e) {
+            } catch (FileNotFoundException | JsonException $e) {
                 $this->addError(0, 'Could not decode bunq download.');
             }
         }
-        foreach($result as $transactions) {
+        foreach ($result as $transactions) {
             $count += count($transactions);
         }
 

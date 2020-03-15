@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * JobStatus.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -24,8 +25,9 @@ declare(strict_types=1);
 namespace App\Bunq\Download\JobStatus;
 
 use Log;
+
 /**
- * Class JobStatus
+ * Class JobStatus.
  */
 class JobStatus
 {
@@ -53,8 +55,8 @@ class JobStatus
     public function __construct()
     {
         Log::debug('Constructed download JobStatus');
-        $this->status   = self::JOB_WAITING;
-        $this->errors   = [];
+        $this->status = self::JOB_WAITING;
+        $this->errors = [];
         $this->warnings = [];
         $this->messages = [];
     }
@@ -66,9 +68,9 @@ class JobStatus
      */
     public static function fromArray(array $array): self
     {
-        $config           = new self;
-        $config->status   = $array['status'];
-        $config->errors   = $array['errors'] ?? [];
+        $config = new self;
+        $config->status = $array['status'];
+        $config->errors = $array['errors'] ?? [];
         $config->warnings = $array['warnings'] ?? [];
         $config->messages = $array['messages'] ?? [];
 

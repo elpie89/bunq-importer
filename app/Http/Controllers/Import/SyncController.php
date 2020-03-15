@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * SyncController.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -23,7 +24,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Import;
 
-
 use App\Exceptions\ImportException;
 use App\Http\Controllers\Controller;
 use App\Services\Configuration\Configuration;
@@ -31,13 +31,13 @@ use App\Services\Session\Constants;
 use App\Services\Sync\JobStatus\JobStatus;
 use App\Services\Sync\JobStatus\JobStatusManager;
 use App\Services\Sync\RoutineManager;
-use RuntimeException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
+use RuntimeException;
 
 /**
- * Class SyncController
+ * Class SyncController.
  */
 class SyncController extends Controller
 {
@@ -49,14 +49,12 @@ class SyncController extends Controller
         parent::__construct();
         app('view')->share('pageTitle', 'Send data to Firefly III');
     }
-    /**
-     *
-     */
+
     public function index()
     {
         Log::debug(sprintf('Now at %s', __METHOD__));
         $mainTitle = 'Send data to Firefly III';
-        $subTitle  = 'After download, comes import.';
+        $subTitle = 'After download, comes import.';
 
         // get download job ID so we have the data to send to FF3
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
@@ -72,7 +70,7 @@ class SyncController extends Controller
         if (null === $syncIdentifier) {
             Log::debug('SyncController is creating new routine manager with NEW sync identifier');
             // create a new import job:
-            $routine        = new RoutineManager(null);
+            $routine = new RoutineManager(null);
             $syncIdentifier = $routine->getSyncIdentifier();
         }
 
@@ -100,7 +98,7 @@ class SyncController extends Controller
         // get sync ID so we have a separate track thing.
         $syncIdentifier = session()->get(Constants::SYNC_JOB_IDENTIFIER);
 
-        $routine    = new RoutineManager($syncIdentifier);
+        $routine = new RoutineManager($syncIdentifier);
 
         // store identifier in session so the status can get it (should already be there)
         session()->put(Constants::SYNC_JOB_IDENTIFIER, $syncIdentifier);
@@ -152,5 +150,4 @@ class SyncController extends Controller
 
         return response()->json($importJobStatus->toArray());
     }
-
 }

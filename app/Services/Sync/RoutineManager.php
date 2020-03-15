@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * RoutineManager.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -23,7 +24,6 @@ declare(strict_types=1);
 
 namespace App\Services\Sync;
 
-use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
 use App\Services\Sync\JobStatus\JobStatusManager;
 use Log;
@@ -31,7 +31,7 @@ use Storage;
 use Str;
 
 /**
- * Class RoutineManager
+ * Class RoutineManager.
  */
 class RoutineManager
 {
@@ -87,7 +87,6 @@ class RoutineManager
         return $this->downloadIdentifier;
     }
 
-
     /**
      * Collect info on the current job, hold it in memory.
      *
@@ -99,14 +98,14 @@ class RoutineManager
     {
         Log::debug('Constructed RoutineManager for sync');
 
-        $this->bunqParser           = new ParseBunqDownload;
+        $this->bunqParser = new ParseBunqDownload;
         $this->transactionGenerator = new GenerateTransactions;
-        $this->transactionSender    = new SendTransactions;
+        $this->transactionSender = new SendTransactions;
 
         // get line converter
         $this->allMessages = [];
         $this->allWarnings = [];
-        $this->allErrors   = [];
+        $this->allErrors = [];
         if (null === $syncIdentifier) {
             $this->generateSyncIdentifier();
         }
@@ -146,7 +145,6 @@ class RoutineManager
 
     /**
      * @param Configuration $configuration
-     *
      */
     public function setConfiguration(Configuration $configuration): void
     {
@@ -157,7 +155,6 @@ class RoutineManager
 
     /**
      * Start the import.
-     *
      */
     public function start(): void
     {
@@ -185,13 +182,10 @@ class RoutineManager
         $this->mergeErrors($count);
     }
 
-    /**
-     *
-     */
     private function generateSyncIdentifier(): void
     {
         Log::debug('Going to generate sync job identifier.');
-        $disk  = Storage::disk('jobs');
+        $disk = Storage::disk('jobs');
         $count = 0;
         do {
             $syncIdentifier = Str::random(16);

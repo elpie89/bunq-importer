@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * ProgressInformation.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -22,9 +23,11 @@ declare(strict_types=1);
  */
 
 namespace App\Services\Sync\JobStatus;
+
 use Log;
+
 /**
- * Trait ProgressInformation
+ * Trait ProgressInformation.
  */
 trait ProgressInformation
 {
@@ -51,8 +54,8 @@ trait ProgressInformation
      */
     protected function addError(int $index, string $error): void
     {
-        $this->errors           = $this->errors ?? [];
-        $this->errors[$index]   = $this->errors[$index] ?? [];
+        $this->errors = $this->errors ?? [];
+        $this->errors[$index] = $this->errors[$index] ?? [];
         $this->errors[$index][] = $error;
 
         // write errors
@@ -66,8 +69,8 @@ trait ProgressInformation
      */
     protected function addMessage(int $index, string $message): void
     {
-        $this->messages           = $this->messages ?? [];
-        $this->messages[$index]   = $this->messages[$index] ?? [];
+        $this->messages = $this->messages ?? [];
+        $this->messages[$index] = $this->messages[$index] ?? [];
         $this->messages[$index][] = $message;
 
         // write message
@@ -81,10 +84,9 @@ trait ProgressInformation
      */
     protected function addWarning(int $index, string $warning): void
     {
-        $this->warnings           = $this->warnings ?? [];
-        $this->warnings[$index]   = $this->warnings[$index] ?? [];
+        $this->warnings = $this->warnings ?? [];
+        $this->warnings[$index] = $this->warnings[$index] ?? [];
         $this->warnings[$index][] = $warning;
-
 
         // write warning
         Log::warning(sprintf('Warning: %s %d: %s', $this->identifier, $index, $warning));
@@ -114,6 +116,4 @@ trait ProgressInformation
     {
         return $this->warnings ?? [];
     }
-
-
 }

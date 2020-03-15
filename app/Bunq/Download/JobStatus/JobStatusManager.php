@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * JobStatusManager.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -29,7 +30,7 @@ use Log;
 use Storage;
 
 /**
- * Class JobStatusManager
+ * Class JobStatusManager.
  */
 class JobStatusManager
 {
@@ -75,8 +76,8 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($downloadIdentifier)) {
-                $status                   = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
-                $status->errors[$index]   = $status->errors[$index] ?? [];
+                $status = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
+                $status->errors[$index] = $status->errors[$index] ?? [];
                 $status->errors[$index][] = $error;
                 self::storeJobStatus($downloadIdentifier, $status);
             }
@@ -96,8 +97,8 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($downloadIdentifier)) {
-                $status                     = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
-                $status->warnings[$index]   = $status->warnings[$index] ?? [];
+                $status = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
+                $status->warnings[$index] = $status->warnings[$index] ?? [];
                 $status->warnings[$index][] = $warning;
                 self::storeJobStatus($downloadIdentifier, $status);
             }
@@ -117,8 +118,8 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($downloadIdentifier)) {
-                $status                     = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
-                $status->messages[$index]   = $status->messages[$index] ?? [];
+                $status = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
+                $status->messages[$index] = $status->messages[$index] ?? [];
                 $status->messages[$index][] = $message;
                 self::storeJobStatus($downloadIdentifier, $status);
             }
@@ -127,7 +128,6 @@ class JobStatusManager
             Log::error($e->getTraceAsString());
         }
     }
-
 
     /**
      * @param string $status
@@ -139,7 +139,7 @@ class JobStatusManager
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
         Log::debug(sprintf('Now in download setJobStatus(%s) for job %s', $status, $downloadIdentifier));
 
-        $jobStatus         = self::startOrFindJob($downloadIdentifier);
+        $jobStatus = self::startOrFindJob($downloadIdentifier);
         $jobStatus->status = $status;
 
         self::storeJobStatus($downloadIdentifier, $jobStatus);

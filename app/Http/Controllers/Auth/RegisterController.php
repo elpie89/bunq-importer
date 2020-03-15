@@ -1,7 +1,7 @@
 <?php
 /**
  * RegisterController.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -92,10 +92,10 @@ class RegisterController extends Controller
     {
         return Validator::make(
             $data, [
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]
+                'name'     => ['required', 'string', 'max:255'],
+                'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+            ]
         );
     }
 }

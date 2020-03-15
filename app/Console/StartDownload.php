@@ -1,7 +1,7 @@
 <?php
 /**
  * StartDownload.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -28,8 +28,9 @@ use App\Bunq\Download\RoutineManager as DownloadRoutineMananger;
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
 use Log;
+
 /**
- * Trait StartDownload
+ * Trait StartDownload.
  */
 trait StartDownload
 {
@@ -44,7 +45,7 @@ trait StartDownload
         $configObject = Configuration::fromFile($configuration);
 
         // first download from bunq
-        $manager      = new DownloadRoutineMananger;
+        $manager = new DownloadRoutineMananger;
         try {
             $manager->setConfiguration($configObject);
         } catch (ImportException $e) {
@@ -62,7 +63,7 @@ trait StartDownload
 
         $messages = $manager->getAllMessages();
         $warnings = $manager->getAllWarnings();
-        $errors   = $manager->getAllErrors();
+        $errors = $manager->getAllErrors();
 
         if (count($errors) > 0) {
             foreach ($errors as $index => $error) {

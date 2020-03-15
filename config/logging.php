@@ -1,7 +1,7 @@
 <?php
 /**
  * logging.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -57,20 +57,20 @@ return [
     'channels' => [
         'stack' => [
             'driver'            => 'stack',
-            'channels'          => ['daily','stdout'],
+            'channels'          => ['daily', 'stdout'],
             'ignore_exceptions' => false,
         ],
 
         'single' => [
             'driver' => 'single',
             'path'   => storage_path('logs/laravel.log'),
-            'level'  => env('LOG_LEVEL','info'),
+            'level'  => env('LOG_LEVEL', 'info'),
         ],
 
         'daily' => [
             'driver' => 'daily',
             'path'   => storage_path('logs/laravel.log'),
-            'level'  => env('LOG_LEVEL','info'),
+            'level'  => env('LOG_LEVEL', 'info'),
             'days'   => 14,
         ],
 
@@ -84,7 +84,7 @@ return [
 
         'papertrail' => [
             'driver'       => 'monolog',
-            'level'        => env('LOG_LEVEL','info'),
+            'level'        => env('LOG_LEVEL', 'info'),
             'handler'      => SyslogUdpHandler::class,
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
@@ -93,20 +93,20 @@ return [
         ],
 
         'stderr' => [
-            'driver'    => 'monolog',
-            'handler'   => StreamHandler::class,
-            'level'        => env('LOG_LEVEL','info'),
-            'formatter' => env('LOG_STDERR_FORMATTER'),
-            'with'      => [
+            'driver'       => 'monolog',
+            'handler'      => StreamHandler::class,
+            'level'        => env('LOG_LEVEL', 'info'),
+            'formatter'    => env('LOG_STDERR_FORMATTER'),
+            'with'         => [
                 'stream' => 'php://stderr',
             ],
         ],
         'stdout' => [
-            'driver'    => 'monolog',
-            'handler'   => StreamHandler::class,
-            'level'        => env('LOG_LEVEL','info'),
-            'formatter' => env('LOG_STDERR_FORMATTER'),
-            'with'      => [
+            'driver'       => 'monolog',
+            'handler'      => StreamHandler::class,
+            'level'        => env('LOG_LEVEL', 'info'),
+            'formatter'    => env('LOG_STDERR_FORMATTER'),
+            'with'         => [
                 'stream' => 'php://stdout',
             ],
         ],

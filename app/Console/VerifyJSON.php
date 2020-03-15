@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * VerifyJSON.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -28,7 +29,7 @@ use JsonException;
 use Log;
 
 /**
- * Trait VerifyJSON
+ * Trait VerifyJSON.
  */
 trait VerifyJSON
 {
@@ -43,15 +44,13 @@ trait VerifyJSON
         $json = file_get_contents($file);
         try {
             $configuration = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-        } catch (Exception|JsonException $e) {
+        } catch (Exception | JsonException $e) {
             $message = sprintf('The importer can\'t import: could not decode the JSON in the config file: %s', $e->getMessage());
             Log::error($message);
 
             return false;
-
         }
 
         return true;
     }
-
 }

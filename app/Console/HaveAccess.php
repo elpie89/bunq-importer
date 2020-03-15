@@ -1,7 +1,7 @@
 <?php
 /**
  * HaveAccess.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -28,7 +28,7 @@ use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 use GrumpyDictator\FFIIIApiSupport\Request\SystemInformationRequest;
 
 /**
- * Trait HaveAccess
+ * Trait HaveAccess.
  */
 trait HaveAccess
 {
@@ -37,8 +37,8 @@ trait HaveAccess
      */
     private function haveAccess(): bool
     {
-        $uri     = (string)config('bunq.uri');
-        $token   = (string)config('bunq.access_token');
+        $uri = (string) config('bunq.uri');
+        $token = (string) config('bunq.access_token');
         $request = new SystemInformationRequest($uri, $token);
         try {
             $request->get();

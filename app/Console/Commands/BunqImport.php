@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * BunqImport.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -31,8 +32,7 @@ use Illuminate\Console\Command;
 use Log;
 
 /**
- *
- * Class BunqImport
+ * Class BunqImport.
  */
 class BunqImport extends Command
 {
@@ -77,12 +77,11 @@ class BunqImport extends Command
             return 1;
         }
 
-
         $this->info(sprintf('Welcome to the Firefly III bunq importer, v%s', config('bunq.version')));
         Log::debug(sprintf('Now in %s', __METHOD__));
         $config = $this->argument('config');
 
-        if (!file_exists($config) || (file_exists($config) && !is_file($config))) {
+        if (! file_exists($config) || (file_exists($config) && ! is_file($config))) {
             $message = sprintf('The importer can\'t import: configuration file "%s" does not exist or could not be read.', $config);
             $this->error($message);
             Log::error($message);

@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * SendTransactions.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -33,7 +34,7 @@ use GrumpyDictator\FFIIIApiSupport\Response\ValidationErrorResponse;
 use Log;
 
 /**
- * Class SendTransactions
+ * Class SendTransactions.
  */
 class SendTransactions
 {
@@ -49,15 +50,14 @@ class SendTransactions
      */
     public function send(array $transactions): array
     {
-        $uri   = (string)config('bunq.uri');
-        $token = (string)config('bunq.access_token');
+        $uri = (string) config('bunq.uri');
+        $token = (string) config('bunq.access_token');
         foreach ($transactions as $index => $transaction) {
             Log::debug(sprintf('Trying to send transaction #%d', $index));
             $this->sendTransaction($uri, $token, $index, $transaction);
         }
 
         return [];
-
     }
 
     /**
@@ -85,17 +85,19 @@ class SendTransactions
         } catch (ApiHttpException $e) {
             Log::error($e->getMessage());
             $this->addError($index, $e->getMessage());
+
             return [];
         }
-        if($response instanceof ValidationErrorResponse) {
+        if ($response instanceof ValidationErrorResponse) {
             /** ValidationErrorResponse $error */
-            foreach($response->errors->getMessages() as $key => $errors) {
-                foreach($errors as $error) {
+            foreach ($response->errors->getMessages() as $key => $errors) {
+                foreach ($errors as $error) {
                     // +1 so the line numbers match.
                     $this->addError($index + 1, $error);
                     Log::error(sprintf('Could not create transaction: %s', $error), $transaction);
                 }
             }
+
             return [];
         }
         /** @var PostTransactionResponse $group */
@@ -105,14 +107,14 @@ class SendTransactions
 
             return [];
         }
-        $groupId  = $group->id;
-        $uri      = (string)config('bunq.uri');
-        $groupUri = (string)sprintf('%s/transactions/show/%d', $uri, $groupId);
+        $groupId = $group->id;
+        $uri = (string) config('bunq.uri');
+        $groupUri = (string) sprintf('%s/transactions/show/%d', $uri, $groupId);
 
         /** @var Transaction $tr */
         foreach ($group->transactions as $tr) {
             $this->addMessage(
-                $index+1, sprintf('Created transaction #%d: <a href="%s">%s</a> (%s %s)', $groupId, $groupUri, $tr->description, $tr->currencyCode, round($tr->amount,2))
+                $index + 1, sprintf('Created transaction #%d: <a href="%s">%s</a> (%s %s)', $groupId, $groupUri, $tr->description, $tr->currencyCode, round($tr->amount, 2))
             );
         }
 

@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * JobStatusManager.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -29,7 +30,7 @@ use Log;
 use Storage;
 
 /**
- * Class JobStatusManager
+ * Class JobStatusManager.
  */
 class JobStatusManager
 {
@@ -75,8 +76,8 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($identifier)) {
-                $status                   = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
-                $status->errors[$index]   = $status->errors[$index] ?? [];
+                $status = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
+                $status->errors[$index] = $status->errors[$index] ?? [];
                 $status->errors[$index][] = $error;
                 self::storeJobStatus($identifier, $status);
             }
@@ -95,8 +96,8 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($identifier)) {
-                $status                     = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
-                $status->warnings[$index]   = $status->warnings[$index] ?? [];
+                $status = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
+                $status->warnings[$index] = $status->warnings[$index] ?? [];
                 $status->warnings[$index][] = $warning;
                 self::storeJobStatus($identifier, $status);
             }
@@ -115,8 +116,8 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($identifier)) {
-                $status                     = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
-                $status->messages[$index]   = $status->messages[$index] ?? [];
+                $status = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
+                $status->messages[$index] = $status->messages[$index] ?? [];
                 $status->messages[$index][] = $message;
                 self::storeJobStatus($identifier, $status);
             }
@@ -124,7 +125,6 @@ class JobStatusManager
             Log::error($e);
         }
     }
-
 
     /**
      * @param string $status
@@ -137,7 +137,7 @@ class JobStatusManager
         Log::debug(sprintf('Now in Sync setJobStatus(%s)', $status));
         Log::debug(sprintf('Found "%s" in the session', $syncIdentifier));
 
-        $jobStatus         = self::startOrFindJob($syncIdentifier);
+        $jobStatus = self::startOrFindJob($syncIdentifier);
         $jobStatus->status = $status;
 
         self::storeJobStatus($syncIdentifier, $jobStatus);
