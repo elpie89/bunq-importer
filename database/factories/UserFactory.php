@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * UserFactory.php
  * Copyright (c) 2020 james@firefly-iii.org.
@@ -37,7 +39,7 @@ use Illuminate\Support\Str;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
+$factory->define(User::class, static function (Faker $faker) {
     return [
         'name'              => $faker->name,
         'email'             => $faker->unique()->safeEmail,

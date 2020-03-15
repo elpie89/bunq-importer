@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * logging.php
  * Copyright (c) 2020 james@firefly-iii.org.
@@ -25,7 +27,6 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel

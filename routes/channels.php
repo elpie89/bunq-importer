@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * channels.php
  * Copyright (c) 2020 james@firefly-iii.org.
@@ -31,6 +33,6 @@
 |
 */
 
-Broadcast::channel('App.User.{id}', function ($user, $id) {
+Broadcast::channel('App.User.{id}', static function ($user, $id) {
     return (int) $user->id === (int) $id;
 });

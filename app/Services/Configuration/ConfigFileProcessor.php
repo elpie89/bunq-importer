@@ -37,8 +37,8 @@ class ConfigFileProcessor
      *
      * @param string $fileName
      *
-     * @return Configuration
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return Configuration
      */
     public static function convertConfigFile(string $fileName): Configuration
     {

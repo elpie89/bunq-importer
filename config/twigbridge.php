@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * twigbridge.php
  * Copyright (c) 2020 james@firefly-iii.org.
@@ -27,7 +29,6 @@ use Illuminate\Contracts\Support\Htmlable;
  * Configuration options for Twig.
  */
 return [
-
     'twig' => [
         /*
         |--------------------------------------------------------------------------

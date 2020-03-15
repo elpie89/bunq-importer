@@ -42,8 +42,8 @@ class Payment
      * @param array|null $params
      * @param array|null $customHeaders
      *
-     * @return BunqResponsePaymentList
      * @throws ImportException
+     * @return BunqResponsePaymentList
      */
     public function listing(int $monetaryAccountId = null, array $params = null, array $customHeaders = null): BunqResponsePaymentList
     {

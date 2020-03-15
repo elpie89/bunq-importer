@@ -78,9 +78,9 @@ class ConfigurationController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\Factory|RedirectResponse|\Illuminate\View\View
      * @throws \App\Exceptions\ImportException
      * @throws \GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException
+     * @return \Illuminate\Contracts\View\Factory|RedirectResponse|\Illuminate\View\View
      */
     public function index()
     {

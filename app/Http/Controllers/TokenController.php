@@ -39,8 +39,8 @@ class TokenController extends Controller
     /**
      * Check if the Firefly III API responds properly.
      *
-     * @return JsonResponse
      * @throws \App\Exceptions\ImportException
+     * @return JsonResponse
      */
     public function doValidate(): JsonResponse
     {
@@ -78,8 +78,8 @@ class TokenController extends Controller
     /**
      * Same thing but not over JSON.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      * @throws \App\Exceptions\ImportException
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
     public function index()
     {

@@ -56,38 +56,6 @@ class RoutineManager
     private $transactionSender;
 
     /**
-     * @param string $downloadIdentifier
-     */
-    public function setDownloadIdentifier(string $downloadIdentifier): void
-    {
-        $this->downloadIdentifier = $downloadIdentifier;
-    }
-
-    /**
-     * @param string $syncIdentifier
-     */
-    public function setSyncIdentifier(string $syncIdentifier): void
-    {
-        $this->syncIdentifier = $syncIdentifier;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSyncIdentifier(): string
-    {
-        return $this->syncIdentifier;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDownloadIdentifier(): string
-    {
-        return $this->downloadIdentifier;
-    }
-
-    /**
      * Collect info on the current job, hold it in memory.
      *
      * ImportRoutineManager constructor.
@@ -117,6 +85,38 @@ class RoutineManager
         $this->transactionGenerator->setIdentifier($this->syncIdentifier);
 
         JobStatusManager::startOrFindJob($this->syncIdentifier);
+    }
+
+    /**
+     * @param string $downloadIdentifier
+     */
+    public function setDownloadIdentifier(string $downloadIdentifier): void
+    {
+        $this->downloadIdentifier = $downloadIdentifier;
+    }
+
+    /**
+     * @param string $syncIdentifier
+     */
+    public function setSyncIdentifier(string $syncIdentifier): void
+    {
+        $this->syncIdentifier = $syncIdentifier;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSyncIdentifier(): string
+    {
+        return $this->syncIdentifier;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDownloadIdentifier(): string
+    {
+        return $this->downloadIdentifier;
     }
 
     /**
