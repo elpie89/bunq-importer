@@ -95,10 +95,10 @@ class PaymentList
         }
         $totalCount = 0;
         foreach (array_keys($this->configuration->getAccounts()) as $bunqAccountId) {
-            $bunqAccountId = (int)$bunqAccountId;
+            $bunqAccountId = (int) $bunqAccountId;
             try {
                 $return[$bunqAccountId] = $this->getForAccount($bunqAccountId);
-                $totalCount += count($return[$bunqAccountId]);
+                $totalCount             += count($return[$bunqAccountId]);
             } catch (ImportException $e) {
                 Log::error($e->getMessage());
                 Log::error($e->getTraceAsString());
