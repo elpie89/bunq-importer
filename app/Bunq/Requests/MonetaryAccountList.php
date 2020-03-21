@@ -30,6 +30,7 @@ use bunq\Exception\BunqException;
 use bunq\Model\Core\BunqModel;
 use bunq\Model\Generated\Endpoint\MonetaryAccount as BunqMonetaryAccount;
 use bunq\Model\Generated\Endpoint\MonetaryAccountBank;
+use bunq\Model\Generated\Endpoint\MonetaryAccountJoint;
 use bunq\Model\Generated\Endpoint\MonetaryAccountSavings;
 use bunq\Model\Generated\Object\Pointer;
 use Log;
@@ -115,6 +116,7 @@ class MonetaryAccountList
         switch (get_class($object)) {
             case MonetaryAccountBank::class:
             case MonetaryAccountSavings::class:
+            case MonetaryAccountJoint::class:
                 $return          = [
                     'id'          => $object->getId(),
                     'currency'    => $object->getCurrency(),
