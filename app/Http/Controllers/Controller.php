@@ -56,6 +56,13 @@ class Controller extends BaseController
                 exit;
             }
         }
+        if(
+            false === strpos(config('bunq.uri'),'http://') ||
+            false === strpos(config('bunq.uri'),'https://')
+        ) {
+            echo 'The URL to your Firefly III instance must begin with "http://" or "https://".';
+            exit;
+        }
 
         app('view')->share('version', config('bunq.version'));
     }

@@ -63,6 +63,7 @@ class IndexController extends Controller
      */
     public function index()
     {
+        Log::debug('If you see this, debug logging is configured correctly.');
         return view('index');
     }
 }
