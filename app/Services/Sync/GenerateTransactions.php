@@ -30,7 +30,6 @@ use App\Services\Sync\JobStatus\ProgressInformation;
 use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 use GrumpyDictator\FFIIIApiSupport\Request\GetAccountRequest;
 use GrumpyDictator\FFIIIApiSupport\Response\GetAccountResponse;
-use Log;
 
 /**
  * Class GenerateTransactions.
@@ -55,7 +54,7 @@ class GenerateTransactions
         /** @var array $entry */
         foreach ($bunq as $bunqAccountId => $entries) {
             $bunqAccountId = (int) $bunqAccountId;
-            Log::debug(sprintf('Going to parse account #%d', $bunqAccountId));
+            app('log')->debug(sprintf('Going to parse account #%d', $bunqAccountId));
             foreach ($entries as $entry) {
                 $return[] = $this->generateTransaction($bunqAccountId, $entry);
                 // TODO error handling at this point.
@@ -149,7 +148,7 @@ class GenerateTransactions
                 unset($return['transactions'][0]['destination_iban'], $return['transactions'][0]['destination_name']);
             }
         }
-        Log::debug(sprintf('Parsed bunq transaction #%d', $entry['id']));
+        app('log')->debug(sprintf('Parsed bunq transaction #%d', $entry['id']));
 
         return $return;
     }
@@ -164,14 +163,14 @@ class GenerateTransactions
     {
         $uri   = (string) config('bunq.uri');
         $token = (string) config('bunq.access_token');
-        Log::debug(sprintf('Going to download account #%d', $accountId));
+        app('log')->debug(sprintf('Going to download account #%d', $accountId));
         $request = new GetAccountRequest($uri, $token);
         $request->setId($accountId);
         /** @var GetAccountResponse $result */
         $result = $request->get();
         $type   = $result->getAccount()->type;
 
-        Log::debug(sprintf('Discovered that account #%d is of type "%s"', $accountId, $type));
+        app('log')->debug(sprintf('Discovered that account #%d is of type "%s"', $accountId, $type));
 
         return $type;
     }
@@ -203,7 +202,7 @@ class GenerateTransactions
     private function getMappedType(int $mappedId): string
     {
         if (!isset($this->configuration->getAccountTypes()[$mappedId])) {
-            Log::warning(sprintf('Cannot find account type for Firefly III account #%d.', $mappedId));
+            app('log')->warning(sprintf('Cannot find account type for Firefly III account #%d.', $mappedId));
             $accountType             = $this->getAccountType($mappedId);
             $accountTypes            = $this->configuration->getAccountTypes();
             $accountTypes[$mappedId] = $accountType;

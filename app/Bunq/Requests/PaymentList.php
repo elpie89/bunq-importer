@@ -31,8 +31,6 @@ use App\Services\Sync\JobStatus\ProgressInformation;
 use bunq\Model\Generated\Endpoint\Payment as BunqPayment;
 use Carbon\Carbon;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Log;
-use Storage;
 
 /**
  * Class PaymentList.
@@ -69,15 +67,15 @@ class PaymentList
         if (null !== $this->notAfter) {
             $this->notAfter->endOfDay();
         }
-        Log::debug('Created Requests\\PaymentList');
+        app('log')->debug('Created Requests\\PaymentList');
     }
 
     public function getPaymentList(): array
     {
-        Log::debug('Start of PaymentList::getPaymentList()');
+        app('log')->debug('Start of PaymentList::getPaymentList()');
 
         if ($this->hasDownload()) {
-            Log::info('Already downloaded content for this job. Return it.');
+            app('log')->info('Already downloaded content for this job. Return it.');
             $this->addMessage(0, 'Already had data. This is not a problem though.');
 
             return $this->getDownload();
@@ -87,8 +85,8 @@ class PaymentList
         try {
             ApiContextManager::getApiContext();
         } catch (ImportException $e) {
-            Log::error($e->getMessage());
-            Log::error($e->getTraceAsString());
+            app('log')->error($e->getMessage());
+            app('log')->error($e->getTraceAsString());
             $this->addError(0, $e->getMessage());
 
             return [];
@@ -100,12 +98,12 @@ class PaymentList
                 $return[$bunqAccountId] = $this->getForAccount($bunqAccountId);
                 $totalCount             += count($return[$bunqAccountId]);
             } catch (ImportException $e) {
-                Log::error($e->getMessage());
-                Log::error($e->getTraceAsString());
+                app('log')->error($e->getMessage());
+                app('log')->error($e->getTraceAsString());
                 $this->addError(0, $e->getMessage());
             }
         }
-        Log::notice(sprintf('Downloaded a total of %d transactions from bunq.', $totalCount));
+        app('log')->notice(sprintf('Downloaded a total of %d transactions from bunq.', $totalCount));
         // store the result somewhere so it can be processed easily.
         $this->storeDownload($return);
 
@@ -126,13 +124,13 @@ class PaymentList
      */
     private function getDownload(): array
     {
-        $disk = Storage::disk('downloads');
+        $disk = app('storage')->disk('downloads');
         try {
             $content = $disk->get($this->downloadIdentifier);
         } catch (FileNotFoundException $e) {
-            Log::error('Could not store download');
-            Log::error($e->getMessage());
-            Log::error($e->getTraceAsString());
+            app('log')->error('Could not store download');
+            app('log')->error($e->getMessage());
+            app('log')->error($e->getTraceAsString());
             $content = [];
         }
 
@@ -147,7 +145,7 @@ class PaymentList
      */
     private function getForAccount(int $bunqAccountId): array
     {
-        Log::debug(sprintf('Now in getForAccount(%d)', $bunqAccountId));
+        app('log')->debug(sprintf('Now in getForAccount(%d)', $bunqAccountId));
         $hasMoreTransactions = true;
         $olderId             = null;
         $return              = [];
@@ -156,7 +154,7 @@ class PaymentList
          * Do a loop during which we run:
          */
         while ($hasMoreTransactions && $this->count <= 45) {
-            Log::debug(sprintf('Now in loop #%d for account %d', $this->count, $bunqAccountId));
+            app('log')->debug(sprintf('Now in loop #%d for account %d', $this->count, $bunqAccountId));
             $previousLoop = count($return);
             /*
              * Send request to bunq.
@@ -166,23 +164,23 @@ class PaymentList
             $params         = ['count' => 197, 'older_id' => $olderId];
             $response       = $paymentRequest->listing($bunqAccountId, $params);
             $pagination     = $response->getPagination();
-            Log::debug('Params for the request to bunq are: ', $params);
+            app('log')->debug('Params for the request to bunq are: ', $params);
 
             /*
              * If pagination is not null, we can go back even further.
              */
             if (null !== $pagination) {
                 $olderId = $pagination->getOlderId();
-                Log::debug(sprintf('Pagination object is not null, new olderID is "%s"', $olderId));
+                app('log')->debug(sprintf('Pagination object is not null, new olderID is "%s"', $olderId));
             }
 
             /*
              * Loop the results from bunq
              */
-            Log::debug('Now looping results from bunq...');
+            app('log')->debug('Now looping results from bunq...');
             /** @var BunqPayment $payment */
             foreach ($response->getValue() as $index => $payment) {
-                Log::debug(sprintf('Going to process payment on index #%d', $index));
+                app('log')->debug(sprintf('Going to process payment on index #%d', $index));
                 $array = $this->processBunqPayment($index, $payment);
                 if (null !== $array) {
                     $return[] = $array;
@@ -192,18 +190,18 @@ class PaymentList
             /*
              * After the loop, check if must loop again.
              */
-            Log::debug(sprintf('Count of return is now %d', count($return)));
+            app('log')->debug(sprintf('Count of return is now %d', count($return)));
             $this->count++;
             if (null === $olderId) {
-                Log::debug('Older ID is NULL, so stop looping cause we are done!');
+                app('log')->debug('Older ID is NULL, so stop looping cause we are done!');
                 $hasMoreTransactions = false;
             }
 
             if (null === $pagination) {
-                Log::debug('No pagination object, stop looping.');
+                app('log')->debug('No pagination object, stop looping.');
             }
             if ($previousLoop === count($return)) {
-                Log::info('No new transactions were added to the array.');
+                app('log')->info('No new transactions were added to the array.');
                 $hasMoreTransactions = false;
             }
 
@@ -211,7 +209,7 @@ class PaymentList
             sleep(2);
         }
         // store newest and oldest tranasction ID to be used later:
-        Log::info(sprintf('Downloaded and parsed %d transactions from bunq (from this account).', count($return)));
+        app('log')->info(sprintf('Downloaded and parsed %d transactions from bunq (from this account).', count($return)));
 
         return $return;
     }
@@ -221,7 +219,7 @@ class PaymentList
      */
     private function hasDownload(): bool
     {
-        $disk = Storage::disk('downloads');
+        $disk = app('storage')->disk('downloads');
 
         return $disk->exists($this->downloadIdentifier);
     }
@@ -236,7 +234,7 @@ class PaymentList
     {
         $created = Carbon::createFromFormat('Y-m-d H:i:s.u', $payment->getCreated());
         if (null !== $this->notBefore && $created->lte($this->notBefore)) {
-            Log::info(
+            app('log')->info(
                 sprintf(
                     'Skip transaction because %s is before %s',
                     $created->format('Y-m-d H:i:s'),
@@ -247,7 +245,7 @@ class PaymentList
             return null;
         }
         if (null !== $this->notAfter && $created->gte($this->notAfter)) {
-            Log::info(
+            app('log')->info(
                 sprintf(
                     'Skip transaction because %s is after %s',
                     $created->format('Y-m-d H:i:s'),
@@ -289,7 +287,7 @@ class PaymentList
             $transaction['description'] = '(empty description)';
         }
 
-        Log::debug(
+        app('log')->debug(
             sprintf(
                 'Downloaded and parsed transaction #%d (%s) "%s" (%s %s).',
                 $transaction['id'], $transaction['created']->format('Y-m-d'),
@@ -305,7 +303,7 @@ class PaymentList
      */
     private function storeDownload(array $data): void
     {
-        $disk = Storage::disk('downloads');
+        $disk = app('storage')->disk('downloads');
         $disk->put($this->downloadIdentifier, json_encode($data, JSON_THROW_ON_ERROR, 512));
     }
 }

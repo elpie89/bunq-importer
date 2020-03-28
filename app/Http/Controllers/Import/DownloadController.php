@@ -33,7 +33,6 @@ use App\Services\Configuration\Configuration;
 use App\Services\Session\Constants;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Log;
 
 /**
  * Class DownloadController.
@@ -66,11 +65,11 @@ class DownloadController extends Controller
             $downloadIdentifier = $routine->getDownloadIdentifier();
         }
 
-        Log::debug(sprintf('Download routine manager identifier is "%s"', $downloadIdentifier));
+        app('log')->debug(sprintf('Download routine manager identifier is "%s"', $downloadIdentifier));
 
         // store identifier in session so the status can get it.
         session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $downloadIdentifier);
-        Log::debug(sprintf('Stored "%s" under "%s"', $downloadIdentifier, Constants::DOWNLOAD_JOB_IDENTIFIER));
+        app('log')->debug(sprintf('Stored "%s" under "%s"', $downloadIdentifier, Constants::DOWNLOAD_JOB_IDENTIFIER));
 
         return view('import.download.index', compact('mainTitle', 'subTitle', 'downloadIdentifier'));
     }
@@ -82,7 +81,7 @@ class DownloadController extends Controller
      */
     public function start(Request $request): JsonResponse
     {
-        Log::debug(sprintf('Now at %s', __METHOD__));
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
         $downloadIdentifier = $request->get('downloadIdentifier');
         $routine            = new RoutineManager($downloadIdentifier);
 
@@ -92,7 +91,7 @@ class DownloadController extends Controller
         $downloadJobStatus = JobStatusManager::startOrFindJob($downloadIdentifier);
         if (JobStatus::JOB_DONE === $downloadJobStatus->status) {
             // TODO DISABLED DURING DEVELOPMENT:
-            //Log::debug('Job already done!');
+            //app('log')->debug('Job already done!');
             //return response()->json($downloadJobStatus->toArray());
         }
         JobStatusManager::setJobStatus(JobStatus::JOB_RUNNING);
@@ -118,9 +117,9 @@ class DownloadController extends Controller
     public function status(Request $request): JsonResponse
     {
         $downloadIdentifier = $request->get('downloadIdentifier');
-        Log::debug(sprintf('Now at %s(%s)', __METHOD__, $downloadIdentifier));
+        app('log')->debug(sprintf('Now at %s(%s)', __METHOD__, $downloadIdentifier));
         if (null === $downloadIdentifier) {
-            Log::warning('Download Identifier is NULL.');
+            app('log')->warning('Download Identifier is NULL.');
             // no status is known yet because no identifier is in the session.
             // As a fallback, return empty status
             $fakeStatus = new JobStatus();

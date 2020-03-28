@@ -28,7 +28,6 @@ use App\Exceptions\ImportException;
 use bunq\Model\Generated\Endpoint\BunqResponsePaymentList;
 use bunq\Model\Generated\Endpoint\Payment as BunqPayment;
 use Exception;
-use Log;
 
 /**
  * Class Payment.
@@ -47,15 +46,15 @@ class Payment
      */
     public function listing(int $monetaryAccountId = null, array $params = null, array $customHeaders = null): BunqResponsePaymentList
     {
-        Log::debug('Now in Payment::listing()');
+        app('log')->debug('Now in Payment::listing()');
         $monetaryAccountId = $monetaryAccountId ?? 0;
         $params            = $params ?? [];
         $customHeaders     = $customHeaders ?? [];
         try {
             $result = BunqPayment::listing($monetaryAccountId, $params, $customHeaders);
         } catch (Exception $e) {
-            Log::error(sprintf('Exception: %s', $e->getMessage()));
-            Log::error($e->getTraceAsString());
+            app('log')->error(sprintf('Exception: %s', $e->getMessage()));
+            app('log')->error($e->getTraceAsString());
             throw new ImportException($e->getMessage());
         }
 

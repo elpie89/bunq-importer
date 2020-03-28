@@ -26,8 +26,6 @@ namespace App\Services\Sync;
 
 use App\Services\Configuration\Configuration;
 use App\Services\Sync\JobStatus\JobStatusManager;
-use Log;
-use Storage;
 use Str;
 
 /**
@@ -63,7 +61,7 @@ class RoutineManager
      */
     public function __construct(?string $syncIdentifier = null)
     {
-        Log::debug('Constructed RoutineManager for sync');
+        app('log')->debug('Constructed RoutineManager for sync');
 
         $this->bunqParser           = new ParseBunqDownload;
         $this->transactionGenerator = new GenerateTransactions;
@@ -157,99 +155,36 @@ class RoutineManager
      */
     public function start(): void
     {
-        Log::debug(sprintf('Now in %s', __METHOD__));
+        app('log')->debug(sprintf('Now in %s', __METHOD__));
 
         // get JSON file from bunq download
-        Log::debug('Going to parse bunq download.');
+        app('log')->debug('Going to parse bunq download.');
         $array = $this->bunqParser->getDownload($this->downloadIdentifier);
-        Log::debug('Done parsing bunq download.');
+        app('log')->debug('Done parsing bunq download.');
 
         // generate Firefly III ready transactions:
-        Log::debug('Generating Firefly III transactions.');
+        app('log')->debug('Generating Firefly III transactions.');
         $transactions = $this->transactionGenerator->getTransactions($array);
-        Log::debug(sprintf('Generated %d Firefly III transactions.', count($transactions)));
+        app('log')->debug(sprintf('Generated %d Firefly III transactions.', count($transactions)));
 
         // send to Firefly III.
-        Log::debug('Going to send them to Firefly III.');
+        app('log')->debug('Going to send them to Firefly III.');
         $sent = $this->transactionSender->send($transactions);
         // download and store transactions from bunq.
         // $transactions = $this->paymentList->getPaymentList();
-
-        $count = count($sent);
-        $this->mergeMessages($count);
-        $this->mergeWarnings($count);
-        $this->mergeErrors($count);
     }
 
     private function generateSyncIdentifier(): void
     {
-        Log::debug('Going to generate sync job identifier.');
-        $disk  = Storage::disk('jobs');
+        app('log')->debug('Going to generate sync job identifier.');
+        $disk  = app('storage')->disk('jobs');
         $count = 0;
         do {
             $syncIdentifier = Str::random(16);
             $count++;
-            Log::debug(sprintf('Attempt #%d results in "%s"', $count, $syncIdentifier));
+            app('log')->debug(sprintf('Attempt #%d results in "%s"', $count, $syncIdentifier));
         } while ($count < 30 && $disk->exists($syncIdentifier));
         $this->syncIdentifier = $syncIdentifier;
-        Log::info(sprintf('Sync job identifier is "%s"', $syncIdentifier));
-    }
-
-    /**
-     * @param int $count
-     */
-    private function mergeErrors(int $count): void
-    {
-        $total = [];
-        for ($i = 0; $i < $count; $i++) {
-            $total[$i] = array_merge(
-                $one[$i] ?? [],
-                $two[$i] ?? [],
-                $three[$i] ?? [],
-                $four[$i] ?? [],
-                $five[$i] ?? []
-            );
-        }
-
-        $this->allErrors = $total;
-    }
-
-    /**
-     * @param int $count
-     */
-    private function mergeMessages(int $count): void
-    {
-        $total = [];
-        for ($i = 0; $i < $count; $i++) {
-            $total[$i] = array_merge(
-                $one[$i] ?? [],
-                $two[$i] ?? [],
-                $three[$i] ?? [],
-                $four[$i] ?? [],
-                $five[$i] ?? []
-            );
-        }
-
-        $this->allMessages = $total;
-    }
-
-    /**
-     * @param int $count
-     */
-    private function mergeWarnings(int $count): void
-    {
-        //        $five  = $this->apiSubmitter->getWarnings();
-        $total = [];
-        for ($i = 0; $i < $count; $i++) {
-            $total[$i] = array_merge(
-                $one[$i] ?? [],
-                $two[$i] ?? [],
-                $three[$i] ?? [],
-                $four[$i] ?? [],
-                $five[$i] ?? []
-            );
-        }
-
-        $this->allWarnings = $total;
+        app('log')->info(sprintf('Sync job identifier is "%s"', $syncIdentifier));
     }
 }

@@ -27,8 +27,6 @@ namespace App\Services\Sync;
 use App\Services\Sync\JobStatus\ProgressInformation;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use JsonException;
-use Log;
-use Storage;
 
 /**
  * Class ParseBunqDownload.
@@ -44,7 +42,7 @@ class ParseBunqDownload
      */
     public function getDownload(string $downloadIdentifier): array
     {
-        $disk   = Storage::disk('downloads');
+        $disk   = app('storage')->disk('downloads');
         $result = [];
         $count  = 0;
         if ($disk->exists($downloadIdentifier)) {
@@ -59,7 +57,7 @@ class ParseBunqDownload
             $count += count($transactions);
         }
 
-        Log::debug(sprintf('Parsed %d bunq account transactions.', $count));
+        app('log')->debug(sprintf('Parsed %d bunq account transactions.', $count));
 
         return $result;
     }

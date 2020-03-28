@@ -25,7 +25,6 @@ declare(strict_types=1);
 namespace App\Services\Configuration;
 
 use Carbon\Carbon;
-use Log;
 use RuntimeException;
 
 /**
@@ -114,7 +113,7 @@ class Configuration
      */
     public static function fromFile(array $data): self
     {
-        Log::debug('Now in Configuration::fromClassic', $data);
+        app('log')->debug('Now in Configuration::fromClassic', $data);
         $version = $data['version'] ?? 1;
         if (1 === $version) {
             return self::fromDefaultFile($data);
@@ -200,7 +199,7 @@ class Configuration
 
             return $today->format('Y-m-d');
         }
-        Log::error(sprintf('Could not parse date setting. Unknown key "%s"', $unit));
+        app('log')->error(sprintf('Could not parse date setting. Unknown key "%s"', $unit));
 
         return null;
     }

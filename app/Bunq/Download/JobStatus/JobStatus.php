@@ -24,8 +24,6 @@ declare(strict_types=1);
 
 namespace App\Bunq\Download\JobStatus;
 
-use Log;
-
 /**
  * Class JobStatus.
  */
@@ -53,7 +51,7 @@ class JobStatus
      */
     public function __construct()
     {
-        Log::debug('Constructed download JobStatus');
+        app('log')->debug('Constructed download JobStatus');
         $this->status   = self::JOB_WAITING;
         $this->errors   = [];
         $this->warnings = [];

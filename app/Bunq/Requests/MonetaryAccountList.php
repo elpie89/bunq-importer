@@ -33,7 +33,6 @@ use bunq\Model\Generated\Endpoint\MonetaryAccountBank;
 use bunq\Model\Generated\Endpoint\MonetaryAccountJoint;
 use bunq\Model\Generated\Endpoint\MonetaryAccountSavings;
 use bunq\Model\Generated\Object\Pointer;
-use Log;
 
 /**
  * Class MonetaryAccount.
@@ -53,7 +52,7 @@ class MonetaryAccountList
      */
     public function listing(array $params = null, array $customHeaders = null): array
     {
-        Log::debug('Now calling bunq listing.');
+        app('log')->debug('Now calling bunq listing.');
         $params        = $params ?? [];
         $customHeaders = $customHeaders ?? [];
         $listing       = BunqMonetaryAccount::listing($params, $customHeaders);
@@ -63,8 +62,8 @@ class MonetaryAccountList
             try {
                 $return[] = $this->processEntry($entry);
             } catch (BunqImporterException $e) {
-                Log::error($e->getMessage());
-                Log::error($e->getTraceAsString());
+                app('log')->error($e->getMessage());
+                app('log')->error($e->getTraceAsString());
                 throw new ImportException($e);
             }
         }

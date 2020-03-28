@@ -27,7 +27,6 @@ namespace App\Console;
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
 use App\Services\Sync\RoutineManager as SyncRoutineManager;
-use Log;
 
 /**
  * Trait StartSync.
@@ -41,7 +40,7 @@ trait StartSync
      */
     private function startSync(array $configuration): int
     {
-        Log::debug(sprintf('Now in %s', __METHOD__));
+        app('log')->debug(sprintf('Now in %s', __METHOD__));
         $configObject = Configuration::fromFile($configuration);
 
         // first download from bunq

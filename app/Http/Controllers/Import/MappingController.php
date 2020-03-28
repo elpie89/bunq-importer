@@ -146,7 +146,7 @@ class MappingController extends Controller
     private function getOpposingAccounts(): array
     {
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
-        $disk               = Storage::disk('downloads');
+        $disk               = app('storage')->disk('downloads');
         $json               = $disk->get($downloadIdentifier);
         $array              = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         $opposing           = [];

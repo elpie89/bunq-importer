@@ -42,7 +42,7 @@ class StorageService
      */
     public static function getContent(string $name): string
     {
-        $disk = Storage::disk('uploads');
+        $disk = app('storage')->disk('uploads');
         if ($disk->exists($name)) {
             return $disk->get($name);
         }
@@ -57,7 +57,7 @@ class StorageService
     public static function storeContent(string $content): string
     {
         $fileName = Str::random(20);
-        $disk     = Storage::disk('uploads');
+        $disk     = app('storage')->disk('uploads');
         $disk->put($fileName, $content);
 
         return $fileName;

@@ -27,7 +27,6 @@ namespace App\Console;
 use App\Bunq\Download\RoutineManager as DownloadRoutineMananger;
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
-use Log;
 
 /**
  * Trait StartDownload.
@@ -41,7 +40,7 @@ trait StartDownload
      */
     private function startDownload(array $configuration): int
     {
-        Log::debug(sprintf('Now in %s', __METHOD__));
+        app('log')->debug(sprintf('Now in %s', __METHOD__));
         $configObject = Configuration::fromFile($configuration);
 
         // first download from bunq

@@ -41,7 +41,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
-use Log;
 
 /**
  * Class ConfigurationController.
@@ -88,7 +87,7 @@ class ConfigurationController extends Controller
      */
     public function index()
     {
-        Log::debug(sprintf('Now at %s', __METHOD__));
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
         $mainTitle = 'Import from bunq';
         $subTitle  = 'Configure your bunq import';
 
@@ -154,7 +153,7 @@ class ConfigurationController extends Controller
      */
     public function postIndex(ConfigurationPostRequest $request)
     {
-        Log::debug(sprintf('Now at %s', __METHOD__));
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
         // store config on drive.
 
         $fromRequest   = $request->getAll();

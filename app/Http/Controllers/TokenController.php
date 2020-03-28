@@ -34,7 +34,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
-use Log;
 
 /**
  * Class TokenController.
@@ -52,13 +51,13 @@ class TokenController extends Controller
         $response = ['result' => 'OK', 'message' => null];
         $token    = (string) config('bunq.access_token');
         $uri      = (string) config('bunq.uri');
-        Log::debug(sprintf('Going to try and access %s', $uri));
+        app('log')->debug(sprintf('Going to try and access %s', $uri));
         $request = new SystemInformationRequest($uri, $token);
         try {
             $result = $request->get();
         } catch (ApiHttpException $e) {
-            Log::error($e->getMessage());
-            Log::error($e->getTraceAsString());
+            app('log')->error($e->getMessage());
+            app('log')->error($e->getTraceAsString());
             $response = ['result' => 'NOK', 'message' => $e->getMessage()];
         }
 
@@ -75,8 +74,8 @@ class TokenController extends Controller
         try {
             ApiContextManager::getApiContext();
         } catch (ApiHttpException $e) {
-            Log::error($e->getMessage());
-            Log::error($e->getTraceAsString());
+            app('log')->error($e->getMessage());
+            app('log')->error($e->getTraceAsString());
             $errorMessage = sprintf('bunq complained: %s', $e->getMessage());
             $response     = ['result' => 'NOK', 'message' => $errorMessage];
         }
@@ -92,9 +91,9 @@ class TokenController extends Controller
      */
     public function index()
     {
-        $token = (string)config('bunq.access_token');
-        $uri   = (string)config('bunq.uri');
-        Log::debug(sprintf('Going to try and access %s', $uri));
+        $token = (string) config('bunq.access_token');
+        $uri   = (string) config('bunq.uri');
+        app('log')->debug(sprintf('Going to try and access %s', $uri));
         $request      = new SystemInformationRequest($uri, $token);
         $errorMessage = 'No error message.';
         $isError      = false;
@@ -104,8 +103,8 @@ class TokenController extends Controller
             /** @var SystemInformationResponse $result */
             $result = $request->get();
         } catch (ApiHttpException $e) {
-            Log::error($e->getMessage());
-            Log::error($e->getTraceAsString());
+            app('log')->error($e->getMessage());
+            app('log')->error($e->getTraceAsString());
             $errorMessage = $e->getMessage();
             $isError      = true;
         }
@@ -123,8 +122,8 @@ class TokenController extends Controller
         try {
             ApiContextManager::getApiContext();
         } catch (ApiHttpException $e) {
-            Log::error($e->getMessage());
-            Log::error($e->getTraceAsString());
+            app('log')->error($e->getMessage());
+            app('log')->error($e->getTraceAsString());
             $errorMessage = sprintf('bunq complained: %s', $e->getMessage());
             $isError      = true;
         }

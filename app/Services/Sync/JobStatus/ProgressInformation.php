@@ -24,8 +24,6 @@ declare(strict_types=1);
 
 namespace App\Services\Sync\JobStatus;
 
-use Log;
-
 /**
  * Trait ProgressInformation.
  */
@@ -83,7 +81,7 @@ trait ProgressInformation
         $this->errors[$index][] = $error;
 
         // write errors
-        Log::error(sprintf('Error: %s %d: %s', $this->identifier, $index, $error));
+        app('log')->error(sprintf('Error: %s %d: %s', $this->identifier, $index, $error));
         JobStatusManager::addError($this->identifier, $index, $error);
     }
 
@@ -98,7 +96,7 @@ trait ProgressInformation
         $this->messages[$index][] = $message;
 
         // write message
-        Log::info(sprintf('Message: %s %d: %s', $this->identifier, $index, $message));
+        app('log')->info(sprintf('Message: %s %d: %s', $this->identifier, $index, $message));
         JobStatusManager::addMessage($this->identifier, $index, $message);
     }
 
@@ -113,7 +111,7 @@ trait ProgressInformation
         $this->warnings[$index][] = $warning;
 
         // write warning
-        Log::warning(sprintf('Warning: %s %d: %s', $this->identifier, $index, $warning));
+        app('log')->warning(sprintf('Warning: %s %d: %s', $this->identifier, $index, $warning));
         JobStatusManager::addWarning($this->identifier, $index, $warning);
     }
 }

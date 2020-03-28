@@ -29,7 +29,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
-use Log;
 
 /**
  * Class IndexController.
@@ -50,7 +49,7 @@ class IndexController extends Controller
      */
     public function flush()
     {
-        Log::debug(sprintf('Now at %s', __METHOD__));
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
         session()->flush();
         Artisan::call('cache:clear');
         Artisan::call('config:clear');
@@ -63,7 +62,7 @@ class IndexController extends Controller
      */
     public function index()
     {
-        Log::debug('If you see this, debug logging is configured correctly.');
+        app('log')->debug('If you see this, debug logging is configured correctly.');
         return view('index');
     }
 }

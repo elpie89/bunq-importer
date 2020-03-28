@@ -29,7 +29,6 @@ use App\Console\StartDownload;
 use App\Console\StartSync;
 use App\Console\VerifyJSON;
 use Illuminate\Console\Command;
-use Log;
 
 /**
  * Class BunqImport.
@@ -77,13 +76,13 @@ class BunqImport extends Command
         }
 
         $this->info(sprintf('Welcome to the Firefly III bunq importer, v%s', config('bunq.version')));
-        Log::debug(sprintf('Now in %s', __METHOD__));
+        app('log')->debug(sprintf('Now in %s', __METHOD__));
         $config = $this->argument('config');
 
         if (!file_exists($config) || (file_exists($config) && !is_file($config))) {
             $message = sprintf('The importer can\'t import: configuration file "%s" does not exist or could not be read.', $config);
             $this->error($message);
-            Log::error($message);
+            app('log')->error($message);
 
             return 1;
         }

@@ -26,8 +26,6 @@ namespace App\Services\Sync\JobStatus;
 
 use App\Services\Session\Constants;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Log;
-use Storage;
 
 /**
  * Class JobStatusManager.
@@ -41,7 +39,7 @@ class JobStatusManager
      */
     public static function addError(string $identifier, int $index, string $error): void
     {
-        $disk = Storage::disk('jobs');
+        $disk = app('storage')->disk('jobs');
         try {
             if ($disk->exists($identifier)) {
                 $status                   = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
@@ -50,7 +48,7 @@ class JobStatusManager
                 self::storeJobStatus($identifier, $status);
             }
         } catch (FileNotFoundException $e) {
-            Log::error($e);
+            app('log')->error($e);
         }
     }
 
@@ -61,7 +59,7 @@ class JobStatusManager
      */
     public static function addMessage(string $identifier, int $index, string $message): void
     {
-        $disk = Storage::disk('jobs');
+        $disk = app('storage')->disk('jobs');
         try {
             if ($disk->exists($identifier)) {
                 $status                     = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
@@ -70,7 +68,7 @@ class JobStatusManager
                 self::storeJobStatus($identifier, $status);
             }
         } catch (FileNotFoundException $e) {
-            Log::error($e);
+            app('log')->error($e);
         }
     }
 
@@ -81,7 +79,7 @@ class JobStatusManager
      */
     public static function addWarning(string $identifier, int $index, string $warning): void
     {
-        $disk = Storage::disk('jobs');
+        $disk = app('storage')->disk('jobs');
         try {
             if ($disk->exists($identifier)) {
                 $status                     = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
@@ -90,7 +88,7 @@ class JobStatusManager
                 self::storeJobStatus($identifier, $status);
             }
         } catch (FileNotFoundException $e) {
-            Log::error($e);
+            app('log')->error($e);
         }
     }
 
@@ -102,8 +100,8 @@ class JobStatusManager
     public static function setJobStatus(string $status): JobStatus
     {
         $syncIdentifier = session()->get(Constants::SYNC_JOB_IDENTIFIER);
-        Log::debug(sprintf('Now in Sync setJobStatus(%s)', $status));
-        Log::debug(sprintf('Found "%s" in the session', $syncIdentifier));
+        app('log')->debug(sprintf('Now in Sync setJobStatus(%s)', $status));
+        app('log')->debug(sprintf('Found "%s" in the session', $syncIdentifier));
 
         $jobStatus         = self::startOrFindJob($syncIdentifier);
         $jobStatus->status = $status;
@@ -120,27 +118,27 @@ class JobStatusManager
      */
     public static function startOrFindJob(string $identifier): JobStatus
     {
-        Log::debug(sprintf('Now in (sync) startOrFindJob(%s)', $identifier));
-        $disk = Storage::disk('jobs');
+        app('log')->debug(sprintf('Now in (sync) startOrFindJob(%s)', $identifier));
+        $disk = app('storage')->disk('jobs');
         try {
-            Log::debug(sprintf('Try to see if file exists for sync job %s.', $identifier));
+            app('log')->debug(sprintf('Try to see if file exists for sync job %s.', $identifier));
             if ($disk->exists($identifier)) {
-                Log::debug(sprintf('Status file exists for sync job %s.', $identifier));
+                app('log')->debug(sprintf('Status file exists for sync job %s.', $identifier));
                 $array  = json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR);
                 $status = JobStatus::fromArray($array);
-                Log::debug(sprintf('Status found for sync job %s', $identifier), $array);
+                app('log')->debug(sprintf('Status found for sync job %s', $identifier), $array);
 
                 return $status;
             }
         } catch (FileNotFoundException $e) {
-            Log::error('Could not find sync file, write a new one.');
-            Log::error($e->getMessage());
+            app('log')->error('Could not find sync file, write a new one.');
+            app('log')->error($e->getMessage());
         }
-        Log::debug('Sync file does not exist or error, create a new one.');
+        app('log')->debug('Sync file does not exist or error, create a new one.');
         $status = new JobStatus;
         $disk->put($identifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 
-        Log::debug('Return sync status.', $status->toArray());
+        app('log')->debug('Return sync status.', $status->toArray());
 
         return $status;
     }
@@ -151,11 +149,11 @@ class JobStatusManager
      */
     private static function storeJobStatus(string $syncIdentifier, JobStatus $status): void
     {
-        Log::debug(sprintf('Now in Sync storeJobStatus(%s): %s', $syncIdentifier, $status->status));
+        app('log')->debug(sprintf('Now in Sync storeJobStatus(%s): %s', $syncIdentifier, $status->status));
         $array = $status->toArray();
-        Log::debug('Going to store', $array);
-        $disk = Storage::disk('jobs');
+        app('log')->debug('Going to store', $array);
+        $disk = app('storage')->disk('jobs');
         $disk->put($syncIdentifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
-        Log::debug('Done with storing.');
+        app('log')->debug('Done with storing.');
     }
 }

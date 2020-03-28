@@ -28,10 +28,10 @@ use App\Services\Configuration\Configuration;
 use App\Services\Sync\JobStatus\ProgressInformation;
 use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 use GrumpyDictator\FFIIIApiSupport\Model\Transaction;
+use GrumpyDictator\FFIIIApiSupport\Model\TransactionGroup;
 use GrumpyDictator\FFIIIApiSupport\Request\PostTransactionRequest;
 use GrumpyDictator\FFIIIApiSupport\Response\PostTransactionResponse;
 use GrumpyDictator\FFIIIApiSupport\Response\ValidationErrorResponse;
-use Log;
 
 /**
  * Class SendTransactions.
@@ -53,7 +53,7 @@ class SendTransactions
         $uri   = (string) config('bunq.uri');
         $token = (string) config('bunq.access_token');
         foreach ($transactions as $index => $transaction) {
-            Log::debug(sprintf('Trying to send transaction #%d', $index));
+            app('log')->debug(sprintf('Trying to send transaction #%d', $index));
             $this->sendTransaction($uri, $token, $index, $transaction);
         }
 
@@ -81,9 +81,10 @@ class SendTransactions
         $request = new PostTransactionRequest($uri, $token);
         $request->setBody($transaction);
         try {
+            /** @var PostTransactionResponse $response */
             $response = $request->post();
         } catch (ApiHttpException $e) {
-            Log::error($e->getMessage());
+            app('log')->error($e->getMessage());
             $this->addError($index, $e->getMessage());
 
             return [];
@@ -94,13 +95,13 @@ class SendTransactions
                 foreach ($errors as $error) {
                     // +1 so the line numbers match.
                     $this->addError($index + 1, $error);
-                    Log::error(sprintf('Could not create transaction: %s', $error), $transaction);
+                    app('log')->error(sprintf('Could not create transaction: %s', $error), $transaction);
                 }
             }
 
             return [];
         }
-        /** @var PostTransactionResponse $group */
+        /** @var TransactionGroup $group */
         $group = $response->getTransactionGroup();
         if (null === $group) {
             $this->addError($index + 1, 'Group is unexpectedly NULL.');
@@ -115,7 +116,10 @@ class SendTransactions
         foreach ($group->transactions as $tr) {
             $this->addMessage(
                 $index + 1,
-                sprintf('Created transaction #%d: <a href="%s">%s</a> (%s %s)', $groupId, $groupUri, $tr->description, $tr->currencyCode, round($tr->amount, 2))
+                sprintf(
+                    'Created transaction #%d: <a href="%s">%s</a> (%s %s)', $groupId, $groupUri, $tr->description, $tr->currencyCode,
+                    round((float) $tr->amount, 2)
+                )
             );
         }
 

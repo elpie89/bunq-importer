@@ -33,7 +33,6 @@ use App\Services\Sync\JobStatus\JobStatusManager;
 use App\Services\Sync\RoutineManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Log;
 use RuntimeException;
 
 /**
@@ -52,7 +51,7 @@ class SyncController extends Controller
 
     public function index()
     {
-        Log::debug(sprintf('Now at %s', __METHOD__));
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
         $mainTitle = 'Send data to Firefly III';
         $subTitle  = 'After download, comes import.';
 
@@ -64,21 +63,21 @@ class SyncController extends Controller
 
         if (null !== $syncIdentifier) {
             // create a new import job:
-            Log::debug('SyncController is creating new routine manager with existing sync identifier');
+            app('log')->debug('SyncController is creating new routine manager with existing sync identifier');
             new RoutineManager($syncIdentifier);
         }
         if (null === $syncIdentifier) {
-            Log::debug('SyncController is creating new routine manager with NEW sync identifier');
+            app('log')->debug('SyncController is creating new routine manager with NEW sync identifier');
             // create a new import job:
             $routine        = new RoutineManager(null);
             $syncIdentifier = $routine->getSyncIdentifier();
         }
 
-        Log::debug(sprintf('Sync routine manager job identifier is "%s"', $syncIdentifier));
+        app('log')->debug(sprintf('Sync routine manager job identifier is "%s"', $syncIdentifier));
 
         // store identifier in session so the status can get it.
         session()->put(Constants::SYNC_JOB_IDENTIFIER, $syncIdentifier);
-        Log::debug(sprintf('Stored "%s" under "%s"', $syncIdentifier, Constants::SYNC_JOB_IDENTIFIER));
+        app('log')->debug(sprintf('Stored "%s" under "%s"', $syncIdentifier, Constants::SYNC_JOB_IDENTIFIER));
 
         return view('import.sync.index', compact('mainTitle', 'subTitle', 'syncIdentifier', 'downloadIdentifier'));
     }
@@ -90,7 +89,7 @@ class SyncController extends Controller
      */
     public function start(Request $request): JsonResponse
     {
-        Log::debug(sprintf('Now at %s', __METHOD__));
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
 
         // get download job ID so we have the data to send to FF3
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
@@ -107,7 +106,7 @@ class SyncController extends Controller
         $downloadJobStatus = JobStatusManager::startOrFindJob($syncIdentifier);
         if (JobStatus::JOB_DONE === $downloadJobStatus->status) {
             // TODO DISABLED DURING DEVELOPMENT:
-            //Log::debug('Job already done!');
+            //app('log')->debug('Job already done!');
             //return response()->json($downloadJobStatus->toArray());
         }
         JobStatusManager::setJobStatus(JobStatus::JOB_RUNNING);
@@ -137,9 +136,9 @@ class SyncController extends Controller
     public function status(Request $request): JsonResponse
     {
         $syncIdentifier = $request->get('syncIdentifier');
-        Log::debug(sprintf('Now at %s(%s)', __METHOD__, $syncIdentifier));
+        app('log')->debug(sprintf('Now at %s(%s)', __METHOD__, $syncIdentifier));
         if (null === $syncIdentifier) {
-            Log::warning('Identifier is NULL.');
+            app('log')->warning('Identifier is NULL.');
             // no status is known yet because no identifier is in the session.
             // As a fallback, return empty status
             $fakeStatus = new JobStatus();
