@@ -64,7 +64,7 @@ class UploadController extends Controller
             app('log')->debug('Config file is present.');
             $errorNumber = $configFile->getError();
             if (0 !== $errorNumber) {
-                $errors->add('config_file', $errorNumber);
+                $errors->add('config_file', (string) $errorNumber);
             }
             // upload the file to a temp directory and use it from there.
             if (0 === $errorNumber) {

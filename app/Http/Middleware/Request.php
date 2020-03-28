@@ -57,11 +57,11 @@ class Request extends FormRequest
     }
 
     /**
-     * @param string $value
+     * @param string|int|null|bool $value
      *
      * @return bool
      */
-    public function convertBoolean(?string $value): bool
+    public function convertBoolean($value): bool
     {
         if (null === $value) {
             return false;

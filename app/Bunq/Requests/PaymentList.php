@@ -126,12 +126,12 @@ class PaymentList
     {
         $disk = app('storage')->disk('downloads');
         try {
-            $content = $disk->get($this->downloadIdentifier);
+            $content = (string) $disk->get($this->downloadIdentifier);
         } catch (FileNotFoundException $e) {
             app('log')->error('Could not store download');
             app('log')->error($e->getMessage());
             app('log')->error($e->getTraceAsString());
-            $content = [];
+            $content = '[]';
         }
 
         return json_decode($content, true, 512, JSON_THROW_ON_ERROR);

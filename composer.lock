@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9e588c8e092d7a33efa1528fccce59d6",
+    "content-hash": "ba3e6b312f0ac4f6cf6894d83362a6c4",
     "packages": [
         {
             "name": "bunq/sdk_php",
@@ -5185,6 +5185,141 @@
             "time": "2019-03-29T20:06:56+00:00"
         },
         {
+            "name": "orchestra/testbench",
+            "version": "v4.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/orchestral/testbench.git",
+                "reference": "133e2756f15e8e605c22973d255290798f933e70"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/orchestral/testbench/zipball/133e2756f15e8e605c22973d255290798f933e70",
+                "reference": "133e2756f15e8e605c22973d255290798f933e70",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^6.18",
+                "mockery/mockery": "~1.2.3 || ^1.3.1",
+                "orchestra/testbench-core": "^4.7",
+                "php": ">=7.2",
+                "phpunit/phpunit": "^8.3 || ^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mior Muhammad Zaki",
+                    "email": "crynobone@gmail.com",
+                    "homepage": "https://github.com/crynobone"
+                }
+            ],
+            "description": "Laravel Testing Helper for Packages Development",
+            "homepage": "http://orchestraplatform.com/docs/latest/components/testbench/",
+            "keywords": [
+                "BDD",
+                "TDD",
+                "laravel",
+                "orchestra-platform",
+                "orchestral",
+                "testing"
+            ],
+            "funding": [
+                {
+                    "url": "https://paypal.me/crynobone",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/crynobone",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2020-03-06T23:23:46+00:00"
+        },
+        {
+            "name": "orchestra/testbench-core",
+            "version": "v4.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/orchestral/testbench-core.git",
+                "reference": "fad3769a7903021f5784d5d76aa6eb3a3904b215"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/fad3769a7903021f5784d5d76aa6eb3a3904b215",
+                "reference": "fad3769a7903021f5784d5d76aa6eb3a3904b215",
+                "shasum": ""
+            },
+            "require": {
+                "fzaninotto/faker": "^1.9.1",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "laravel/framework": "^6.18.0",
+                "laravel/laravel": "6.x-dev",
+                "mockery/mockery": "~1.2.3 || ^1.3.1",
+                "phpunit/phpunit": "^8.3 || ^9.0"
+            },
+            "suggest": {
+                "laravel/framework": "Required for testing (^6.18).",
+                "mockery/mockery": "Allow using Mockery for testing (^1.2.3).",
+                "orchestra/testbench-browser-kit": "Allow using legacy Laravel BrowserKit for testing (^4.0).",
+                "orchestra/testbench-dusk": "Allow using Laravel Dusk for testing (^4.0).",
+                "phpunit/phpunit": "Allow using PHPUnit for testing (^8.3)."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Orchestra\\Testbench\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mior Muhammad Zaki",
+                    "email": "crynobone@gmail.com",
+                    "homepage": "https://github.com/crynobone"
+                }
+            ],
+            "description": "Testing Helper for Laravel Development",
+            "homepage": "http://orchestraplatform.com/docs/latest/components/testbench/",
+            "keywords": [
+                "BDD",
+                "TDD",
+                "laravel",
+                "orchestra-platform",
+                "orchestral",
+                "testing"
+            ],
+            "funding": [
+                {
+                    "url": "https://paypal.me/crynobone",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/crynobone",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2020-03-06T23:07:37+00:00"
+        },
+        {
             "name": "phar-io/manifest",
             "version": "1.0.3",
             "source": {
@@ -5834,6 +5969,49 @@
                 "xunit"
             ],
             "time": "2020-01-08T08:49:49+00:00"
+        },
+        {
+            "name": "psalm/plugin-laravel",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/psalm/psalm-plugin-laravel.git",
+                "reference": "db04cb1acd274b36a71150621cb27d8ddddc0939"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-laravel/zipball/db04cb1acd274b36a71150621cb27d8ddddc0939",
+                "reference": "db04cb1acd274b36a71150621cb27d8ddddc0939",
+                "shasum": ""
+            },
+            "require": {
+                "barryvdh/laravel-ide-helper": "^2.6",
+                "orchestra/testbench": "^3.5 || ^4.0 || ^5.0",
+                "vimeo/psalm": "^3.8.2"
+            },
+            "type": "psalm-plugin",
+            "extra": {
+                "psalm": {
+                    "pluginClass": "Psalm\\LaravelPlugin\\Plugin"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psalm\\LaravelPlugin\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthew Brown",
+                    "email": "github@muglug.com"
+                }
+            ],
+            "description": "A Laravel plugin for Psalm",
+            "time": "2020-03-06T13:17:13+00:00"
         },
         {
             "name": "roave/security-advisories",

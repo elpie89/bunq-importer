@@ -26,7 +26,6 @@ namespace App\Services\Sync;
 
 use App\Services\Configuration\Configuration;
 use App\Services\Sync\JobStatus\JobStatusManager;
-use Str;
 
 /**
  * Class RoutineManager.
@@ -180,7 +179,7 @@ class RoutineManager
         $disk  = app('storage')->disk('jobs');
         $count = 0;
         do {
-            $syncIdentifier = Str::random(16);
+            $syncIdentifier = app('str')->random(16);
             $count++;
             app('log')->debug(sprintf('Attempt #%d results in "%s"', $count, $syncIdentifier));
         } while ($count < 30 && $disk->exists($syncIdentifier));

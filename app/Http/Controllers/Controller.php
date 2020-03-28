@@ -24,7 +24,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use Artisan;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -52,7 +51,7 @@ class Controller extends BaseController
             $value = (string) config($config);
             if ('' === $value) {
                 echo sprintf('Please set a valid value for "%s" in the env file.', $env);
-                Artisan::call('config:clear');
+                app('artisan')->call('config:clear');
                 exit;
             }
         }

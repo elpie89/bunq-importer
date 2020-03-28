@@ -65,7 +65,12 @@ trait StartDownload
         $errors   = $manager->getAllErrors();
 
         if (count($errors) > 0) {
+            /**
+             * @var int    $index
+             * @var array $error
+             */
             foreach ($errors as $index => $error) {
+                /** @var string $line */
                 foreach ($error as $line) {
                     $this->error(sprintf('ERROR in line     #%d: %s', $index + 1, $line));
                 }
@@ -73,7 +78,12 @@ trait StartDownload
         }
 
         if (count($warnings) > 0) {
+            /**
+             * @var int    $index
+             * @var array $warning
+             */
             foreach ($warnings as $index => $warning) {
+                /** @var string $line */
                 foreach ($warning as $line) {
                     $this->warn(sprintf('Warning from line #%d: %s', $index + 1, $line));
                 }
@@ -81,7 +91,12 @@ trait StartDownload
         }
 
         if (count($messages) > 0) {
+            /**
+             * @var int    $index
+             * @var array $message
+             */
             foreach ($messages as $index => $message) {
+                /** @var string $line */
                 foreach ($message as $line) {
                     $this->info(sprintf('Message from line #%d: %s', $index + 1, strip_tags($line)));
                 }

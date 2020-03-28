@@ -64,7 +64,7 @@ class MonetaryAccountList
             } catch (BunqImporterException $e) {
                 app('log')->error($e->getMessage());
                 app('log')->error($e->getTraceAsString());
-                throw new ImportException($e);
+                throw new ImportException($e->getMessage());
             }
         }
 
@@ -73,6 +73,7 @@ class MonetaryAccountList
 
     /**
      * @param BunqModel $object
+     * @psalm-param MonetaryAccountBank|MonetaryAccountSavings|MonetaryAccountJoint $object
      *
      * @return string|null
      */
@@ -83,7 +84,7 @@ class MonetaryAccountList
 
     /**
      * @param BunqModel $object
-     *
+     * @psalm-param MonetaryAccountBank|MonetaryAccountSavings|MonetaryAccountJoint $object
      * @return string|null
      */
     private function getIban(BunqModel $object): ?string

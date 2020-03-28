@@ -113,10 +113,10 @@ class BunqImport extends Command
         if (0 === $secondResult) {
             $this->line('Sync to Firefly III complete.');
         }
-        if (0 !== $result) {
+        if (0 !== $secondResult) {
             $this->warn('Sync to Firefly III resulted in errors.');
 
-            return $result;
+            return $secondResult;
         }
 
         return 0;

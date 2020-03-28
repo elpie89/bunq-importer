@@ -141,7 +141,7 @@ class RoutineManager
         $disk  = app('storage')->disk('jobs');
         $count = 0;
         do {
-            $downloadIdentifier = Str::random(16);
+            $downloadIdentifier = app('str')->random(16);
             $count++;
             app('log')->debug(sprintf('Attempt #%d results in "%s"', $count, $downloadIdentifier));
         } while ($count < 30 && $disk->exists($downloadIdentifier));

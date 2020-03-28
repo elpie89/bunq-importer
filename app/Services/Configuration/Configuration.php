@@ -218,7 +218,7 @@ class Configuration
         $object->dateRangeNumber = $data['date_range_number'] ?? 30;
         $object->dateRangeUnit   = $data['date_range_unit'] ?? 'd';
         $object->dateNotBefore   = $data['date_not_before'] ?? '';
-        $object->accountTypes    = $array['account_types'] ?? [];
+        $object->accountTypes    = $data['account_types'] ?? [];
         $object->dateNotAfter    = $data['date_not_after'] ?? '';
         $object->doMapping       = $data['do_mapping'] ?? false;
         $object->mapping         = $data['mapping'] ?? [];

@@ -54,6 +54,7 @@ class TokenController extends Controller
         app('log')->debug(sprintf('Going to try and access %s', $uri));
         $request = new SystemInformationRequest($uri, $token);
         try {
+            /** @var SystemInformationResponse $result */
             $result = $request->get();
         } catch (ApiHttpException $e) {
             app('log')->error($e->getMessage());

@@ -33,7 +33,6 @@ use GrumpyDictator\FFIIIApiSupport\Response\GetAccountsResponse;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Storage;
 
 /**
  * Class MappingController.
@@ -82,6 +81,8 @@ class MappingController extends Controller
      * @param Request $request
      *
      * @return RedirectResponse
+     *
+     * @psalm-return RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function postIndex(Request $request)
     {
