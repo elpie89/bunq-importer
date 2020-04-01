@@ -53,7 +53,7 @@ class SendTransactions
         $uri   = (string) config('bunq.uri');
         $token = (string) config('bunq.access_token');
         foreach ($transactions as $index => $transaction) {
-            app('log')->debug(sprintf('Trying to send transaction #%d', $index));
+            app('log')->debug(sprintf('Trying to send transaction #%d', $index), $transaction);
             $this->sendTransaction($uri, $token, $index, $transaction);
         }
 
@@ -101,7 +101,7 @@ class SendTransactions
 
             return [];
         }
-        /** @var TransactionGroup $group */
+        /** @var TransactionGroup|null $group */
         $group = $response->getTransactionGroup();
         if (null === $group) {
             $this->addError($index + 1, 'Group is unexpectedly NULL.');

@@ -28,8 +28,12 @@ use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
 use App\Services\Sync\JobStatus\ProgressInformation;
 use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
+use GrumpyDictator\FFIIIApiSupport\Model\Account;
 use GrumpyDictator\FFIIIApiSupport\Request\GetAccountRequest;
+use GrumpyDictator\FFIIIApiSupport\Request\GetAccountsRequest;
 use GrumpyDictator\FFIIIApiSupport\Response\GetAccountResponse;
+use GrumpyDictator\FFIIIApiSupport\Response\GetAccountsResponse;
+use Log;
 
 /**
  * Class GenerateTransactions.
@@ -41,6 +45,53 @@ class GenerateTransactions
     private $accounts;
     /** @var Configuration */
     private $configuration;
+
+    /** @var array */
+    private $targetAccounts;
+    /** @var array */
+    private $targetTypes;
+
+    /**
+     * GenerateTransactions constructor.
+     */
+    public function __construct()
+    {
+        $this->targetAccounts = [];
+        $this->targetTypes    = [];
+    }
+
+    /**
+     *
+     */
+    public function collectTargetAccounts(): void
+    {
+        Log::debug('Going to collect all target accounts from Firefly III.');
+        // send account list request to Firefly III.
+        $token   = (string) config('bunq.access_token');
+        $uri     = (string) config('bunq.uri');
+        $request = new GetAccountsRequest($uri, $token);
+        /** @var GetAccountsResponse $result */
+        $result = $request->get();
+        $return = [];
+        $types  = [];
+        /** @var Account $entry */
+        foreach ($result as $entry) {
+            $type = $entry->type;
+            if ('reconciliation' === $type || 'initial-balance' === $type) {
+                continue;
+            }
+            $iban = $entry->iban;
+            if ('' === (string) $iban) {
+                continue;
+            }
+            Log::debug(sprintf('Collected %s (%s) under ID #%d', $iban, $entry->type, $entry->id));
+            $return[$iban] = $entry->id;
+            $types[$iban]  = $entry->type;
+        }
+        $this->targetAccounts = $return;
+        $this->targetTypes    = $types;
+        Log::debug(sprintf('Collected %d accounts.', count($this->targetAccounts)));
+    }
 
     /**
      * @param array $bunq
@@ -99,6 +150,11 @@ class GenerateTransactions
             ],
         ];
 
+        // save meta:
+        $return['transactions'][0]['bunq_payment_id']    = $entry['id'];
+        $return['transactions'][0]['external_id']        = $entry['id'];
+        $return['transactions'][0]['internal_reference'] = $bunqAccountId;
+
         // give "auto save" transactions a different description:
         if ('SAVINGS' === $entry['type'] && 'PAYMENT' === $entry['sub_type']) {
             $return['transactions'][0]['description'] = '(auto save transaction)';
@@ -123,7 +179,23 @@ class GenerateTransactions
                 $return['transactions'][0]['source_id'] = $mappedId;
                 unset($return['transactions'][0]['source_iban'], $return['transactions'][0]['source_name']);
             }
+            //Log::debug(sprintf('Mapped ID is %s', var_export($mappedId, true)));
+            // check target accounts as well:
+            $iban = $entry['counter_party']['iban'];
+            if ((null === $mappedId || 0 === $mappedId) && isset($this->targetAccounts[$iban])) {
+                Log::debug(sprintf('Found IBAN %s in target accounts (ID %d). Type is %s', $iban, $this->targetAccounts[$iban], $this->targetTypes[$iban]));
+
+                // type: source comes from $targetTypes, destination is asset (see above).
+                $return['transactions'][0]['type']      = $this->getTransactionType($this->targetTypes[$iban] ?? '', 'asset');
+                $return['transactions'][0]['source_id'] = $this->targetAccounts[$iban];
+                unset($return['transactions'][0]['source_iban'], $return['transactions'][0]['source_name']);
+                Log::debug(sprintf('Replaced source IBAN %s with ID #%d (type %s).', $iban, $this->targetAccounts[$iban], $this->targetTypes[$iban]));
+            }
+            unset($iban);
         }
+
+        // TODO these two if statements are mirrors of each other.
+
         if (-1 === bccomp($entry['amount'], '0')) {
             // amount is negative: withdrawal or transfer.
             $return['transactions'][0]['amount'] = bcmul($entry['amount'], '-1');
@@ -134,19 +206,28 @@ class GenerateTransactions
             // dest is shop
             $return['transactions'][0]['destination_iban']   = $entry['counter_party']['iban'];
             $return['transactions'][0]['destination_name']   = $entry['counter_party']['display_name'];
-            $return['transactions'][0]['bunq_payment_id']    = $entry['id'];
-            $return['transactions'][0]['external_id']        = $entry['id'];
-            $return['transactions'][0]['internal_reference'] = $bunqAccountId;
 
             $mappedId = $this->getMappedId($entry['counter_party']['display_name'], (string) $entry['counter_party']['iban']);
+            //Log::debug(sprintf('Mapped ID is %s', var_export($mappedId, true)));
             if (null !== $mappedId && 0 !== $mappedId) {
                 $return['transactions'][0]['destination_id'] = $mappedId;
-                // source is asset, destination is ??, set the transaction type:
-                $mappedType = $this->getMappedType($mappedId);
-
-                $return['transactions'][0]['type'] = $this->getTransactionType('asset', $mappedType);
+                $mappedType                                  = $this->getMappedType($mappedId);
+                $return['transactions'][0]['type']           = $this->getTransactionType('asset', $mappedType);
                 unset($return['transactions'][0]['destination_iban'], $return['transactions'][0]['destination_name']);
             }
+
+            // check target accounts as well:
+            $iban = $entry['counter_party']['iban'];
+            if ((null === $mappedId || 0 === $mappedId) && isset($this->targetAccounts[$iban])) {
+                Log::debug(sprintf('Found IBAN %s in target accounts (ID %d). Type is %s', $iban, $this->targetAccounts[$iban], $this->targetTypes[$iban]));
+
+                // source is always asset, destination depends on $targetType.
+                $return['transactions'][0]['type']           = $this->getTransactionType('asset', $this->targetTypes[$iban] ?? '');
+                $return['transactions'][0]['destination_id'] = $this->targetAccounts[$iban];
+                unset($return['transactions'][0]['destination_iban'], $return['transactions'][0]['destination_name']);
+                Log::debug(sprintf('Replaced source IBAN %s with ID #%d (type %s).', $iban, $this->targetAccounts[$iban], $this->targetTypes[$iban]));
+            }
+            unset($iban);
         }
         app('log')->debug(sprintf('Parsed bunq transaction #%d', $entry['id']));
 
