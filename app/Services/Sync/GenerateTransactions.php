@@ -77,7 +77,7 @@ class GenerateTransactions
         /** @var Account $entry */
         foreach ($result as $entry) {
             $type = $entry->type;
-            if ('reconciliation' === $type || 'initial-balance' === $type) {
+            if (in_array($type, ['reconciliation', 'initial-balance', 'expense', 'revenue'], true)) {
                 continue;
             }
             $iban = $entry->iban;

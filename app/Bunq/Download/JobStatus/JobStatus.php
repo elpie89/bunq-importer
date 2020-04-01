@@ -51,7 +51,7 @@ class JobStatus
      */
     public function __construct()
     {
-        app('log')->debug('Constructed download JobStatus');
+        //app('log')->debug('Constructed download JobStatus');
         $this->status   = self::JOB_WAITING;
         $this->errors   = [];
         $this->warnings = [];

@@ -48,6 +48,9 @@ class DownloadController extends Controller
         app('view')->share('pageTitle', 'Download transactions from bunq');
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $mainTitle = 'Downloading transactions...';
@@ -117,7 +120,7 @@ class DownloadController extends Controller
     public function status(Request $request): JsonResponse
     {
         $downloadIdentifier = $request->get('downloadIdentifier');
-        app('log')->debug(sprintf('Now at %s(%s)', __METHOD__, $downloadIdentifier));
+        //app('log')->debug(sprintf('Now at %s(%s)', __METHOD__, $downloadIdentifier));
         if (null === $downloadIdentifier) {
             app('log')->warning('Download Identifier is NULL.');
             // no status is known yet because no identifier is in the session.

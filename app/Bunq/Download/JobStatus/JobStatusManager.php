@@ -121,7 +121,7 @@ class JobStatusManager
      */
     public static function startOrFindJob(string $downloadIdentifier): JobStatus
     {
-        app('log')->debug(sprintf('Now in (download) startOrFindJob(%s)', $downloadIdentifier));
+        //app('log')->debug(sprintf('Now in (download) startOrFindJob(%s)', $downloadIdentifier));
         $disk = Storage::disk('jobs');
         try {
             //app('log')->debug(sprintf('Try to see if file exists for download job %s.', $downloadIdentifier));

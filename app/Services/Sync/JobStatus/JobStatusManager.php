@@ -119,7 +119,7 @@ class JobStatusManager
      */
     public static function startOrFindJob(string $identifier): JobStatus
     {
-        app('log')->debug(sprintf('Now in (sync) startOrFindJob(%s)', $identifier));
+        //app('log')->debug(sprintf('Now in (sync) startOrFindJob(%s)', $identifier));
         $disk = Storage::disk('jobs');
         try {
             //app('log')->debug(sprintf('Try to see if file exists for sync job %s.', $identifier));
