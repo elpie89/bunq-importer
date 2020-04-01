@@ -28,8 +28,8 @@ use App\Bunq\Download\JobStatus\JobStatusManager;
 use App\Bunq\Requests\PaymentList;
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
-use Str;
-
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 /**
  * Class ImportRoutineManager.
  */
@@ -138,10 +138,10 @@ class RoutineManager
     private function generateDownloadIdentifier(): void
     {
         app('log')->debug('Going to generate download identifier.');
-        $disk  = app('storage')->disk('jobs');
+        $disk  = Storage::disk('jobs');
         $count = 0;
         do {
-            $downloadIdentifier = app('str')->random(16);
+            $downloadIdentifier = Str::random(16);
             $count++;
             app('log')->debug(sprintf('Attempt #%d results in "%s"', $count, $downloadIdentifier));
         } while ($count < 30 && $disk->exists($downloadIdentifier));

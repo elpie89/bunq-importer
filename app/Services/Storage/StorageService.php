@@ -26,8 +26,8 @@ namespace App\Services\Storage;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use RuntimeException;
-use Storage;
-use Str;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class StorageService.
@@ -42,7 +42,7 @@ class StorageService
      */
     public static function getContent(string $name): string
     {
-        $disk = app('storage')->disk('uploads');
+        $disk = Storage::disk('uploads');
         if ($disk->exists($name)) {
             return $disk->get($name);
         }
@@ -56,8 +56,8 @@ class StorageService
      */
     public static function storeContent(string $content): string
     {
-        $fileName = app('str')->random(20);
-        $disk     = app('storage')->disk('uploads');
+        $fileName = Str::random(20);
+        $disk     = Storage::disk('uploads');
         $disk->put($fileName, $content);
 
         return $fileName;

@@ -28,6 +28,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Artisan;
 
 /**
  * Class IndexController.
@@ -50,8 +51,8 @@ class IndexController extends Controller
     {
         app('log')->debug(sprintf('Now at %s', __METHOD__));
         session()->flush();
-        app('artisan')->call('cache:clear');
-        app('artisan')->call('config:clear');
+        Artisan::call('cache:clear');
+        Artisan::call('config:clear');
 
         return redirect(route('index'));
     }

@@ -26,6 +26,8 @@ namespace App\Services\Sync;
 
 use App\Services\Configuration\Configuration;
 use App\Services\Sync\JobStatus\JobStatusManager;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * Class RoutineManager.
@@ -151,6 +153,8 @@ class RoutineManager
 
     /**
      * Start the import.
+     *
+     * @throws \App\Exceptions\ImportException
      */
     public function start(): void
     {
@@ -163,23 +167,23 @@ class RoutineManager
 
         // generate Firefly III ready transactions:
         app('log')->debug('Generating Firefly III transactions.');
+        $this->transactionGenerator->collectTargetAccounts();
+
         $transactions = $this->transactionGenerator->getTransactions($array);
         app('log')->debug(sprintf('Generated %d Firefly III transactions.', count($transactions)));
 
         // send to Firefly III.
         app('log')->debug('Going to send them to Firefly III.');
         $sent = $this->transactionSender->send($transactions);
-        // download and store transactions from bunq.
-        // $transactions = $this->paymentList->getPaymentList();
     }
 
     private function generateSyncIdentifier(): void
     {
         app('log')->debug('Going to generate sync job identifier.');
-        $disk  = app('storage')->disk('jobs');
+        $disk  = Storage::disk('jobs');
         $count = 0;
         do {
-            $syncIdentifier = app('str')->random(16);
+            $syncIdentifier = Str::random(16);
             $count++;
             app('log')->debug(sprintf('Attempt #%d results in "%s"', $count, $syncIdentifier));
         } while ($count < 30 && $disk->exists($syncIdentifier));

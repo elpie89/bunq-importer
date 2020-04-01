@@ -33,6 +33,7 @@ use GrumpyDictator\FFIIIApiSupport\Response\GetAccountsResponse;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class MappingController.
@@ -147,7 +148,7 @@ class MappingController extends Controller
     private function getOpposingAccounts(): array
     {
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
-        $disk               = app('storage')->disk('downloads');
+        $disk               = Storage::disk('downloads');
         $json               = $disk->get($downloadIdentifier);
         $array              = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         $opposing           = [];

@@ -26,6 +26,7 @@ namespace App\Bunq\Download\JobStatus;
 
 use App\Services\Session\Constants;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class JobStatusManager.
@@ -39,7 +40,7 @@ class JobStatusManager
      */
     public static function addError(string $downloadIdentifier, int $index, string $error): void
     {
-        $disk = app('storage')->disk('jobs');
+        $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($downloadIdentifier)) {
                 $status                   = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
@@ -60,7 +61,7 @@ class JobStatusManager
      */
     public static function addMessage(string $downloadIdentifier, int $index, string $message): void
     {
-        $disk = app('storage')->disk('jobs');
+        $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($downloadIdentifier)) {
                 $status                     = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
@@ -81,7 +82,7 @@ class JobStatusManager
      */
     public static function addWarning(string $downloadIdentifier, int $index, string $warning): void
     {
-        $disk = app('storage')->disk('jobs');
+        $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($downloadIdentifier)) {
                 $status                     = JobStatus::fromArray(json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR));
@@ -121,7 +122,7 @@ class JobStatusManager
     public static function startOrFindJob(string $downloadIdentifier): JobStatus
     {
         app('log')->debug(sprintf('Now in (download) startOrFindJob(%s)', $downloadIdentifier));
-        $disk = app('storage')->disk('jobs');
+        $disk = Storage::disk('jobs');
         try {
             app('log')->debug(sprintf('Try to see if file exists for download job %s.', $downloadIdentifier));
             if ($disk->exists($downloadIdentifier)) {
@@ -152,7 +153,7 @@ class JobStatusManager
     private static function storeJobStatus(string $downloadIdentifier, JobStatus $status): void
     {
         app('log')->debug(sprintf('Now in storeJobStatus(%s): %s', $downloadIdentifier, $status->status));
-        $disk = app('storage')->disk('jobs');
+        $disk = Storage::disk('jobs');
         $disk->put($downloadIdentifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
     }
 }

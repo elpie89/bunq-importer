@@ -31,6 +31,7 @@ use App\Services\Sync\JobStatus\ProgressInformation;
 use bunq\Model\Generated\Endpoint\Payment as BunqPayment;
 use Carbon\Carbon;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class PaymentList.
@@ -124,7 +125,7 @@ class PaymentList
      */
     private function getDownload(): array
     {
-        $disk = app('storage')->disk('downloads');
+        $disk = Storage::disk('downloads');
         try {
             $content = (string) $disk->get($this->downloadIdentifier);
         } catch (FileNotFoundException $e) {
@@ -219,7 +220,7 @@ class PaymentList
      */
     private function hasDownload(): bool
     {
-        $disk = app('storage')->disk('downloads');
+        $disk = Storage::disk('downloads');
 
         return $disk->exists($this->downloadIdentifier);
     }
@@ -303,7 +304,7 @@ class PaymentList
      */
     private function storeDownload(array $data): void
     {
-        $disk = app('storage')->disk('downloads');
+        $disk = Storage::disk('downloads');
         $disk->put($this->downloadIdentifier, json_encode($data, JSON_THROW_ON_ERROR, 512));
     }
 }
