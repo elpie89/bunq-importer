@@ -1,7 +1,7 @@
 <?php
 /**
  * ConfigurationController.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -24,24 +24,26 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Import;
 
-
 use App\Bunq\ApiContext\ApiContextManager;
 use App\Bunq\Requests\MonetaryAccountList;
+use App\Exceptions\ImportException;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\ConfigComplete;
 use App\Http\Middleware\ConfigurationPostRequest;
 use App\Services\Configuration\Configuration;
 use App\Services\Session\Constants;
 use App\Services\Storage\StorageService;
+use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 use GrumpyDictator\FFIIIApiSupport\Model\Account;
 use GrumpyDictator\FFIIIApiSupport\Request\GetAccountsRequest;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
-use Log;
+use Illuminate\View\View;
 
 /**
- * Class ConfigurationController
+ * Class ConfigurationController.
  */
 class ConfigurationController extends Controller
 {
@@ -58,7 +60,8 @@ class ConfigurationController extends Controller
     /**
      * @return ResponseFactory|Response
      */
-    public function download() {
+    public function download()
+    {
         // do something
         $config = Configuration::fromArray(session()->get(Constants::CONFIGURATION))->toArray();
         $result = json_encode($config, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT, 512);
@@ -78,13 +81,13 @@ class ConfigurationController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\Factory|RedirectResponse|\Illuminate\View\View
-     * @throws \App\Exceptions\ImportException
-     * @throws \GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException
+     * @throws ApiHttpException
+     * @throws ImportException
+     * @return Factory|RedirectResponse|View
      */
     public function index()
     {
-        Log::debug(sprintf('Now at %s', __METHOD__));
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
         $mainTitle = 'Import from bunq';
         $subTitle  = 'Configure your bunq import';
 
@@ -98,8 +101,8 @@ class ConfigurationController extends Controller
             return redirect()->route('import.download.index');
         }
         // get list of asset accounts in Firefly III
-        $uri     = (string)config('bunq.uri');
-        $token   = (string)config('bunq.access_token');
+        $uri     = (string) config('bunq.uri');
+        $token   = (string) config('bunq.access_token');
         $request = new GetAccountsRequest($uri, $token);
         $request->setType(GetAccountsRequest::ASSET);
         $ff3Accounts = $request->get();
@@ -138,7 +141,9 @@ class ConfigurationController extends Controller
             $mapping = base64_encode(json_encode($configuration->getMapping(), JSON_THROW_ON_ERROR, 512));
         }
 
-        return view('import.configuration.index', compact('mainTitle', 'subTitle','ff3Accounts', 'combinedAccounts', 'configuration', 'bunqAccounts', 'mapping'));
+        return view(
+            'import.configuration.index', compact('mainTitle', 'subTitle', 'ff3Accounts', 'combinedAccounts', 'configuration', 'bunqAccounts', 'mapping')
+        );
     }
 
     /**
@@ -148,7 +153,7 @@ class ConfigurationController extends Controller
      */
     public function postIndex(ConfigurationPostRequest $request)
     {
-        Log::debug(sprintf('Now at %s', __METHOD__));
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
         // store config on drive.
 
         $fromRequest   = $request->getAll();
@@ -163,5 +168,4 @@ class ConfigurationController extends Controller
         // redirect to import things?
         return redirect()->route('import.download.index');
     }
-
 }

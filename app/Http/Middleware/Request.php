@@ -1,7 +1,7 @@
 <?php
 /**
  * Request.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -28,13 +28,11 @@ use Carbon\Carbon;
 use Carbon\Exceptions\InvalidDateException;
 use Exception;
 use Illuminate\Foundation\Http\FormRequest;
-use Log;
 
 /**
  * Class Request.
  *
  * @codeCoverageIgnore
- *
  */
 class Request extends FormRequest
 {
@@ -59,11 +57,11 @@ class Request extends FormRequest
     }
 
     /**
-     * @param string $value
+     * @param string|int|null|bool $value
      *
      * @return bool
      */
-    public function convertBoolean(?string $value): bool
+    public function convertBoolean($value): bool
     {
         if (null === $value) {
             return false;
@@ -103,7 +101,7 @@ class Request extends FormRequest
         try {
             $carbon = new Carbon($string);
         } catch (Exception $e) {
-            Log::debug(sprintf('Invalid date: %s: %s', $string, $e->getMessage()));
+            app('log')->debug(sprintf('Invalid date: %s: %s', $string, $e->getMessage()));
 
             return null;
         }
@@ -125,7 +123,7 @@ class Request extends FormRequest
             return null;
         }
 
-        return (float)$res;
+        return (float) $res;
     }
 
     /**
@@ -137,11 +135,11 @@ class Request extends FormRequest
      */
     public function integer(string $field): int
     {
-        return (int)$this->get($field);
+        return (int) $this->get($field);
     }
 
     /**
-     * Parse to integer
+     * Parse to integer.
      *
      * @param string|null $string
      *
@@ -156,7 +154,7 @@ class Request extends FormRequest
             return null;
         }
 
-        return (int)$string;
+        return (int) $string;
     }
 
     /**
@@ -172,12 +170,12 @@ class Request extends FormRequest
             return null;
         }
 
-        $value = (string)$this->get($field);
+        $value = (string) $this->get($field);
         if ('' === $value) {
             return null;
         }
 
-        return (int)$value;
+        return (int) $value;
     }
 
     /**
@@ -193,7 +191,7 @@ class Request extends FormRequest
             return null;
         }
 
-        return $this->cleanString((string)($this->get($field) ?? ''));
+        return $this->cleanString((string) ($this->get($field) ?? ''));
     }
 
     /**
@@ -205,7 +203,7 @@ class Request extends FormRequest
      */
     public function string(string $field): string
     {
-        return $this->cleanString((string)($this->get($field) ?? ''));
+        return $this->cleanString((string) ($this->get($field) ?? ''));
     }
 
     /**
@@ -223,7 +221,6 @@ class Request extends FormRequest
         $result = $this->cleanString($string);
 
         return '' === $result ? null : $result;
-
     }
 
     /**
@@ -239,7 +236,7 @@ class Request extends FormRequest
         try {
             $result = $this->get($field) ? new Carbon($this->get($field)) : null;
         } catch (Exception $e) {
-            Log::debug(sprintf('Exception when parsing date. Not interesting: %s', $e->getMessage()));
+            app('log')->debug(sprintf('Exception when parsing date. Not interesting: %s', $e->getMessage()));
         }
 
         return $result;
@@ -257,13 +254,13 @@ class Request extends FormRequest
         if (null === $this->get($field)) {
             return null;
         }
-        $value = (string)$this->get($field);
+        $value = (string) $this->get($field);
         if (10 === strlen($value)) {
             // probably a date format.
             try {
                 $result = Carbon::createFromFormat('Y-m-d', $value);
             } catch (InvalidDateException $e) {
-                Log::error(sprintf('"%s" is not a valid date: %s', $value, $e->getMessage()));
+                app('log')->error(sprintf('"%s" is not a valid date: %s', $value, $e->getMessage()));
 
                 return null;
             }
@@ -274,7 +271,7 @@ class Request extends FormRequest
         try {
             $result = Carbon::parse($value);
         } catch (InvalidDateException $e) {
-            Log::error(sprintf('"%s" is not a valid date or time: %s', $value, $e->getMessage()));
+            app('log')->error(sprintf('"%s" is not a valid date or time: %s', $value, $e->getMessage()));
 
             return null;
         }

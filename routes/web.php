@@ -1,7 +1,9 @@
 <?php
+
+declare(strict_types=1);
 /**
  * web.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -20,20 +22,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 Route::get('/', ['uses' => 'IndexController@index', 'as' => 'index']);
 
 // clear session
-Route::get('/flush','IndexController@flush')->name('flush');
+Route::get('/flush', 'IndexController@flush')->name('flush');
 
 // validate access token:
 Route::get('/token', 'TokenController@index')->name('token.index');
@@ -51,8 +43,6 @@ Route::post('/import/configure', ['uses' => 'Import\ConfigurationController@post
 Route::get('/import/download', ['uses' => 'Import\DownloadController@index', 'as' => 'import.download.index']);
 Route::any('/import/download/start', ['uses' => 'Import\DownloadController@start', 'as' => 'import.download.start']);
 Route::get('/import/download/status', ['uses' => 'Import\DownloadController@status', 'as' => 'import.download.status']);
-
-
 
 // do mapping configuration
 Route::get('/import/mapping', ['uses' => 'Import\MappingController@index', 'as' => 'import.mapping.index']);

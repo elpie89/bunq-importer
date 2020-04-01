@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * ConfigFileProcessor.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -23,12 +24,11 @@ declare(strict_types=1);
 
 namespace App\Services\Configuration;
 
-
 use App\Services\Storage\StorageService;
-use Log;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 /**
- * Class ConfigFileProcessor
+ * Class ConfigFileProcessor.
  */
 class ConfigFileProcessor
 {
@@ -37,17 +37,15 @@ class ConfigFileProcessor
      *
      * @param string $fileName
      *
+     * @throws FileNotFoundException
      * @return Configuration
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public static function convertConfigFile(string $fileName): Configuration
     {
-        Log::debug('Now in ConfigFileProcessor::convertConfigFile');
+        app('log')->debug('Now in ConfigFileProcessor::convertConfigFile');
         $content = StorageService::getContent($fileName);
         $json    = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
         return Configuration::fromFile($json);
-
     }
-
 }

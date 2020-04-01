@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * ConfigComplete.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -28,7 +29,7 @@ use Closure;
 use Illuminate\Http\Request;
 
 /**
- * Class ConfigComplete
+ * Class ConfigComplete.
  */
 class ConfigComplete
 {
@@ -39,7 +40,6 @@ class ConfigComplete
      * @param Closure $next
      *
      * @return mixed
-     *
      */
     public function handle(Request $request, Closure $next)
     {

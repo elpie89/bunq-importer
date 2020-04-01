@@ -1,7 +1,7 @@
 <?php
 /**
  * bunq.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -23,7 +23,7 @@
 declare(strict_types=1);
 
 return [
-    'version'         => '1.0.0-beta.1',
+    'version'         => '1.0.0-beta.2',
     'access_token'    => env('FIREFLY_III_ACCESS_TOKEN', ''),
     'uri'             => env('FIREFLY_III_URI', ''),
     'api_code'        => env('BUNQ_API_CODE', ''),

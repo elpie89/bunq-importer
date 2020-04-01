@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * StorageService.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -24,15 +25,30 @@ declare(strict_types=1);
 namespace App\Services\Storage;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use RuntimeException;
-use Storage;
-use Str;
 
 /**
- * Class StorageService
+ * Class StorageService.
  */
 class StorageService
 {
+    /**
+     * @param string $name
+     *
+     * @throws FileNotFoundException
+     * @return string
+     */
+    public static function getContent(string $name): string
+    {
+        $disk = Storage::disk('uploads');
+        if ($disk->exists($name)) {
+            return $disk->get($name);
+        }
+        throw new RuntimeException(sprintf('No such file %s', $name));
+    }
+
     /**
      * @param string $content
      *
@@ -46,20 +62,4 @@ class StorageService
 
         return $fileName;
     }
-
-    /**
-     * @param string $name
-     *
-     * @return string
-     * @throws FileNotFoundException
-     */
-    public static function getContent(string $name): string
-    {
-        $disk = Storage::disk('uploads');
-        if ($disk->exists($name)) {
-            return $disk->get($name);
-        }
-        throw new RuntimeException(sprintf('No such file %s', $name));
-    }
-
 }

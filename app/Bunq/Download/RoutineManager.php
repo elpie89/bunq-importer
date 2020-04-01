@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * RoutineManager.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -27,25 +28,24 @@ use App\Bunq\Download\JobStatus\JobStatusManager;
 use App\Bunq\Requests\PaymentList;
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
-use Log;
-use Storage;
-use Str;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
- * Class ImportRoutineManager
+ * Class ImportRoutineManager.
  */
 class RoutineManager
 {
-    /** @var Configuration */
-    private $configuration;
-    /** @var string */
-    private $downloadIdentifier;
+    /** @var array */
+    private $allErrors;
     /** @var array */
     private $allMessages;
     /** @var array */
     private $allWarnings;
-    /** @var array */
-    private $allErrors;
+    /** @var Configuration */
+    private $configuration;
+    /** @var string */
+    private $downloadIdentifier;
     /** @var PaymentList */
     private $paymentList;
 
@@ -58,34 +58,29 @@ class RoutineManager
      */
     public function __construct(string $downloadIdentifier = null)
     {
-        Log::debug('Constructed ImportRoutineManager');
+        app('log')->debug('Constructed ImportRoutineManager');
 
         // get line converter
         $this->allMessages = [];
         $this->allWarnings = [];
         $this->allErrors   = [];
         if (null === $downloadIdentifier) {
-            Log::debug('Was given no download identifier, will generate one.');
+            app('log')->debug('Was given no download identifier, will generate one.');
             $this->generateDownloadIdentifier();
         }
         if (null !== $downloadIdentifier) {
-            Log::debug('Was given download identifier, will use it.');
+            app('log')->debug('Was given download identifier, will use it.');
             $this->downloadIdentifier = $downloadIdentifier;
         }
         JobStatusManager::startOrFindJob($this->downloadIdentifier);
     }
 
     /**
-     * @param Configuration $configuration
-     *
+     * @return array
      */
-    public function setConfiguration(Configuration $configuration): void
+    public function getAllErrors(): array
     {
-        $this->configuration = $configuration;
-        $this->paymentList   = new PaymentList($configuration);
-        $this->paymentList->setDownloadIdentifier($this->downloadIdentifier);
-
-        Log::debug(sprintf('Download ImportRoutineManager: created new payment list with download identifier "%s"', $this->downloadIdentifier));
+        return $this->allErrors;
     }
 
     /**
@@ -105,26 +100,35 @@ class RoutineManager
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getAllErrors(): array
+    public function getDownloadIdentifier(): string
     {
-        return $this->allErrors;
+        return $this->downloadIdentifier;
     }
 
     /**
+     * @param Configuration $configuration
      */
+    public function setConfiguration(Configuration $configuration): void
+    {
+        $this->configuration = $configuration;
+        $this->paymentList   = new PaymentList($configuration);
+        $this->paymentList->setDownloadIdentifier($this->downloadIdentifier);
+
+        app('log')->debug(sprintf('Download ImportRoutineManager: created new payment list with download identifier "%s"', $this->downloadIdentifier));
+    }
+
     public function start(): void
     {
-        Log::debug(sprintf('Now in %s', __METHOD__));
+        app('log')->debug(sprintf('Now in %s', __METHOD__));
         // download and store transactions from bunq.
         try {
             $transactions = $this->paymentList->getPaymentList();
-        } catch(ImportException $e) {
-            Log::error($e->getMessage());
-            Log::error($e->getTraceAsString());
+        } catch (ImportException $e) {
+            app('log')->error($e->getMessage());
+            app('log')->error($e->getTraceAsString());
         }
-
 
         $count = count($transactions);
         $this->mergeMessages($count);
@@ -132,29 +136,32 @@ class RoutineManager
         $this->mergeErrors($count);
     }
 
-    /**
-     *
-     */
     private function generateDownloadIdentifier(): void
     {
-        Log::debug('Going to generate download identifier.');
+        app('log')->debug('Going to generate download identifier.');
         $disk  = Storage::disk('jobs');
         $count = 0;
         do {
             $downloadIdentifier = Str::random(16);
             $count++;
-            Log::debug(sprintf('Attempt #%d results in "%s"', $count, $downloadIdentifier));
+            app('log')->debug(sprintf('Attempt #%d results in "%s"', $count, $downloadIdentifier));
         } while ($count < 30 && $disk->exists($downloadIdentifier));
         $this->downloadIdentifier = $downloadIdentifier;
-        Log::info(sprintf('Download job identifier is "%s"', $downloadIdentifier));
+        app('log')->info(sprintf('Download job identifier is "%s"', $downloadIdentifier));
     }
 
     /**
-     * @return string
+     * @param int $count
      */
-    public function getDownloadIdentifier(): string
+    private function mergeErrors(int $count): void
     {
-        return $this->downloadIdentifier;
+        $one   = $this->paymentList->getErrors();
+        $total = [];
+        for ($i = 0; $i < $count; $i++) {
+            $total[$i] = array_merge($one[$i] ?? []);
+        }
+
+        $this->allErrors = $total;
     }
 
     /**
@@ -184,21 +191,4 @@ class RoutineManager
 
         $this->allWarnings = $total;
     }
-
-
-    /**
-     * @param int $count
-     */
-    private function mergeErrors(int $count): void
-    {
-        $one   = $this->paymentList->getErrors();
-        $total = [];
-        for ($i = 0; $i < $count; $i++) {
-            $total[$i] = array_merge($one[$i] ?? []);
-        }
-
-
-        $this->allErrors = $total;
-    }
-
 }

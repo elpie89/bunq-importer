@@ -1,7 +1,7 @@
 <?php
 /**
  * Configuration.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -25,11 +25,10 @@ declare(strict_types=1);
 namespace App\Services\Configuration;
 
 use Carbon\Carbon;
-use Log;
 use RuntimeException;
 
 /**
- * Class Configuration
+ * Class Configuration.
  */
 class Configuration
 {
@@ -114,7 +113,7 @@ class Configuration
      */
     public static function fromFile(array $data): self
     {
-        Log::debug('Now in Configuration::fromClassic', $data);
+        app('log')->debug('Now in Configuration::fromClassic', $data);
         $version = $data['version'] ?? 1;
         if (1 === $version) {
             return self::fromDefaultFile($data);
@@ -146,9 +145,9 @@ class Configuration
         $doImport = $array['do_import'] ?? [];
         $accounts = [];
         foreach ($doImport as $bunqId => $selected) {
-            $selected = (int)$selected;
+            $selected = (int) $selected;
             if (1 === $selected) {
-                $accounts[(int)$bunqId] = (int)($array['accounts'][$bunqId] ?? 0);
+                $accounts[(int) $bunqId] = (int) ($array['accounts'][$bunqId] ?? 0);
             }
         }
         $object->accounts = $accounts;
@@ -200,7 +199,7 @@ class Configuration
 
             return $today->format('Y-m-d');
         }
-        Log::error(sprintf('Could not parse date setting. Unknown key "%s"', $unit));
+        app('log')->error(sprintf('Could not parse date setting. Unknown key "%s"', $unit));
 
         return null;
     }
@@ -219,7 +218,7 @@ class Configuration
         $object->dateRangeNumber = $data['date_range_number'] ?? 30;
         $object->dateRangeUnit   = $data['date_range_unit'] ?? 'd';
         $object->dateNotBefore   = $data['date_not_before'] ?? '';
-        $object->accountTypes    = $array['account_types'] ?? [];
+        $object->accountTypes    = $data['account_types'] ?? [];
         $object->dateNotAfter    = $data['date_not_after'] ?? '';
         $object->doMapping       = $data['do_mapping'] ?? false;
         $object->mapping         = $data['mapping'] ?? [];
@@ -421,6 +420,4 @@ class Configuration
             'do_mapping'        => $this->doMapping,
         ];
     }
-
-
 }

@@ -1,7 +1,9 @@
 <?php
+
+declare(strict_types=1);
 /**
  * app.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -21,7 +23,6 @@
  */
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -139,7 +140,7 @@ return [
     |
     */
 
-    'key' => env('APP_KEY'),
+    'key' => 'dmeNzKijHcciC3oHogKULWAdQvTBYalF',
 
     'cipher' => 'AES-256-CBC',
 

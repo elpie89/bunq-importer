@@ -1,7 +1,9 @@
 <?php
+
+declare(strict_types=1);
 /**
  * queue.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -21,7 +23,6 @@
  */
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Queue Connection Name

@@ -1,7 +1,7 @@
 <?php
 /**
  * MonetaryAccountList.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -30,12 +30,12 @@ use bunq\Exception\BunqException;
 use bunq\Model\Core\BunqModel;
 use bunq\Model\Generated\Endpoint\MonetaryAccount as BunqMonetaryAccount;
 use bunq\Model\Generated\Endpoint\MonetaryAccountBank;
+use bunq\Model\Generated\Endpoint\MonetaryAccountJoint;
 use bunq\Model\Generated\Endpoint\MonetaryAccountSavings;
 use bunq\Model\Generated\Object\Pointer;
-use Log;
 
 /**
- * Class MonetaryAccount
+ * Class MonetaryAccount.
  *
  * @codeCoverageIgnore
  */
@@ -47,12 +47,12 @@ class MonetaryAccountList
      * @param array $params
      * @param array $customHeaders
      *
-     * @return array
      * @throws ImportException
+     * @return array
      */
     public function listing(array $params = null, array $customHeaders = null): array
     {
-        Log::debug('Now calling bunq listing.');
+        app('log')->debug('Now calling bunq listing.');
         $params        = $params ?? [];
         $customHeaders = $customHeaders ?? [];
         $listing       = BunqMonetaryAccount::listing($params, $customHeaders);
@@ -62,18 +62,19 @@ class MonetaryAccountList
             try {
                 $return[] = $this->processEntry($entry);
             } catch (BunqImporterException $e) {
-                Log::error($e->getMessage());
-                Log::error($e->getTraceAsString());
-                throw new ImportException($e);
+                app('log')->error($e->getMessage());
+                app('log')->error($e->getTraceAsString());
+                throw new ImportException($e->getMessage());
             }
         }
 
         return $return;
-
     }
 
     /**
      * @param BunqModel $object
+     *
+     * @psalm-param MonetaryAccountBank|MonetaryAccountSavings|MonetaryAccountJoint $object
      *
      * @return string|null
      */
@@ -85,6 +86,7 @@ class MonetaryAccountList
     /**
      * @param BunqModel $object
      *
+     * @psalm-param MonetaryAccountBank|MonetaryAccountSavings|MonetaryAccountJoint $object
      * @return string|null
      */
     private function getIban(BunqModel $object): ?string
@@ -102,8 +104,8 @@ class MonetaryAccountList
     /**
      * @param BunqMonetaryAccount $entry
      *
-     * @return array
      * @throws ImportException
+     * @return array
      */
     private function processEntry(BunqMonetaryAccount $entry): array
     {
@@ -116,6 +118,7 @@ class MonetaryAccountList
         switch (get_class($object)) {
             case MonetaryAccountBank::class:
             case MonetaryAccountSavings::class:
+            case MonetaryAccountJoint::class:
                 $return          = [
                     'id'          => $object->getId(),
                     'currency'    => $object->getCurrency(),
@@ -134,5 +137,4 @@ class MonetaryAccountList
         }
         throw new ImportException(sprintf('Bunq monetary account is unexpectedly of type "%s".', get_class($object)));
     }
-
 }

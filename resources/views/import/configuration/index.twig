@@ -55,7 +55,6 @@
                                                             <option value="{{ ff3Account.id }}"
                                                                     {% if configuration.getAccounts[combinedAccount.id] == ff3Account.id  %}selected{% endif %}
                                                                 label="{{ ff3Account.name }}{% if ff3Account.iban %} ({{ ff3Account.iban }}){% endif %}">
-                                                                {{ configuration.getAccounts[combinedAccount.id] }}
                                                                 {{ ff3Account.name }}{% if ff3Account.iban %} ({{ ff3Account.iban }}){% endif %}
                                                             </option>
                                                         {% endfor %}

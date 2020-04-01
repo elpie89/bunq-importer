@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * BunqImport.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -28,11 +29,9 @@ use App\Console\StartDownload;
 use App\Console\StartSync;
 use App\Console\VerifyJSON;
 use Illuminate\Console\Command;
-use Log;
 
 /**
- *
- * Class BunqImport
+ * Class BunqImport.
  */
 class BunqImport extends Command
 {
@@ -43,15 +42,14 @@ class BunqImport extends Command
      * @var string
      */
     protected $description = 'Import from bunq using a pre-defined configuration file.';
+    /** @var string */
+    protected $downloadIdentifier;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
     protected $signature = 'bunq:import {config : The JSON configuration file}';
-
-    /** @var string */
-    protected $downloadIdentifier;
 
     /**
      * Create a new command instance.
@@ -77,15 +75,14 @@ class BunqImport extends Command
             return 1;
         }
 
-
         $this->info(sprintf('Welcome to the Firefly III bunq importer, v%s', config('bunq.version')));
-        Log::debug(sprintf('Now in %s', __METHOD__));
+        app('log')->debug(sprintf('Now in %s', __METHOD__));
         $config = $this->argument('config');
 
         if (!file_exists($config) || (file_exists($config) && !is_file($config))) {
             $message = sprintf('The importer can\'t import: configuration file "%s" does not exist or could not be read.', $config);
             $this->error($message);
-            Log::error($message);
+            app('log')->error($message);
 
             return 1;
         }
@@ -116,10 +113,10 @@ class BunqImport extends Command
         if (0 === $secondResult) {
             $this->line('Sync to Firefly III complete.');
         }
-        if (0 !== $result) {
+        if (0 !== $secondResult) {
             $this->warn('Sync to Firefly III resulted in errors.');
 
-            return $result;
+            return $secondResult;
         }
 
         return 0;

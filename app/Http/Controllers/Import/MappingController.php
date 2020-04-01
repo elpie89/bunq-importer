@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * MappingController.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -23,19 +24,19 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Import;
 
-
 use App\Http\Controllers\Controller;
 use App\Services\Configuration\Configuration;
 use App\Services\Session\Constants;
 use GrumpyDictator\FFIIIApiSupport\Exceptions\ApiHttpException;
 use GrumpyDictator\FFIIIApiSupport\Request\GetAccountsRequest;
 use GrumpyDictator\FFIIIApiSupport\Response\GetAccountsResponse;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 /**
- * Class MappingController
+ * Class MappingController.
  */
 class MappingController extends Controller
 {
@@ -49,7 +50,6 @@ class MappingController extends Controller
     }
 
     /**
-     *
      * @throws ApiHttpException
      */
     public function index()
@@ -82,6 +82,8 @@ class MappingController extends Controller
      * @param Request $request
      *
      * @return RedirectResponse
+     *
+     * @psalm-return RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function postIndex(Request $request)
     {
@@ -110,13 +112,13 @@ class MappingController extends Controller
     }
 
     /**
-     * @return array
      * @throws ApiHttpException
+     * @return array
      */
     private function getFireflyIIIAccounts(): array
     {
-        $token   = (string)config('bunq.access_token');
-        $uri     = (string)config('bunq.uri');
+        $token   = (string) config('bunq.access_token');
+        $uri     = (string) config('bunq.uri');
         $request = new GetAccountsRequest($uri, $token);
         /** @var GetAccountsResponse $result */
         $result = $request->get();
@@ -126,9 +128,9 @@ class MappingController extends Controller
             if ('reconciliation' === $type || 'initial-balance' === $type) {
                 continue;
             }
-            $id                 = (int)$entry->id;
+            $id                 = (int) $entry->id;
             $return[$type][$id] = $entry->name;
-            if ('' !== (string)$entry->iban) {
+            if ('' !== (string) $entry->iban) {
                 $return[$type][$id] = sprintf('%s (%s)', $entry->name, $entry->iban);
             }
         }
@@ -140,34 +142,34 @@ class MappingController extends Controller
     }
 
     /**
+     * @throws FileNotFoundException
      * @return array
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     private function getOpposingAccounts(): array
     {
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
-        $disk       = Storage::disk('downloads');
-        $json       = $disk->get($downloadIdentifier);
-        $array      = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-        $opposing   = [];
+        $disk               = Storage::disk('downloads');
+        $json               = $disk->get($downloadIdentifier);
+        $array              = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        $opposing           = [];
         /** @var array $account */
         foreach ($array as $account) {
             foreach ($account as $entry) {
-                if ('' === trim((string)$entry['counter_party']['iban'])) {
+                if ('' === trim((string) $entry['counter_party']['iban'])) {
                     $opposing[] = trim($entry['counter_party']['display_name']);
                 }
-                if ('' !== trim((string)$entry['counter_party']['iban'])) {
+                if ('' !== trim((string) $entry['counter_party']['iban'])) {
                     $opposing[] = sprintf('%s (%s)', trim($entry['counter_party']['display_name']), trim($entry['counter_party']['iban']));
                 }
             }
         }
         $filtered = array_filter(
-            $opposing, static function (string $value) {
-            return '' !== $value;
-        }
+            $opposing,
+            static function (string $value) {
+                return '' !== $value;
+            }
         );
 
         return array_unique($filtered);
     }
-
 }

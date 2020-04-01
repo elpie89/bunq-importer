@@ -1,7 +1,7 @@
 <?php
 /**
  * StartController.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -29,7 +29,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\View\View;
 
 /**
- * Class StartController
+ * Class StartController.
  */
 class StartController extends Controller
 {

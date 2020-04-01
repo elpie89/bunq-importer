@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * UploadController.php
- * Copyright (c) 2020 james@firefly-iii.org
+ * Copyright (c) 2020 james@firefly-iii.org.
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -23,7 +24,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Import;
 
-
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\UploadedFiles;
 use App\Services\Configuration\ConfigFileProcessor;
@@ -33,10 +33,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\MessageBag;
-use Log;
 
 /**
- * Class UploadController
+ * Class UploadController.
  */
 class UploadController extends Controller
 {
@@ -56,20 +55,20 @@ class UploadController extends Controller
      */
     public function upload(Request $request)
     {
-        Log::debug(sprintf('Now at %s', __METHOD__));
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
         $configFile = $request->file('config_file');
         $errors     = new MessageBag;
 
         // if present, and no errors, upload the config file and store it in the session.
         if (null !== $configFile) {
-            Log::debug('Config file is present.');
+            app('log')->debug('Config file is present.');
             $errorNumber = $configFile->getError();
             if (0 !== $errorNumber) {
-                $errors->add('config_file', $errorNumber);
+                $errors->add('config_file', (string) $errorNumber);
             }
             // upload the file to a temp directory and use it from there.
             if (0 === $errorNumber) {
-                Log::debug('Config file uploaded.');
+                app('log')->debug('Config file uploaded.');
                 $configFileName = StorageService::storeContent(file_get_contents($configFile->getPathname()));
 
                 session()->put(Constants::UPLOAD_CONFIG_FILE, $configFileName);
@@ -94,7 +93,7 @@ class UploadController extends Controller
      */
     private function getError(int $error): string
     {
-        Log::debug(sprintf('Now at %s', __METHOD__));
+        app('log')->debug(sprintf('Now at %s', __METHOD__));
         $errors = [
             UPLOAD_ERR_OK         => 'There is no error, the file uploaded with success.',
             UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
@@ -108,5 +107,4 @@ class UploadController extends Controller
 
         return $errors[$error] ?? 'Unknown error';
     }
-
 }
