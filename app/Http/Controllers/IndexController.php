@@ -27,8 +27,8 @@ namespace App\Http\Controllers;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\View\View;
 
 /**
  * Class IndexController.
@@ -63,6 +63,7 @@ class IndexController extends Controller
     public function index()
     {
         app('log')->debug('If you see this, debug logging is configured correctly.');
+
         return view('index');
     }
 }

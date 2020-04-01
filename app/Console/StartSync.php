@@ -67,7 +67,7 @@ trait StartSync
 
         if (count($errors) > 0) {
             /**
-             * @var int $index
+             * @var int   $index
              * @var array $error
              */
             foreach ($errors as $index => $error) {
@@ -80,7 +80,7 @@ trait StartSync
 
         if (count($warnings) > 0) {
             /**
-             * @var int $index
+             * @var int   $index
              * @var array $warning
              */
             foreach ($warnings as $index => $warning) {
@@ -93,7 +93,7 @@ trait StartSync
 
         if (count($messages) > 0) {
             /**
-             * @var int $index
+             * @var int   $index
              * @var array $message
              */
             foreach ($messages as $index => $message) {

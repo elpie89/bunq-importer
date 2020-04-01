@@ -128,6 +128,7 @@ class JobStatusManager
                 $array  = json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR);
                 $status = JobStatus::fromArray($array);
                 unset($array['messages']);
+
                 //app('log')->debug(sprintf('Status found for sync job %s', $identifier), $array);
 
                 return $status;
@@ -153,7 +154,7 @@ class JobStatusManager
     {
         app('log')->debug(sprintf('Now in Sync storeJobStatus(%s): %s', $syncIdentifier, $status->status));
         $array = $status->toArray();
-        $disk = Storage::disk('jobs');
+        $disk  = Storage::disk('jobs');
         $disk->put($syncIdentifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
         app('log')->debug('Done with storing.');
     }

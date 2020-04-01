@@ -288,7 +288,7 @@ class Request extends FormRequest
      */
     private function cleanString(string $string): string
     {
-        $search = [
+        $search  = [
             "\u{0001}", // start of heading
             "\u{0002}", // start of text
             "\u{0003}", // end of text

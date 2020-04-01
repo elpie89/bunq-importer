@@ -28,8 +28,9 @@ use App\Bunq\Download\JobStatus\JobStatusManager;
 use App\Bunq\Requests\PaymentList;
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 /**
  * Class ImportRoutineManager.
  */

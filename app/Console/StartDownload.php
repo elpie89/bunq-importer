@@ -66,7 +66,7 @@ trait StartDownload
 
         if (count($errors) > 0) {
             /**
-             * @var int    $index
+             * @var int   $index
              * @var array $error
              */
             foreach ($errors as $index => $error) {
@@ -79,7 +79,7 @@ trait StartDownload
 
         if (count($warnings) > 0) {
             /**
-             * @var int    $index
+             * @var int   $index
              * @var array $warning
              */
             foreach ($warnings as $index => $warning) {
@@ -92,7 +92,7 @@ trait StartDownload
 
         if (count($messages) > 0) {
             /**
-             * @var int    $index
+             * @var int   $index
              * @var array $message
              */
             foreach ($messages as $index => $message) {

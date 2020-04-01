@@ -73,6 +73,7 @@ class MonetaryAccountList
 
     /**
      * @param BunqModel $object
+     *
      * @psalm-param MonetaryAccountBank|MonetaryAccountSavings|MonetaryAccountJoint $object
      *
      * @return string|null
@@ -84,6 +85,7 @@ class MonetaryAccountList
 
     /**
      * @param BunqModel $object
+     *
      * @psalm-param MonetaryAccountBank|MonetaryAccountSavings|MonetaryAccountJoint $object
      * @return string|null
      */

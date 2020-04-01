@@ -25,9 +25,9 @@ declare(strict_types=1);
 namespace App\Services\Storage;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use RuntimeException;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use RuntimeException;
 
 /**
  * Class StorageService.

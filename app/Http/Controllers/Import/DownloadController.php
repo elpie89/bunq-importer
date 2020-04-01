@@ -31,8 +31,10 @@ use App\Exceptions\ImportException;
 use App\Http\Controllers\Controller;
 use App\Services\Configuration\Configuration;
 use App\Services\Session\Constants;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 /**
  * Class DownloadController.
@@ -49,7 +51,7 @@ class DownloadController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function index()
     {

@@ -129,6 +129,7 @@ class JobStatusManager
                 //app('log')->debug(sprintf('Status file exists for download job %s.', $downloadIdentifier));
                 $array  = json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR);
                 $status = JobStatus::fromArray($array);
+
                 //app('log')->debug(sprintf('Status found for download job %s', $downloadIdentifier), $array);
 
                 return $status;

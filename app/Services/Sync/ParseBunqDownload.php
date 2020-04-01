@@ -26,8 +26,9 @@ namespace App\Services\Sync;
 
 use App\Services\Sync\JobStatus\ProgressInformation;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use JsonException;
 use Illuminate\Support\Facades\Storage;
+use JsonException;
+
 /**
  * Class ParseBunqDownload.
  */

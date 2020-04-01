@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace App\Services\Sync;
 
+use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
 use App\Services\Sync\JobStatus\JobStatusManager;
 use Illuminate\Support\Facades\Storage;
@@ -48,12 +49,12 @@ class RoutineManager
     private $downloadIdentifier;
     /** @var string */
     private $syncIdentifier;
+    /** @var FilterTransactions */
+    private $transactionFilter;
     /** @var GenerateTransactions */
     private $transactionGenerator;
     /** @var SendTransactions */
     private $transactionSender;
-    /** @var FilterTransactions */
-    private $transactionFilter;
 
     /**
      * Collect info on the current job, hold it in memory.
@@ -158,7 +159,7 @@ class RoutineManager
     /**
      * Start the import.
      *
-     * @throws \App\Exceptions\ImportException
+     * @throws ImportException
      */
     public function start(): void
     {

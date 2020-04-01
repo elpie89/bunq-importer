@@ -205,8 +205,8 @@ class GenerateTransactions
             $return['transactions'][0]['source_id'] = (int) $this->accounts[$bunqAccountId];
 
             // dest is shop
-            $return['transactions'][0]['destination_iban']   = $entry['counter_party']['iban'];
-            $return['transactions'][0]['destination_name']   = $entry['counter_party']['display_name'];
+            $return['transactions'][0]['destination_iban'] = $entry['counter_party']['iban'];
+            $return['transactions'][0]['destination_name'] = $entry['counter_party']['display_name'];
 
             $mappedId = $this->getMappedId($entry['counter_party']['display_name'], (string) $entry['counter_party']['iban']);
             //Log::debug(sprintf('Mapped ID is %s', var_export($mappedId, true)));
