@@ -51,7 +51,7 @@ class SyncController extends Controller
 
     public function index()
     {
-        app('log')->debug(sprintf('Now at %s', __METHOD__));
+        //app('log')->debug(sprintf('Now at %s', __METHOD__));
         $mainTitle = 'Send data to Firefly III';
         $subTitle  = 'After download, comes import.';
 
@@ -89,7 +89,7 @@ class SyncController extends Controller
      */
     public function start(Request $request): JsonResponse
     {
-        app('log')->debug(sprintf('Now at %s', __METHOD__));
+        //app('log')->debug(sprintf('Now at %s', __METHOD__));
 
         // get download job ID so we have the data to send to FF3
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
@@ -136,7 +136,7 @@ class SyncController extends Controller
     public function status(Request $request): JsonResponse
     {
         $syncIdentifier = $request->get('syncIdentifier');
-        app('log')->debug(sprintf('Now at %s(%s)', __METHOD__, $syncIdentifier));
+        //app('log')->debug(sprintf('Now at %s(%s)', __METHOD__, $syncIdentifier));
         if (null === $syncIdentifier) {
             app('log')->warning('Identifier is NULL.');
             // no status is known yet because no identifier is in the session.

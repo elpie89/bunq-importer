@@ -124,12 +124,12 @@ class JobStatusManager
         app('log')->debug(sprintf('Now in (download) startOrFindJob(%s)', $downloadIdentifier));
         $disk = Storage::disk('jobs');
         try {
-            app('log')->debug(sprintf('Try to see if file exists for download job %s.', $downloadIdentifier));
+            //app('log')->debug(sprintf('Try to see if file exists for download job %s.', $downloadIdentifier));
             if ($disk->exists($downloadIdentifier)) {
-                app('log')->debug(sprintf('Status file exists for download job %s.', $downloadIdentifier));
+                //app('log')->debug(sprintf('Status file exists for download job %s.', $downloadIdentifier));
                 $array  = json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR);
                 $status = JobStatus::fromArray($array);
-                app('log')->debug(sprintf('Status found for download job %s', $downloadIdentifier), $array);
+                //app('log')->debug(sprintf('Status found for download job %s', $downloadIdentifier), $array);
 
                 return $status;
             }

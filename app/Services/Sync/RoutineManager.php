@@ -52,6 +52,8 @@ class RoutineManager
     private $transactionGenerator;
     /** @var SendTransactions */
     private $transactionSender;
+    /** @var FilterTransactions */
+    private $transactionFilter;
 
     /**
      * Collect info on the current job, hold it in memory.
@@ -67,6 +69,7 @@ class RoutineManager
         $this->bunqParser           = new ParseBunqDownload;
         $this->transactionGenerator = new GenerateTransactions;
         $this->transactionSender    = new SendTransactions;
+        $this->transactionFilter    = new FilterTransactions;
 
         // get line converter
         $this->allMessages = [];
@@ -172,9 +175,12 @@ class RoutineManager
         $transactions = $this->transactionGenerator->getTransactions($array);
         app('log')->debug(sprintf('Generated %d Firefly III transactions.', count($transactions)));
 
+        $filtered = $this->transactionFilter->filter($transactions);
+        app('log')->debug(sprintf('Filtered down to %d Firefly III transactions.', count($filtered)));
+
         // send to Firefly III.
         app('log')->debug('Going to send them to Firefly III.');
-        $sent = $this->transactionSender->send($transactions);
+        $sent = $this->transactionSender->send($filtered);
     }
 
     private function generateSyncIdentifier(): void

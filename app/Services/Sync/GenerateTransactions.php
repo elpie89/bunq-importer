@@ -141,6 +141,7 @@ class GenerateTransactions
                 [
                     'type'          => 'withdrawal', // reverse
                     'date'          => substr($entry['created'], 0, 10),
+                    'datetime'      => $entry['created'], // not used in API, only for transaction filtering.
                     'amount'        => 0,
                     'description'   => $entry['description'],
                     'order'         => 0,
