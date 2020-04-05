@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "bunq/sdk_php",
-            "version": "1.13.0",
+            "version": "1.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bunq/sdk_php.git",
-                "reference": "7771fd0ab15402df1f06efba220847b7ee4ac861"
+                "reference": "d97d2a710038d183b711825864584e2d31e30e35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bunq/sdk_php/zipball/7771fd0ab15402df1f06efba220847b7ee4ac861",
-                "reference": "7771fd0ab15402df1f06efba220847b7ee4ac861",
+                "url": "https://api.github.com/repos/bunq/sdk_php/zipball/d97d2a710038d183b711825864584e2d31e30e35",
+                "reference": "d97d2a710038d183b711825864584e2d31e30e35",
                 "shasum": ""
             },
             "require": {
@@ -68,7 +68,7 @@
                 "payment",
                 "sepa"
             ],
-            "time": "2020-02-19T10:34:14+00:00"
+            "time": "2020-04-03T15:48:46+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -371,18 +371,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/JC5/api-support-classes.git",
-                "reference": "66fb56b4b1752b7db7ae9b14d4593f7579aeb9eb"
+                "reference": "6616c1e8d2323b76bc6e71296a422a2027890b84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JC5/api-support-classes/zipball/66fb56b4b1752b7db7ae9b14d4593f7579aeb9eb",
-                "reference": "66fb56b4b1752b7db7ae9b14d4593f7579aeb9eb",
+                "url": "https://api.github.com/repos/JC5/api-support-classes/zipball/6616c1e8d2323b76bc6e71296a422a2027890b84",
+                "reference": "6616c1e8d2323b76bc6e71296a422a2027890b84",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "guzzlehttp/guzzle": "^6.5",
-                "illuminate/support": "^6.17",
+                "illuminate/support": "^5.5|^6.0|^7.0|^8.0",
                 "php": "^7.3"
             },
             "require-dev": {
@@ -418,7 +418,7 @@
                 "api-support-classes",
                 "firefly-iii"
             ],
-            "time": "2020-03-27T09:26:01+00:00"
+            "time": "2020-04-03T14:54:40+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -3532,16 +3532,16 @@
     "packages-dev": [
         {
             "name": "amphp/amp",
-            "version": "v2.4.1",
+            "version": "v2.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/amp.git",
-                "reference": "2ac3b550c4997f2ec304faa63c8b2885079a2dc4"
+                "reference": "feca077369a47263b22156b3c6389e55f3809f24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/amp/zipball/2ac3b550c4997f2ec304faa63c8b2885079a2dc4",
-                "reference": "2ac3b550c4997f2ec304faa63c8b2885079a2dc4",
+                "url": "https://api.github.com/repos/amphp/amp/zipball/feca077369a47263b22156b3c6389e55f3809f24",
+                "reference": "feca077369a47263b22156b3c6389e55f3809f24",
                 "shasum": ""
             },
             "require": {
@@ -3551,14 +3551,15 @@
                 "amphp/php-cs-fixer-config": "dev-master",
                 "amphp/phpunit-util": "^1",
                 "ext-json": "*",
-                "phpstan/phpstan": "^0.8.5",
+                "jetbrains/phpstorm-stubs": "^2019.3",
                 "phpunit/phpunit": "^6.0.9 | ^7",
-                "react/promise": "^2"
+                "react/promise": "^2",
+                "vimeo/psalm": "^3.9@dev"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0.x-dev"
+                    "dev-master": "2.x-dev"
                 }
             },
             "autoload": {
@@ -3605,20 +3606,20 @@
                 "non-blocking",
                 "promise"
             ],
-            "time": "2020-02-10T18:10:57+00:00"
+            "time": "2020-04-04T15:05:26+00:00"
         },
         {
             "name": "amphp/byte-stream",
-            "version": "v1.7.2",
+            "version": "v1.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/byte-stream.git",
-                "reference": "1e52f1752b2e20e2a7e464476ef887a2388e3832"
+                "reference": "b867505edb79dda8f253ca3c3a2bbadae4b16592"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/byte-stream/zipball/1e52f1752b2e20e2a7e464476ef887a2388e3832",
-                "reference": "1e52f1752b2e20e2a7e464476ef887a2388e3832",
+                "url": "https://api.github.com/repos/amphp/byte-stream/zipball/b867505edb79dda8f253ca3c3a2bbadae4b16592",
+                "reference": "b867505edb79dda8f253ca3c3a2bbadae4b16592",
                 "shasum": ""
             },
             "require": {
@@ -3628,10 +3629,16 @@
                 "amphp/php-cs-fixer-config": "dev-master",
                 "amphp/phpunit-util": "^1",
                 "friendsofphp/php-cs-fixer": "^2.3",
-                "infection/infection": "^0.9.3",
-                "phpunit/phpunit": "^6"
+                "jetbrains/phpstorm-stubs": "^2019.3",
+                "phpunit/phpunit": "^6 || ^7 || ^8",
+                "vimeo/psalm": "^3.9@dev"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Amp\\ByteStream\\": "lib"
@@ -3664,7 +3671,7 @@
                 "non-blocking",
                 "stream"
             ],
-            "time": "2020-01-29T18:22:23+00:00"
+            "time": "2020-04-04T16:56:54+00:00"
         },
         {
             "name": "barryvdh/laravel-debugbar",
@@ -4927,6 +4934,7 @@
                     "email": "jakub.onderka@gmail.com"
                 }
             ],
+            "abandoned": "php-parallel-lint/php-console-color",
             "time": "2018-09-29T17:23:10+00:00"
         },
         {
@@ -4973,6 +4981,7 @@
                 }
             ],
             "description": "Highlight PHP code in terminal",
+            "abandoned": "php-parallel-lint/php-console-highlighter",
             "time": "2018-09-29T18:48:56+00:00"
         },
         {

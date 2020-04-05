@@ -71,6 +71,9 @@ class PaymentList
         app('log')->debug('Created Requests\\PaymentList');
     }
 
+    /**
+     * @return array
+     */
     public function getPaymentList(): array
     {
         app('log')->debug('Start of PaymentList::getPaymentList()');

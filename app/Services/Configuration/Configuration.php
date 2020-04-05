@@ -224,7 +224,6 @@ class Configuration
         $object->mapping         = $data['mapping'] ?? [];
         $object->accounts        = $data['accounts'] ?? [];
 
-        // TODO recalculate the date if 'partial'
         if ('partial' === $data['date_range']) {
             $object->dateNotBefore = self::calcDateNotBefore($object->dateRangeUnit, $object->dateRangeNumber);
         }
