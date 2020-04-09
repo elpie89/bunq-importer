@@ -59,6 +59,8 @@ class RoutineManager
     /**
      * Collect info on the current job, hold it in memory.
      *
+     * TODO the action to start or find the sync job should not be in the constructor but in the start() method.
+     *
      * ImportRoutineManager constructor.
      *
      * @param null|string $syncIdentifier

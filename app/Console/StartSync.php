@@ -65,45 +65,30 @@ trait StartSync
         $warnings = $manager->getAllWarnings();
         $errors   = $manager->getAllErrors();
 
-        if (count($errors) > 0) {
+        $this->listMessages('ERROR', $errors);
+        $this->listMessages('Warning', $warnings);
+        $this->listMessages('Message', $messages);
+
+        return 0;
+    }
+
+    /**
+     * @param string $key
+     * @param array  $messages
+     */
+    protected function listMessages(string $key, array $messages): void
+    {
+        if (count($messages) > 0) {
             /**
              * @var int   $index
              * @var array $error
              */
-            foreach ($errors as $index => $error) {
+            foreach ($messages as $index => $list) {
                 /** @var string $line */
-                foreach ($error as $line) {
-                    $this->error(sprintf('ERROR in line     #%d: %s', $index + 1, $line));
+                foreach ($list as $line) {
+                    $this->error(sprintf('%s in line #%d: %s', $key, $index + 1, $line));
                 }
             }
         }
-
-        if (count($warnings) > 0) {
-            /**
-             * @var int   $index
-             * @var array $warning
-             */
-            foreach ($warnings as $index => $warning) {
-                /** @var string $line */
-                foreach ($warning as $line) {
-                    $this->warn(sprintf('Warning from line #%d: %s', $index + 1, $line));
-                }
-            }
-        }
-
-        if (count($messages) > 0) {
-            /**
-             * @var int   $index
-             * @var array $message
-             */
-            foreach ($messages as $index => $message) {
-                /** @var string $line */
-                foreach ($message as $line) {
-                    $this->info(sprintf('Message from line #%d: %s', $index + 1, strip_tags($line)));
-                }
-            }
-        }
-
-        return 0;
     }
 }

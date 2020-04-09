@@ -95,9 +95,8 @@ class DownloadController extends Controller
 
         $downloadJobStatus = JobStatusManager::startOrFindJob($downloadIdentifier);
         if (JobStatus::JOB_DONE === $downloadJobStatus->status) {
-            // TODO DISABLED DURING DEVELOPMENT:
-            //app('log')->debug('Job already done!');
-            //return response()->json($downloadJobStatus->toArray());
+            app('log')->debug('Job already done!');
+            return response()->json($downloadJobStatus->toArray());
         }
         JobStatusManager::setJobStatus(JobStatus::JOB_RUNNING);
 
@@ -122,7 +121,6 @@ class DownloadController extends Controller
     public function status(Request $request): JsonResponse
     {
         $downloadIdentifier = $request->get('downloadIdentifier');
-        //app('log')->debug(sprintf('Now at %s(%s)', __METHOD__, $downloadIdentifier));
         if (null === $downloadIdentifier) {
             app('log')->warning('Download Identifier is NULL.');
             // no status is known yet because no identifier is in the session.

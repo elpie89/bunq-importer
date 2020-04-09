@@ -51,6 +51,15 @@ class PaymentList
     /** @var Carbon */
     private $notBefore;
 
+    /** @var string  */
+    private const DATE_FORMAT = 'Y-m-d';
+    /** @var string */
+    private const DATE_TIME_FORMAT = '';
+    /** @var string */
+    private const DISKNAME = 'downloads';
+
+
+
     /**
      * PaymentList constructor.
      *
@@ -60,8 +69,8 @@ class PaymentList
     {
         $this->configuration = $configuration;
         $this->count         = 0;
-        $this->notBefore     = null === $configuration->getDateNotBefore() ? null : Carbon::createFromFormat('Y-m-d', $configuration->getDateNotBefore());
-        $this->notAfter      = null === $configuration->getDateNotAfter() ? null : Carbon::createFromFormat('Y-m-d', $configuration->getDateNotAfter());
+        $this->notBefore     = null === $configuration->getDateNotBefore() ? null : Carbon::createFromFormat(self::DATE_FORMAT, $configuration->getDateNotBefore());
+        $this->notAfter      = null === $configuration->getDateNotAfter() ? null : Carbon::createFromFormat(self::DATE_FORMAT, $configuration->getDateNotAfter());
         if (null !== $this->notBefore) {
             $this->notBefore->startOfDay();
         }
@@ -128,7 +137,7 @@ class PaymentList
      */
     private function getDownload(): array
     {
-        $disk = Storage::disk('downloads');
+        $disk = Storage::disk(self::DISKNAME);
         try {
             $content = (string) $disk->get($this->downloadIdentifier);
         } catch (FileNotFoundException $e) {
@@ -223,7 +232,7 @@ class PaymentList
      */
     private function hasDownload(): bool
     {
-        $disk = Storage::disk('downloads');
+        $disk = Storage::disk(self::DISKNAME);
 
         return $disk->exists($this->downloadIdentifier);
     }
@@ -241,8 +250,8 @@ class PaymentList
             app('log')->info(
                 sprintf(
                     'Skip transaction because %s is before %s',
-                    $created->format('Y-m-d H:i:s'),
-                    $this->notBefore->format('Y-m-d H:i:s')
+                    $created->format(self::DATE_TIME_FORMAT),
+                    $this->notBefore->format(self::DATE_TIME_FORMAT)
                 )
             );
 
@@ -252,8 +261,8 @@ class PaymentList
             app('log')->info(
                 sprintf(
                     'Skip transaction because %s is after %s',
-                    $created->format('Y-m-d H:i:s'),
-                    $this->notAfter->format('Y-m-d H:i:s')
+                    $created->format(self::DATE_TIME_FORMAT),
+                    $this->notAfter->format(self::DATE_TIME_FORMAT)
                 )
             );
 
@@ -294,7 +303,7 @@ class PaymentList
         app('log')->debug(
             sprintf(
                 'Downloaded and parsed transaction #%d (%s) "%s" (%s %s).',
-                $transaction['id'], $transaction['created']->format('Y-m-d'),
+                $transaction['id'], $transaction['created']->format(self::DATE_FORMAT),
                 $transaction['description'], $transaction['currency_code'], $transaction['amount']
             )
         );
@@ -307,7 +316,7 @@ class PaymentList
      */
     private function storeDownload(array $data): void
     {
-        $disk = Storage::disk('downloads');
+        $disk = Storage::disk(self::DISKNAME);
         $disk->put($this->downloadIdentifier, json_encode($data, JSON_THROW_ON_ERROR, 512));
     }
 }
