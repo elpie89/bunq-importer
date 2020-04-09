@@ -49,6 +49,9 @@ class SyncController extends Controller
         app('view')->share('pageTitle', 'Send data to Firefly III');
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $mainTitle = 'Send data to Firefly III';
@@ -60,17 +63,14 @@ class SyncController extends Controller
         // get sync ID so we have a separate track thing.
         $syncIdentifier = session()->get(Constants::SYNC_JOB_IDENTIFIER);
 
-        if (null !== $syncIdentifier) {
-            // create a new import job:
-            app('log')->debug('SyncController is creating new routine manager with existing sync identifier');
-            new RoutineManager($syncIdentifier);
-        }
         if (null === $syncIdentifier) {
             app('log')->debug('SyncController is creating new routine manager with NEW sync identifier');
             // create a new import job:
             $routine        = new RoutineManager(null);
             $syncIdentifier = $routine->getSyncIdentifier();
         }
+
+        JobStatusManager::startOrFindJob($syncIdentifier);
 
         app('log')->debug(sprintf('Sync routine manager job identifier is "%s"', $syncIdentifier));
 

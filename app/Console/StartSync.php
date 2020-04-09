@@ -26,6 +26,7 @@ namespace App\Console;
 
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
+use App\Services\Sync\JobStatus\JobStatusManager;
 use App\Services\Sync\RoutineManager as SyncRoutineManager;
 
 /**
@@ -46,6 +47,10 @@ trait StartSync
         // first download from bunq
         $manager = new SyncRoutineManager;
         $manager->setDownloadIdentifier($this->downloadIdentifier);
+
+        // start or find job:
+        JobStatusManager::startOrFindJob($manager->getSyncIdentifier());
+
         try {
             $manager->setConfiguration($configObject);
         } catch (ImportException $e) {

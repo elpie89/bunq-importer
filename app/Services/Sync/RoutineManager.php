@@ -88,8 +88,6 @@ class RoutineManager
         $this->transactionSender->setIdentifier($this->syncIdentifier);
         $this->transactionGenerator->setIdentifier($this->syncIdentifier);
         $this->transactionFilter->setIdentifier($this->syncIdentifier);
-
-        JobStatusManager::startOrFindJob($this->syncIdentifier);
     }
 
     /**

@@ -74,7 +74,6 @@ class RoutineManager
             app('log')->debug('Was given download identifier, will use it.');
             $this->downloadIdentifier = $downloadIdentifier;
         }
-        JobStatusManager::startOrFindJob($this->downloadIdentifier);
     }
 
     /**

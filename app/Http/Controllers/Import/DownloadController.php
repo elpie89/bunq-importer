@@ -57,18 +57,17 @@ class DownloadController extends Controller
     {
         $mainTitle = 'Downloading transactions...';
         $subTitle  = 'Connecting to bunq and downloading your data...';
-
+        $routine = null;
         // job ID may be in session:
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
-        if (null !== $downloadIdentifier) {
-            // create a new import job:
-            new RoutineManager($downloadIdentifier);
-        }
         if (null === $downloadIdentifier) {
             // create a new import job:
-            $routine            = new RoutineManager();
+            $routine            = new RoutineManager;
             $downloadIdentifier = $routine->getDownloadIdentifier();
         }
+
+        // call thing:
+        JobStatusManager::startOrFindJob($downloadIdentifier);
 
         app('log')->debug(sprintf('Download routine manager identifier is "%s"', $downloadIdentifier));
 
@@ -89,6 +88,7 @@ class DownloadController extends Controller
         app('log')->debug(sprintf('Now at %s', __METHOD__));
         $downloadIdentifier = $request->get('downloadIdentifier');
         $routine            = new RoutineManager($downloadIdentifier);
+        JobStatusManager::startOrFindJob($downloadIdentifier);
 
         // store identifier in session so the status can get it.
         session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $downloadIdentifier);

@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace App\Console;
 
+use App\Bunq\Download\JobStatus\JobStatusManager;
 use App\Bunq\Download\RoutineManager as DownloadRoutineMananger;
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
@@ -45,6 +46,10 @@ trait StartDownload
 
         // first download from bunq
         $manager = new DownloadRoutineMananger;
+
+        // start or find job using the downloadIdentifier:
+        JobStatusManager::startOrFindJob($manager->getDownloadIdentifier());
+
         try {
             $manager->setConfiguration($configObject);
         } catch (ImportException $e) {
