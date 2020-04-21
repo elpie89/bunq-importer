@@ -72,7 +72,7 @@
                         Thank you for using this tool. <a rel="noopener noreferrer" href="https://github.com/firefly-iii/firefly-iii" target="_blank">Please share any feedback you may have</a>.
                     </p>
                 </div>
-                <div class="card-body" v-if="'error' === this.status && true === this.triedToStart">
+                <div class="card-body" v-if="'job_errored' === this.status">
                     <p class="text-danger">
                         The job could not be started or failed due to an error. Please check the log files. Sorry about this :(.
                     </p>
@@ -129,6 +129,11 @@
                     }
                     if ('job_done' === this.status) {
                         console.log('Job is done!');
+                        return;
+                    }
+                    if('job_errored' === this.status) {
+                        console.error('Job is kill.');
+                        console.error(response.data);
                         return;
                     }
 

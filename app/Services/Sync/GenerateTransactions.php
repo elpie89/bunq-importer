@@ -309,10 +309,12 @@ class GenerateTransactions
         switch ($combination) {
             default:
                 throw new ImportException(sprintf('Unknown combination: %s and %s', $source, $destination));
+            case 'asset-liabilities':
             case 'asset-expense':
                 return 'withdrawal';
             case 'asset-asset':
                 return 'transfer';
+            case 'liabilities-asset':
             case 'revenue-asset':
                 return 'deposit';
         }

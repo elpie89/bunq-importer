@@ -31,9 +31,12 @@ use App\Services\Session\Constants;
 use App\Services\Sync\JobStatus\JobStatus;
 use App\Services\Sync\JobStatus\JobStatusManager;
 use App\Services\Sync\RoutineManager;
+use ErrorException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use RuntimeException;
+use TypeError;
+use Log;
 
 /**
  * Class SyncController.
@@ -114,9 +117,15 @@ class SyncController extends Controller
             $routine->setDownloadIdentifier($downloadIdentifier);
             $routine->setSyncIdentifier($syncIdentifier);
             $routine->start();
-        } catch (ImportException $e) {
-            // TODO better error handling.
-            throw new RuntimeException($e->getMessage());
+        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (ImportException|ErrorException|TypeError $e) {
+            // update job to error state.
+            JobStatusManager::setJobStatus(JobStatus::JOB_ERRORED);
+            $error = sprintf('Internal error: %s in file %s:%d', $e->getMessage(), $e->getFile(), $e->getLine());
+            Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
+            JobStatusManager::addError($syncIdentifier, 0, $error);
+
+            return response()->json($downloadJobStatus->toArray());
         }
 
         // set done:
