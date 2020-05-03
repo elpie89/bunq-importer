@@ -213,8 +213,8 @@ class PaymentList
             if (null === $pagination) {
                 app('log')->debug('No pagination object, stop looping.');
             }
-            if ($previousLoop === count($return)) {
-                app('log')->info('No new transactions were added to the array.');
+            if ($previousLoop === count($return) && 0 !== count($return)) {
+                app('log')->info('No new transactions were added to the array. Stop looping.');
                 $hasMoreTransactions = false;
             }
 
