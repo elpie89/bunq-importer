@@ -54,7 +54,7 @@ class PaymentList
     /** @var string  */
     private const DATE_FORMAT = 'Y-m-d';
     /** @var string */
-    private const DATE_TIME_FORMAT = '';
+    private const DATE_TIME_FORMAT = 'Y-m-d H:i:s';
     /** @var string */
     private const DISKNAME = 'downloads';
 
@@ -222,7 +222,7 @@ class PaymentList
             sleep(2);
         }
         // store newest and oldest tranasction ID to be used later:
-        app('log')->info(sprintf('Downloaded and parsed %d transactions from bunq (from this account).', count($return)));
+        app('log')->info(sprintf('Downloaded and parsed %d transactions from bunq (from bunq account #%d).', count($return), $bunqAccountId));
 
         return $return;
     }
@@ -249,7 +249,7 @@ class PaymentList
         if (null !== $this->notBefore && $created->lte($this->notBefore)) {
             app('log')->info(
                 sprintf(
-                    'Skip transaction because %s is before %s',
+                    'Skip transaction because "%s" is before "%s".',
                     $created->format(self::DATE_TIME_FORMAT),
                     $this->notBefore->format(self::DATE_TIME_FORMAT)
                 )
@@ -260,7 +260,7 @@ class PaymentList
         if (null !== $this->notAfter && $created->gte($this->notAfter)) {
             app('log')->info(
                 sprintf(
-                    'Skip transaction because %s is after %s',
+                    'Skip transaction because "%s" is after "%s".',
                     $created->format(self::DATE_TIME_FORMAT),
                     $this->notAfter->format(self::DATE_TIME_FORMAT)
                 )

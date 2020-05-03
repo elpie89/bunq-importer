@@ -41,6 +41,7 @@ use Log;
 class GenerateTransactions
 {
     use ProgressInformation;
+
     /** @var array */
     private $accounts;
     /** @var Configuration */
@@ -50,6 +51,8 @@ class GenerateTransactions
     private $targetAccounts;
     /** @var array */
     private $targetTypes;
+    /** @var string[] */
+    private $specialSubTypes = ['REVERSAL', 'REQUEST', 'BILLING', 'SCT', 'SDD', 'NLO'];
 
     /**
      * GenerateTransactions constructor.
@@ -155,6 +158,11 @@ class GenerateTransactions
         $return['transactions'][0]['bunq_payment_id']    = $entry['id'];
         $return['transactions'][0]['external_id']        = $entry['id'];
         $return['transactions'][0]['internal_reference'] = $bunqAccountId;
+
+        // warn about specific sub types.
+        if (in_array($entry['sub_type'], $this->specialSubTypes, true)) {
+            Log::warning(sprintf('Transaction is of sub type "%s"', $entry['sub_type']), $entry);
+        }
 
         // give "auto save" transactions a different description:
         if ('SAVINGS' === $entry['type'] && 'PAYMENT' === $entry['sub_type']) {
