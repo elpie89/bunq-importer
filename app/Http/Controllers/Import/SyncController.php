@@ -34,9 +34,8 @@ use App\Services\Sync\RoutineManager;
 use ErrorException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use RuntimeException;
-use TypeError;
 use Log;
+use TypeError;
 
 /**
  * Class SyncController.
@@ -66,6 +65,18 @@ class SyncController extends Controller
         // get sync ID so we have a separate track thing.
         $syncIdentifier = session()->get(Constants::SYNC_JOB_IDENTIFIER);
 
+        // get configuration object.
+        $configuration = Configuration::fromArray(session()->get(Constants::CONFIGURATION));
+        if ([] === $configuration->getMapping()) {
+            // no mapping, back to roles
+            $jobBackUri = route('back.config');
+        }
+        if ([] !== $configuration->getMapping()) {
+            // back to mapping
+            $jobBackUri = route('back.mapping');
+        }
+
+
         if (null === $syncIdentifier) {
             app('log')->debug('SyncController is creating new routine manager with NEW sync identifier');
             // create a new import job:
@@ -81,7 +92,7 @@ class SyncController extends Controller
         session()->put(Constants::SYNC_JOB_IDENTIFIER, $syncIdentifier);
         app('log')->debug(sprintf('Stored "%s" under "%s"', $syncIdentifier, Constants::SYNC_JOB_IDENTIFIER));
 
-        return view('import.sync.index', compact('mainTitle', 'subTitle', 'syncIdentifier', 'downloadIdentifier'));
+        return view('import.sync.index', compact('mainTitle', 'jobBackUri', 'subTitle', 'syncIdentifier', 'downloadIdentifier'));
     }
 
     /**

@@ -55,3 +55,9 @@ Route::get('/import/sync/status', ['uses' => 'Import\SyncController@status', 'as
 
 // download config:
 Route::get('/configuration/download', ['uses' => 'Import\ConfigurationController@download', 'as' => 'import.configuration.download']);
+
+// routes to go back to other steps (also takes care of session vars)
+Route::get('/back/start', 'NavController@toStart')->name('back.start');
+Route::get('/back/upload', 'NavController@toUpload')->name('back.upload');
+Route::get('/back/config', 'NavController@toConfig')->name('back.config');
+Route::get('/back/mapping', 'NavController@toRoles')->name('back.mapping');

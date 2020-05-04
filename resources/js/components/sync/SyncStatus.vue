@@ -31,12 +31,18 @@
                             You can download a configuration file of your import</a>, so you can make a
                         quick start the next time you import.
                     </p>
-                    <p>
-                        <button
-                                class="btn btn-success"
-                                v-on:click="callStart" type="button">Start job
-                        </button>
-                    </p>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <!-- go back to upload -->
+                            <a :href="this.jobBackUri" class="btn btn-secondary">&larr; Go back</a>
+                        </div>
+                        <div class="col-lg-6">
+                            <button
+                                    class="btn btn-success float-right"
+                                    v-on:click="callStart" type="button">Start job &rarr;
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body" v-if="'waiting_to_start' === this.status && true === this.triedToStart">
                     <p>
@@ -101,6 +107,7 @@
                 warnings: [],
                 errors: [],
                 downloadUri: window.configDownloadUri,
+                jobBackUri:window.jobBackUri,
                 flushUri: window.flushUri
             };
         },

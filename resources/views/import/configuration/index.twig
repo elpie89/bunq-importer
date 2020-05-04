@@ -50,7 +50,7 @@
                                                 {% if '' != combinedAccount.iban %} <small>({{ combinedAccount.iban }})</small>{% endif %}
                                                 will be imported in:
                                                 {% if 'CANCELLED' == combinedAccount.status or null == combinedAccount.ff3_id %}
-                                                    <select class="form-control form-control-sm" name="accounts[{{ combinedAccount.id }}]">
+                                                    <select style="width:100%;" class="custom-select custom-select-sm" name="accounts[{{ combinedAccount.id }}]">
                                                         {% for ff3Account in ff3Accounts %}
                                                             <option value="{{ ff3Account.id }}"
                                                                     {% if configuration.getAccounts[combinedAccount.id] == ff3Account.id  %}selected{% endif %}
@@ -192,8 +192,16 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <!-- go back to upload -->
+                                    <a href="{{ route('back.upload') }}" class="btn btn-secondary">&larr; Go back to upload</a>
+                                    <br>
+                                    <small class="text-muted">Changes on this page will not be saved.</small>
+                                </div>
+                                <div class="col-lg-6">
+                                    <button type="submit" class="float-right btn btn-primary">Submit &rarr;</button>
+                                </div>
                         </form>
                         <p>&nbsp;</p>
                         <p>&nbsp;</p>

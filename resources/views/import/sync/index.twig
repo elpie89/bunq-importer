@@ -21,6 +21,7 @@
     <script type="text/javascript">
         var syncStatusUri = '{{ route('import.sync.status') }}?syncIdentifier={{ syncIdentifier }}';
         var syncStartUri = '{{ route('import.sync.start') }}?syncIdentifier={{ syncIdentifier }}';
+        var jobBackUri = '{{ jobBackUri }}';
         var configDownloadUri = '{{ route('import.configuration.download') }}?downloadIdentifier={{ downloadIdentifier }}';
         var flushUri = '{{ route('flush') }}';
     </script>
