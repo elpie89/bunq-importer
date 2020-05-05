@@ -26,6 +26,7 @@ namespace App\Console;
 
 use App\Exceptions\ImportException;
 use App\Services\Configuration\Configuration;
+use App\Services\Sync\JobStatus\JobStatusManager;
 use App\Services\Sync\RoutineManager as SyncRoutineManager;
 
 /**
@@ -46,6 +47,10 @@ trait StartSync
         // first download from bunq
         $manager = new SyncRoutineManager;
         $manager->setDownloadIdentifier($this->downloadIdentifier);
+
+        // start or find job:
+        JobStatusManager::startOrFindJob($manager->getSyncIdentifier());
+
         try {
             $manager->setConfiguration($configObject);
         } catch (ImportException $e) {
@@ -65,44 +70,9 @@ trait StartSync
         $warnings = $manager->getAllWarnings();
         $errors   = $manager->getAllErrors();
 
-        if (count($errors) > 0) {
-            /**
-             * @var int   $index
-             * @var array $error
-             */
-            foreach ($errors as $index => $error) {
-                /** @var string $line */
-                foreach ($error as $line) {
-                    $this->error(sprintf('ERROR in line     #%d: %s', $index + 1, $line));
-                }
-            }
-        }
-
-        if (count($warnings) > 0) {
-            /**
-             * @var int   $index
-             * @var array $warning
-             */
-            foreach ($warnings as $index => $warning) {
-                /** @var string $line */
-                foreach ($warning as $line) {
-                    $this->warn(sprintf('Warning from line #%d: %s', $index + 1, $line));
-                }
-            }
-        }
-
-        if (count($messages) > 0) {
-            /**
-             * @var int   $index
-             * @var array $message
-             */
-            foreach ($messages as $index => $message) {
-                /** @var string $line */
-                foreach ($message as $line) {
-                    $this->info(sprintf('Message from line #%d: %s', $index + 1, strip_tags($line)));
-                }
-            }
-        }
+        $this->listMessages('ERROR', $errors);
+        $this->listMessages('Warning', $warnings);
+        $this->listMessages('Message', $messages);
 
         return 0;
     }

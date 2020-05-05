@@ -26,6 +26,7 @@ namespace App\Services\Configuration;
 
 use Carbon\Carbon;
 use RuntimeException;
+use UnexpectedValueException;
 
 /**
  * Class Configuration.
@@ -118,7 +119,7 @@ class Configuration
         if (1 === $version) {
             return self::fromDefaultFile($data);
         }
-        throw new RuntimeException(sprintf('Configuration file version "%s" cannot be parsed.', $version));
+        throw new UnexpectedValueException(sprintf('Configuration file version "%s" cannot be parsed.', $version));
     }
 
     /**
@@ -224,7 +225,6 @@ class Configuration
         $object->mapping         = $data['mapping'] ?? [];
         $object->accounts        = $data['accounts'] ?? [];
 
-        // TODO recalculate the date if 'partial'
         if ('partial' === $data['date_range']) {
             $object->dateNotBefore = self::calcDateNotBefore($object->dateRangeUnit, $object->dateRangeNumber);
         }

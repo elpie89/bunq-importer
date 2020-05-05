@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Console\HaveAccess;
+use App\Console\ManageMessages;
 use App\Console\StartDownload;
 use App\Console\StartSync;
 use App\Console\VerifyJSON;
@@ -35,7 +36,7 @@ use Illuminate\Console\Command;
  */
 class BunqImport extends Command
 {
-    use HaveAccess, VerifyJSON, StartDownload, StartSync;
+    use HaveAccess, VerifyJSON, StartDownload, StartSync, ManageMessages;
     /**
      * The console command description.
      *

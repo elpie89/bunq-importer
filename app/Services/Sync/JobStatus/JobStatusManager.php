@@ -119,19 +119,11 @@ class JobStatusManager
      */
     public static function startOrFindJob(string $identifier): JobStatus
     {
-        //app('log')->debug(sprintf('Now in (sync) startOrFindJob(%s)', $identifier));
         $disk = Storage::disk('jobs');
         try {
-            //app('log')->debug(sprintf('Try to see if file exists for sync job %s.', $identifier));
             if ($disk->exists($identifier)) {
-                //app('log')->debug(sprintf('Status file exists for sync job %s.', $identifier));
                 $array  = json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR);
-                $status = JobStatus::fromArray($array);
-                unset($array['messages']);
-
-                //app('log')->debug(sprintf('Status found for sync job %s', $identifier), $array);
-
-                return $status;
+                return JobStatus::fromArray($array);
             }
         } catch (FileNotFoundException $e) {
             app('log')->error('Could not find sync file, write a new one.');
@@ -140,8 +132,6 @@ class JobStatusManager
         app('log')->debug('Sync file does not exist or error, create a new one.');
         $status = new JobStatus;
         $disk->put($identifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
-
-        //app('log')->debug('Return sync status.', $status->toArray());
 
         return $status;
     }

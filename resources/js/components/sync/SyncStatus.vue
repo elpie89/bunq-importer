@@ -31,12 +31,18 @@
                             You can download a configuration file of your import</a>, so you can make a
                         quick start the next time you import.
                     </p>
-                    <p>
-                        <button
-                                class="btn btn-success"
-                                v-on:click="callStart" type="button">Start job
-                        </button>
-                    </p>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <!-- go back to upload -->
+                            <a :href="this.jobBackUri" class="btn btn-secondary">&larr; Go back</a>
+                        </div>
+                        <div class="col-lg-6">
+                            <button
+                                    class="btn btn-success float-right"
+                                    v-on:click="callStart" type="button">Start job &rarr;
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body" v-if="'waiting_to_start' === this.status && true === this.triedToStart">
                     <p>
@@ -69,10 +75,10 @@
                             :errors="this.errors"
                     ></sync-messages>
                     <p>
-                        Thank you for using this tool. <a href="https://github.com/firefly-iii/firefly-iii" target="_blank">Please share any feedback you may have</a>.
+                        Thank you for using this tool. <a rel="noopener noreferrer" href="https://github.com/firefly-iii/firefly-iii" target="_blank">Please share any feedback you may have</a>.
                     </p>
                 </div>
-                <div class="card-body" v-if="'error' === this.status && true === this.triedToStart">
+                <div class="card-body" v-if="'job_errored' === this.status">
                     <p class="text-danger">
                         The job could not be started or failed due to an error. Please check the log files. Sorry about this :(.
                     </p>
@@ -101,6 +107,7 @@
                 warnings: [],
                 errors: [],
                 downloadUri: window.configDownloadUri,
+                jobBackUri:window.jobBackUri,
                 flushUri: window.flushUri
             };
         },
@@ -129,6 +136,11 @@
                     }
                     if ('job_done' === this.status) {
                         console.log('Job is done!');
+                        return;
+                    }
+                    if('job_errored' === this.status) {
+                        console.error('Job is kill.');
+                        console.error(response.data);
                         return;
                     }
 

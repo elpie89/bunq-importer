@@ -96,11 +96,11 @@ class ConfigurationPostRequest extends Request
         $validator->after(
             static function (Validator $validator) {
                 $data = $validator->getData();
-                //                if (!isset($data['accounts'])) {
-                //                    $validator->errors()->add(
-                //                        'accounts', 'Select at least one bunq account to import from.'
-                //                    );
-                //                }
+                if (!isset($data['do_import'])) {
+                    $validator->errors()->add(
+                        'accounts', 'Select at least one bunq account to import from.'
+                    );
+                }
             }
         );
     }

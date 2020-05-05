@@ -134,7 +134,9 @@ class MonetaryAccountList
 
                 return $return;
                 break;
+            default:
+                throw new ImportException(sprintf('Bunq monetary account is unexpectedly of type "%s".', get_class($object)));
+                break;
         }
-        throw new ImportException(sprintf('Bunq monetary account is unexpectedly of type "%s".', get_class($object)));
     }
 }

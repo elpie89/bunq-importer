@@ -52,6 +52,8 @@ class RoutineManager
     /**
      * Collect info on the current job, hold it in memory.
      *
+     * TODO the action to start or find the download job should not be in the constructor but in the start() method.
+     *
      * ImportRoutineManager constructor.
      *
      * @param string|null $downloadIdentifier
@@ -72,7 +74,6 @@ class RoutineManager
             app('log')->debug('Was given download identifier, will use it.');
             $this->downloadIdentifier = $downloadIdentifier;
         }
-        JobStatusManager::startOrFindJob($this->downloadIdentifier);
     }
 
     /**

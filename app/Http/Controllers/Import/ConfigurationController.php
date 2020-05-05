@@ -39,6 +39,7 @@ use GrumpyDictator\FFIIIApiSupport\Request\GetAccountsRequest;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 
@@ -81,11 +82,9 @@ class ConfigurationController extends Controller
     }
 
     /**
-     * @throws ApiHttpException
-     * @throws ImportException
      * @return Factory|RedirectResponse|View
      */
-    public function index()
+    public function index(Request $request)
     {
         app('log')->debug(sprintf('Now at %s', __METHOD__));
         $mainTitle = 'Import from bunq';
@@ -96,7 +95,8 @@ class ConfigurationController extends Controller
             $configuration = Configuration::fromArray(session()->get(Constants::CONFIGURATION));
         }
         // if config says to skip it, skip it:
-        if (null !== $configuration && true === $configuration->isSkipForm()) {
+        $overruleSkip = $request->get('overruleskip') === 'true';
+        if (null !== $configuration && true === $configuration->isSkipForm() && false === $overruleSkip) {
             // skipForm
             return redirect()->route('import.download.index');
         }
