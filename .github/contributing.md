@@ -8,4 +8,4 @@ I am always interested in expanding the Firefly III bunq importer's features. Ju
 
 ## Pull requests
 
-When contributing to the Firefly III bunq importer, please first discuss the change you wish to make via issue, email, or any other method. I can only accept pull requests against the `develop` branch, never the `master` branch.
+When contributing to the Firefly III bunq importer, please first discuss the change you wish to make via issue, email, or any other method. I can only accept pull requests against the `develop` branch, never the `main` branch.

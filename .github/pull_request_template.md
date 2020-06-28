@@ -1,7 +1,7 @@
 <!--
 Before you create a new PR, please take into account the following considerations.
 
-1) Pull request for the MASTER branch will be closed.
+1) Pull request for the MAIN branch will be closed.
 
 Thanks.
 -->
