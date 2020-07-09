@@ -27,8 +27,8 @@ namespace App\Http\Controllers\Import;
 use App\Exceptions\ImportException;
 use App\Http\Controllers\Controller;
 use App\Services\Configuration\Configuration;
+use App\Services\JobStatus\GenericJobStatus;
 use App\Services\Session\Constants;
-use App\Services\Sync\JobStatus\JobStatus;
 use App\Services\Sync\JobStatus\JobStatusManager;
 use App\Services\Sync\RoutineManager;
 use ErrorException;
@@ -116,11 +116,11 @@ class SyncController extends Controller
         session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $downloadIdentifier);
 
         $downloadJobStatus = JobStatusManager::startOrFindJob($syncIdentifier);
-        if (JobStatus::JOB_DONE === $downloadJobStatus->status) {
+        if (GenericJobStatus::JOB_DONE === $downloadJobStatus->status) {
             app('log')->debug('Job already done!');
             return response()->json($downloadJobStatus->toArray());
         }
-        JobStatusManager::setJobStatus(JobStatus::JOB_RUNNING);
+        JobStatusManager::setJobStatus(GenericJobStatus::JOB_RUNNING);
 
         try {
             $config = session()->get(Constants::CONFIGURATION) ?? [];
@@ -130,7 +130,7 @@ class SyncController extends Controller
             $routine->start();
         } /** @noinspection PhpRedundantCatchClauseInspection */ catch (ImportException|ErrorException|TypeError $e) {
             // update job to error state.
-            JobStatusManager::setJobStatus(JobStatus::JOB_ERRORED);
+            JobStatusManager::setJobStatus(GenericJobStatus::JOB_ERRORED);
             $error = sprintf('Internal error: %s in file %s:%d', $e->getMessage(), $e->getFile(), $e->getLine());
             Log::error($e->getMessage());
             Log::error($e->getTraceAsString());
@@ -140,7 +140,7 @@ class SyncController extends Controller
         }
 
         // set done:
-        JobStatusManager::setJobStatus(JobStatus::JOB_DONE);
+        JobStatusManager::setJobStatus(GenericJobStatus::JOB_DONE);
 
         return response()->json($downloadJobStatus->toArray());
     }
@@ -157,7 +157,7 @@ class SyncController extends Controller
             app('log')->warning('Identifier is NULL.');
             // no status is known yet because no identifier is in the session.
             // As a fallback, return empty status
-            $fakeStatus = new JobStatus();
+            $fakeStatus = new GenericJobStatus;
 
             return response()->json($fakeStatus->toArray());
         }

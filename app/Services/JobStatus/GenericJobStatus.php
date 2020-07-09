@@ -1,33 +1,12 @@
 <?php
-
 declare(strict_types=1);
-/**
- * JobStatus.php
- * Copyright (c) 2020 james@firefly-iii.org.
- *
- * This file is part of the Firefly III bunq importer
- * (https://github.com/firefly-iii/bunq-importer).
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
 
-namespace App\Bunq\Download\JobStatus;
+namespace App\Services\JobStatus;
 
 /**
- * Class JobStatus.
+ * Class GenericJobStatus
  */
-class JobStatus
+class GenericJobStatus
 {
     /** @var string */
     public const JOB_WAITING = 'waiting_to_start';
@@ -37,17 +16,13 @@ class JobStatus
     public const JOB_ERRORED = 'job_errored';
     /** @var string */
     public const JOB_DONE = 'job_done';
-    /** @var array */
-    public $errors;
-    /** @var array */
-    public $messages;
-    /** @var string */
-    public $status;
-    /** @var array */
-    public $warnings;
+    public array $errors;
+    public array $messages;
+    public array $warnings;
+    public string $status;
 
     /**
-     * JobStatus constructor.
+     * ImportJobStatus constructor.
      */
     public function __construct()
     {

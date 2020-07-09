@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace App\Services\Sync\JobStatus;
 
+use App\Services\JobStatus\GenericJobStatus;
 use App\Services\Session\Constants;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
@@ -43,7 +44,7 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($identifier)) {
-                $status                   = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
+                $status                   = GenericJobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
                 $status->errors[$index]   = $status->errors[$index] ?? [];
                 $status->errors[$index][] = $error;
                 self::storeJobStatus($identifier, $status);
@@ -63,7 +64,7 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($identifier)) {
-                $status                     = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
+                $status                     = GenericJobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
                 $status->messages[$index]   = $status->messages[$index] ?? [];
                 $status->messages[$index][] = $message;
                 self::storeJobStatus($identifier, $status);
@@ -83,7 +84,7 @@ class JobStatusManager
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($identifier)) {
-                $status                     = JobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
+                $status                     = GenericJobStatus::fromArray(json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR));
                 $status->warnings[$index]   = $status->warnings[$index] ?? [];
                 $status->warnings[$index][] = $warning;
                 self::storeJobStatus($identifier, $status);
@@ -96,9 +97,9 @@ class JobStatusManager
     /**
      * @param string $status
      *
-     * @return JobStatus
+     * @return GenericJobStatus
      */
-    public static function setJobStatus(string $status): JobStatus
+    public static function setJobStatus(string $status): GenericJobStatus
     {
         $syncIdentifier = session()->get(Constants::SYNC_JOB_IDENTIFIER);
         app('log')->debug(sprintf('Now in Sync setJobStatus(%s)', $status));
@@ -115,22 +116,22 @@ class JobStatusManager
     /**
      * @param string $identifier
      *
-     * @return JobStatus
+     * @return GenericJobStatus
      */
-    public static function startOrFindJob(string $identifier): JobStatus
+    public static function startOrFindJob(string $identifier): GenericJobStatus
     {
         $disk = Storage::disk('jobs');
         try {
             if ($disk->exists($identifier)) {
                 $array  = json_decode($disk->get($identifier), true, 512, JSON_THROW_ON_ERROR);
-                return JobStatus::fromArray($array);
+                return GenericJobStatus::fromArray($array);
             }
         } catch (FileNotFoundException $e) {
             app('log')->error('Could not find sync file, write a new one.');
             app('log')->error($e->getMessage());
         }
         app('log')->debug('Sync file does not exist or error, create a new one.');
-        $status = new JobStatus;
+        $status = new GenericJobStatus;
         $disk->put($identifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 
         return $status;
@@ -138,9 +139,9 @@ class JobStatusManager
 
     /**
      * @param string    $syncIdentifier
-     * @param JobStatus $status
+     * @param GenericJobStatus $status
      */
-    private static function storeJobStatus(string $syncIdentifier, JobStatus $status): void
+    private static function storeJobStatus(string $syncIdentifier, GenericJobStatus $status): void
     {
         app('log')->debug(sprintf('Now in Sync storeJobStatus(%s): %s', $syncIdentifier, $status->status));
         $array = $status->toArray();
