@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Now requires PHP 7.4. Make sure you update!
-- You can now set a vanity URL. Check out the example environment file.
+- Can now use a vanity URL. See the example environment variables file, `.env.example` for instructions.
 - This version requires Firefly III v5.3.0
 
 ## [1.0.0] - 2020-05-05
