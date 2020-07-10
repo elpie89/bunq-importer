@@ -1,9 +1,9 @@
 <?php
 
-declare(strict_types=1);
+
 /**
  * SendTransactions.php
- * Copyright (c) 2020 james@firefly-iii.org.
+ * Copyright (c) 2020 james@firefly-iii.org
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -20,6 +20,12 @@ declare(strict_types=1);
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+declare(strict_types=1);
+/**
+ * SendTransactions.php
+
  */
 
 namespace App\Services\Sync;
@@ -40,8 +46,8 @@ class SendTransactions
 {
     use ProgressInformation;
 
-    /** @var Configuration */
-    private $configuration;
+    private Configuration $configuration;
+    private string        $rootURI;
 
     /**
      * @param array $transactions
@@ -52,6 +58,13 @@ class SendTransactions
     {
         $uri   = (string) config('bunq.uri');
         $token = (string) config('bunq.access_token');
+
+        $this->rootURI = config('ynab.uri');
+        if ('' !== (string) config('ynab.vanity_uri')) {
+            $this->rootURI = config('ynab.vanity_uri');
+        }
+        app('log')->debug(sprintf('The root URI is "%s"', $this->rootURI));
+
         foreach ($transactions as $index => $transaction) {
             app('log')->debug(sprintf('Trying to send transaction #%d', $index), $transaction);
             $this->sendTransaction($uri, $token, $index, $transaction);
@@ -109,8 +122,7 @@ class SendTransactions
             return [];
         }
         $groupId  = $group->id;
-        $uri      = (string) config('bunq.uri');
-        $groupUri = (string) sprintf('%s/transactions/show/%d', $uri, $groupId);
+        $groupUri = (string) sprintf('%s/transactions/show/%d', $this->rootURI, $groupId);
 
         /** @var Transaction $tr */
         foreach ($group->transactions as $tr) {
