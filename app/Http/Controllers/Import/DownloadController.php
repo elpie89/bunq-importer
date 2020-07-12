@@ -1,9 +1,9 @@
 <?php
 
-declare(strict_types=1);
+
 /**
  * DownloadController.php
- * Copyright (c) 2020 james@firefly-iii.org.
+ * Copyright (c) 2020 james@firefly-iii.org
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -22,14 +22,20 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+/**
+ * DownloadController.php
+
+ */
+
 namespace App\Http\Controllers\Import;
 
-use App\Bunq\Download\JobStatus\JobStatus;
 use App\Bunq\Download\JobStatus\JobStatusManager;
 use App\Bunq\Download\RoutineManager;
 use App\Exceptions\ImportException;
 use App\Http\Controllers\Controller;
 use App\Services\Configuration\Configuration;
+use App\Services\JobStatus\GenericJobStatus;
 use App\Services\Session\Constants;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
@@ -94,11 +100,11 @@ class DownloadController extends Controller
         session()->put(Constants::DOWNLOAD_JOB_IDENTIFIER, $downloadIdentifier);
 
         $downloadJobStatus = JobStatusManager::startOrFindJob($downloadIdentifier);
-        if (JobStatus::JOB_DONE === $downloadJobStatus->status) {
+        if (GenericJobStatus::JOB_DONE === $downloadJobStatus->status) {
             app('log')->debug('Job already done!');
             return response()->json($downloadJobStatus->toArray());
         }
-        JobStatusManager::setJobStatus(JobStatus::JOB_RUNNING);
+        JobStatusManager::setJobStatus(GenericJobStatus::JOB_RUNNING);
 
         try {
             $config = session()->get(Constants::CONFIGURATION) ?? [];
@@ -108,7 +114,7 @@ class DownloadController extends Controller
         }
 
         // set done:
-        JobStatusManager::setJobStatus(JobStatus::JOB_DONE);
+        JobStatusManager::setJobStatus(GenericJobStatus::JOB_DONE);
 
         return response()->json($downloadJobStatus->toArray());
     }
@@ -125,7 +131,7 @@ class DownloadController extends Controller
             app('log')->warning('Download Identifier is NULL.');
             // no status is known yet because no identifier is in the session.
             // As a fallback, return empty status
-            $fakeStatus = new JobStatus();
+            $fakeStatus = new GenericJobStatus;
 
             return response()->json($fakeStatus->toArray());
         }

@@ -1,9 +1,9 @@
 <?php
 
-declare(strict_types=1);
+
 /**
  * GenerateTransactions.php
- * Copyright (c) 2020 james@firefly-iii.org.
+ * Copyright (c) 2020 james@firefly-iii.org
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -20,6 +20,12 @@ declare(strict_types=1);
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+declare(strict_types=1);
+/**
+ * GenerateTransactions.php
+
  */
 
 namespace App\Services\Sync;
@@ -42,10 +48,8 @@ class GenerateTransactions
 {
     use ProgressInformation;
 
-    /** @var array */
-    private $accounts;
-    /** @var Configuration */
-    private $configuration;
+    private array         $accounts;
+    private Configuration $configuration;
 
     /** @var array */
     private $targetAccounts;

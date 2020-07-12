@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types=1);
 
 /**
  * twigbridge.php
- * Copyright (c) 2020 james@firefly-iii.org.
+ * Copyright (c) 2020 james@firefly-iii.org
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -21,6 +20,13 @@ declare(strict_types=1);
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+declare(strict_types=1);
+
+/**
+ * twigbridge.php
+
  */
 
 use Illuminate\Contracts\Support\Htmlable;

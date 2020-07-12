@@ -1,9 +1,9 @@
 <?php
 
-declare(strict_types=1);
+
 /**
  * app.php
- * Copyright (c) 2020 james@firefly-iii.org.
+ * Copyright (c) 2020 james@firefly-iii.org
  *
  * This file is part of the Firefly III bunq importer
  * (https://github.com/firefly-iii/bunq-importer).
@@ -21,7 +21,36 @@ declare(strict_types=1);
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+declare(strict_types=1);
+/**
+ * app.php
+
+ */
+
+
 bcscale(12);
+
+if (!function_exists('envNonEmpty')) {
+    /**
+     * @param string $key
+     * @param null   $default
+     *
+     * @return mixed|null
+     */
+    function envNonEmpty(string $key, $default = null)
+    {
+        $result = env($key, $default, );
+        if (is_string($result) && '' === $result) {
+            $result = $default;
+        }
+
+        return $result;
+    }
+}
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Create The Application
