@@ -59,9 +59,9 @@ class SendTransactions
         $uri   = (string) config('bunq.uri');
         $token = (string) config('bunq.access_token');
 
-        $this->rootURI = config('ynab.uri');
-        if ('' !== (string) config('ynab.vanity_uri')) {
-            $this->rootURI = config('ynab.vanity_uri');
+        $this->rootURI = config('bunq.uri') ?? '';
+        if ('' !== (string) config('bunq.vanity_uri')) {
+            $this->rootURI = config('bunq.vanity_uri');
         }
         app('log')->debug(sprintf('The root URI is "%s"', $this->rootURI));
 
