@@ -16,4 +16,9 @@ return [
     'minimum_version' => '5.3.0',
     'use_sandbox'     => 'https://api.bunq.com' !== env('BUNQ_API_URI', ''),
     'use_production'  => 'https://api.bunq.com' === env('BUNQ_API_URI', ''),
+    'trusted_proxies' => env('TRUSTED_PROXIES', ''),
+    'connection' => [
+        'verify'  => env('VERIFY_TLS_SECURITY', true),
+        'timeout' => (float) env('CONNECTION_TIMEOUT', 3.14),
+    ],
 ];
