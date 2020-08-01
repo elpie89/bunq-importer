@@ -1,7 +1,6 @@
 <?php
 /**
  * Configuration.php
-
  */
 
 declare(strict_types=1);
@@ -70,10 +69,7 @@ class Configuration
      */
     public static function fromArray(array $array): self
     {
-        $version = $array['version'] ?? 1;
-
-        // TODO now have room to do version based array parsing.
-
+        $version                 = $array['version'] ?? 1;
         $object                  = new self;
         $object->rules           = $array['rules'] ?? false;
         $object->skipForm        = $array['skip_form'] ?? false;
@@ -130,14 +126,15 @@ class Configuration
         $doImport = $array['do_import'] ?? [];
         $accounts = [];
         foreach ($doImport as $bunqId => $selected) {
-            $selected = (int) $selected;
+            $selected = (int)$selected;
             if (1 === $selected) {
-                $accounts[(int) $bunqId] = (int) ($array['accounts'][$bunqId] ?? 0);
+                $accounts[(int)$bunqId] = (int)($array['accounts'][$bunqId] ?? 0);
             }
         }
         $object->accounts = $accounts;
 
         switch ($object->dateRange) {
+            default:
             case 'all':
                 $object->dateRangeUnit   = null;
                 $object->dateRangeNumber = null;

@@ -200,7 +200,7 @@ class PaymentList
             /** @var BunqPayment $payment */
             foreach ($response->getValue() as $index => $payment) {
                 app('log')->debug(sprintf('Going to process payment on index #%d', $index));
-                $array = $this->processBunqPayment($index, $payment);
+                $array = $this->processBunqPayment($payment);
                 if (null !== $array) {
                     $return[] = $array;
                 }
@@ -244,12 +244,11 @@ class PaymentList
     }
 
     /**
-     * @param int         $index
      * @param BunqPayment $payment
      *
      * @return array
      */
-    private function processBunqPayment(int $index, BunqPayment $payment): ?array
+    private function processBunqPayment(BunqPayment $payment): ?array
     {
         $created = Carbon::createFromFormat('Y-m-d H:i:s.u', $payment->getCreated());
         if (null !== $this->notBefore && $created->lte($this->notBefore)) {
@@ -276,10 +275,10 @@ class PaymentList
         }
 
         $transaction                                  = [
-            // TODO country, bunqMe, isLight, swiftBic, swiftAccountNumber, transferwiseAccountNumber, transferwiseBankCode
-            // TODO merchantCategoryCode, bunqtoStatus, bunqtoSubStatus, bunqtoExpiry, bunqtoTimeResponded
-            // TODO merchantReference, batchId, scheduledId, addressShipping, addressBilling, geolocation, allowChat,
-            // TODO requestReferenceSplitTheBill
+            // country, bunqMe, isLight, swiftBic, swiftAccountNumber, transferwiseAccountNumber, transferwiseBankCode
+            // merchantCategoryCode, bunqtoStatus, bunqtoSubStatus, bunqtoExpiry, bunqtoTimeResponded
+            // merchantReference, batchId, scheduledId, addressShipping, addressBilling, geolocation, allowChat,
+            // requestReferenceSplitTheBill
             'id'              => $payment->getId(),
             'created'         => $created,
             'updated'         => Carbon::createFromFormat('Y-m-d H:i:s.u', $payment->getUpdated()),

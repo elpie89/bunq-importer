@@ -25,7 +25,6 @@
 declare(strict_types=1);
 /**
  * DownloadController.php
-
  */
 
 namespace App\Http\Controllers\Import;
@@ -63,7 +62,7 @@ class DownloadController extends Controller
     {
         $mainTitle = 'Downloading transactions...';
         $subTitle  = 'Connecting to bunq and downloading your data...';
-        $routine = null;
+        $routine   = null;
         // job ID may be in session:
         $downloadIdentifier = session()->get(Constants::DOWNLOAD_JOB_IDENTIFIER);
         if (null === $downloadIdentifier) {
@@ -106,12 +105,9 @@ class DownloadController extends Controller
         }
         JobStatusManager::setJobStatus(GenericJobStatus::JOB_RUNNING);
 
-        try {
-            $config = session()->get(Constants::CONFIGURATION) ?? [];
-            $routine->setConfiguration(Configuration::fromArray($config));
-            $routine->start();
-        } catch (ImportException $e) {
-        }
+        $config = session()->get(Constants::CONFIGURATION) ?? [];
+        $routine->setConfiguration(Configuration::fromArray($config));
+        $routine->start();
 
         // set done:
         JobStatusManager::setJobStatus(GenericJobStatus::JOB_DONE);

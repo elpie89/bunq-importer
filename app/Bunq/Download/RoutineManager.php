@@ -58,8 +58,6 @@ class RoutineManager
     /**
      * Collect info on the current job, hold it in memory.
      *
-     * TODO the action to start or find the download job should not be in the constructor but in the start() method.
-     *
      * ImportRoutineManager constructor.
      *
      * @param string|null $downloadIdentifier
@@ -149,12 +147,12 @@ class RoutineManager
         $disk  = Storage::disk('jobs');
         $count = 0;
         do {
-            $downloadIdentifier = Str::random(16);
+            $tempIdentifier = Str::random(16);
             $count++;
-            app('log')->debug(sprintf('Attempt #%d results in "%s"', $count, $downloadIdentifier));
-        } while ($count < 30 && $disk->exists($downloadIdentifier));
-        $this->downloadIdentifier = $downloadIdentifier;
-        app('log')->info(sprintf('Download job identifier is "%s"', $downloadIdentifier));
+            app('log')->debug(sprintf('Attempt #%d results in "%s"', $count, $tempIdentifier));
+        } while ($count < 30 && $disk->exists($tempIdentifier));
+        $this->downloadIdentifier = $tempIdentifier;
+        app('log')->info(sprintf('Download job identifier is "%s"', $tempIdentifier));
     }
 
     /**

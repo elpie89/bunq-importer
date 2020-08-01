@@ -65,8 +65,6 @@ class RoutineManager
     /**
      * Collect info on the current job, hold it in memory.
      *
-     * TODO the action to start or find the sync job should not be in the constructor but in the start() method.
-     *
      * ImportRoutineManager constructor.
      *
      * @param null|string $syncIdentifier
@@ -188,20 +186,23 @@ class RoutineManager
 
         // send to Firefly III.
         app('log')->debug('Going to send them to Firefly III.');
-        $sent = $this->transactionSender->send($filtered);
+        $this->transactionSender->send($filtered);
     }
 
+    /**
+     *
+     */
     private function generateSyncIdentifier(): void
     {
         app('log')->debug('Going to generate sync job identifier.');
         $disk  = Storage::disk('jobs');
         $count = 0;
         do {
-            $syncIdentifier = Str::random(16);
+            $tempIdentifier = Str::random(16);
             $count++;
-            app('log')->debug(sprintf('Attempt #%d results in "%s"', $count, $syncIdentifier));
-        } while ($count < 30 && $disk->exists($syncIdentifier));
-        $this->syncIdentifier = $syncIdentifier;
-        app('log')->info(sprintf('Sync job identifier is "%s"', $syncIdentifier));
+            app('log')->debug(sprintf('Attempt #%d results in "%s"', $count, $tempIdentifier));
+        } while ($count < 30 && $disk->exists($tempIdentifier));
+        $this->syncIdentifier = $tempIdentifier;
+        app('log')->info(sprintf('Sync job identifier is "%s"', $tempIdentifier));
     }
 }

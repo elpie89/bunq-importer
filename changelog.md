@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.2] - 2020-08-01
+
+- Support for reverse proxy through `TRUSTED_PROXY`
+
 ## [2.0.1] - 2020-07-17
 
 ### Changed
