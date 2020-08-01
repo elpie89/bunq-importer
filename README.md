@@ -2,6 +2,7 @@
 [![License][license-shield]][license-uri]
 [![Stargazers][stars-shield]][stars-url]
 [![Donate][donate-shield]][donate-uri]
+[![Quality Gate Status][sonar-shield]][sonar-uri]
 
 # Firefly III bunq 🌈 Importer
 
@@ -120,3 +121,5 @@ Thank you for considering donating to Firefly III, and the bunq Importer.
 [stars-url]: https://github.com/firefly-iii/bunq-importer/stargazers
 [donate-shield]: https://img.shields.io/badge/donate-%24%20%E2%82%AC-brightgreen?style=flat-square
 [donate-uri]: #support
+[sonar-shield]: https://sonarcloud.io/api/project_badges/measure?project=firefly-iii_bunq-importer&metric=alert_status
+[sonar-uri]: https://sonarcloud.io/dashboard?id=firefly-iii_bunq-importer
