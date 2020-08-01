@@ -83,7 +83,7 @@
         "firefly-iii/api-support-classes": "dev-master",
         "guzzlehttp/guzzle": "^6.5",
         "laravel/framework": "^6.2",
-        "rcrowe/twigbridge": "^0.11.3",
+        "rcrowe/twigbridge": "^0.12.1",
       "ext-json": "*",
       "ext-bcmath": "*"
     },
