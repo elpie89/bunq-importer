@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.0.2] - 2020-08-01
 
-- Support for reverse proxy through `TRUSTED_PROXY`
+- Support for reverse proxy through `TRUSTED_PROXIES`
 
 ## [2.0.1] - 2020-07-17
 
