@@ -104,7 +104,7 @@ class SendTransactions
         }
         if ($response instanceof ValidationErrorResponse) {
             /** ValidationErrorResponse $error */
-            foreach ($response->errors->getMessages() as $key => $errors) {
+            foreach ($response->errors->getMessages() as $errors) {
                 foreach ($errors as $error) {
                     // +1 so the line numbers match.
                     $this->addError($index + 1, $error);

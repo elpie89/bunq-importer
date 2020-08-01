@@ -150,7 +150,6 @@ class JobStatusManager
     private static function storeJobStatus(string $syncIdentifier, GenericJobStatus $status): void
     {
         app('log')->debug(sprintf('Now in Sync storeJobStatus(%s): %s', $syncIdentifier, $status->status));
-        $array = $status->toArray();
         $disk  = Storage::disk('jobs');
         $disk->put($syncIdentifier, json_encode($status->toArray(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
         app('log')->debug('Done with storing.');

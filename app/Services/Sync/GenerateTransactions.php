@@ -115,7 +115,6 @@ class GenerateTransactions
             app('log')->debug(sprintf('Going to parse account #%d', $bunqAccountId));
             foreach ($entries as $entry) {
                 $return[] = $this->generateTransaction($bunqAccountId, $entry);
-                // TODO error handling at this point.
             }
         }
         $this->addMessage(0, sprintf('Parsed %d bunq transactions for further processing.', count($return)));
@@ -192,7 +191,6 @@ class GenerateTransactions
                 $return['transactions'][0]['source_id'] = $mappedId;
                 unset($return['transactions'][0]['source_iban'], $return['transactions'][0]['source_name']);
             }
-            //Log::debug(sprintf('Mapped ID is %s', var_export($mappedId, true)));
             // check target accounts as well:
             $iban = $entry['counter_party']['iban'];
             if ((null === $mappedId || 0 === $mappedId) && isset($this->targetAccounts[$iban])) {
@@ -207,8 +205,6 @@ class GenerateTransactions
             unset($iban);
         }
 
-        // TODO these two if statements are mirrors of each other.
-
         if (-1 === bccomp($entry['amount'], '0')) {
             // amount is negative: withdrawal or transfer.
             $return['transactions'][0]['amount'] = bcmul($entry['amount'], '-1');
@@ -221,7 +217,6 @@ class GenerateTransactions
             $return['transactions'][0]['destination_name'] = $entry['counter_party']['display_name'];
 
             $mappedId = $this->getMappedId($entry['counter_party']['display_name'], (string) $entry['counter_party']['iban']);
-            //Log::debug(sprintf('Mapped ID is %s', var_export($mappedId, true)));
             if (null !== $mappedId && 0 !== $mappedId) {
                 $return['transactions'][0]['destination_id'] = $mappedId;
                 $mappedType                                  = $this->getMappedType($mappedId);

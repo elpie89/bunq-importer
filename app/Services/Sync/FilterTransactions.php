@@ -53,7 +53,7 @@ class FilterTransactions
         $start  = count($transactions);
         $return = [];
         /** @var array $transaction */
-        foreach ($transactions as $index => $group) {
+        foreach ($transactions as $group) {
             $transaction = $group['transactions'][0];
             if ('transfer' !== $transaction['type']) {
                 $return[] = $group;

@@ -25,7 +25,6 @@
 declare(strict_types=1);
 /**
  * StorageService.php
-
  */
 
 namespace App\Services\Storage;
@@ -33,6 +32,7 @@ namespace App\Services\Storage;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -43,8 +43,8 @@ class StorageService
     /**
      * @param string $name
      *
-     * @throws FileNotFoundException
      * @return string
+     * @throws InvalidArgumentException|FileNotFoundException
      */
     public static function getContent(string $name): string
     {
@@ -52,7 +52,7 @@ class StorageService
         if ($disk->exists($name)) {
             return $disk->get($name);
         }
-        throw new RuntimeException(sprintf('No such file %s', $name));
+        throw new InvalidArgumentException(sprintf('No such file %s', $name));
     }
 
     /**

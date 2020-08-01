@@ -132,9 +132,7 @@ class JobStatusManager
         try {
             if ($disk->exists($downloadIdentifier)) {
                 $array  = json_decode($disk->get($downloadIdentifier), true, 512, JSON_THROW_ON_ERROR);
-                $status = GenericJobStatus::fromArray($array);
-
-                return $status;
+                return GenericJobStatus::fromArray($array);
             }
         } catch (FileNotFoundException $e) {
             app('log')->error('Could not find download job file, write a new one.');

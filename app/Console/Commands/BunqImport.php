@@ -59,16 +59,6 @@ class BunqImport extends Command
     protected $signature = 'bunq:import {config : The JSON configuration file}';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return int
