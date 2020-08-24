@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "bunq/sdk_php",
-            "version": "1.14.0",
+            "version": "1.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bunq/sdk_php.git",
-                "reference": "ce07d8efa359582a5f2f67c158bfd92caec55376"
+                "reference": "ae825b770e3511de0837f7b1173d20906aaceac0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bunq/sdk_php/zipball/ce07d8efa359582a5f2f67c158bfd92caec55376",
-                "reference": "ce07d8efa359582a5f2f67c158bfd92caec55376",
+                "url": "https://api.github.com/repos/bunq/sdk_php/zipball/ae825b770e3511de0837f7b1173d20906aaceac0",
+                "reference": "ae825b770e3511de0837f7b1173d20906aaceac0",
                 "shasum": ""
             },
             "require": {
@@ -68,7 +68,7 @@
                 "payment",
                 "sepa"
             ],
-            "time": "2020-07-27T11:57:44+00:00"
+            "time": "2020-08-19T09:00:22+00:00"
         },
         {
             "name": "doctrine/inflector",
