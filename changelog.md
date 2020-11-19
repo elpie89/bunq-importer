@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.0.3 - 2020-11-19
 
+### Changed
+
 - Upgrade to Laravel 7.0. Please complain [here](https://github.com/bunq/sdk_php/issues/204) about the lack of upgrade to Laravel 8.
 
 ## 2.0.2 - 2020-08-01
