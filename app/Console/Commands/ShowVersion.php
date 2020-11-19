@@ -45,7 +45,7 @@ class ShowVersion extends Command
      *
      * @var string
      */
-    protected $signature = 'bunq:version';
+    protected $signature = 'importer:version';
 
     /**
      * Execute the console command.

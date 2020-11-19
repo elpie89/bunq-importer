@@ -56,7 +56,7 @@ class BunqImport extends Command
      *
      * @var string
      */
-    protected $signature = 'bunq:import {config : The JSON configuration file}';
+    protected $signature = 'importer:import {config : The JSON configuration file}';
 
     /**
      * Execute the console command.
