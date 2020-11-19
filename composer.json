@@ -82,8 +82,8 @@
         "fideloper/proxy": "^4.0",
         "firefly-iii/api-support-classes": "dev-master",
         "guzzlehttp/guzzle": "^6.5",
-        "laravel/framework": "^6.2",
-        "rcrowe/twigbridge": "^0.11.3",
+        "laravel/framework": "^7.0",
+        "rcrowe/twigbridge": "^0.12",
       "ext-json": "*",
       "ext-bcmath": "*"
     },
@@ -91,14 +91,12 @@
         "barryvdh/laravel-debugbar": "^3.2",
         "barryvdh/laravel-ide-helper": "^2.6",
         "doctrine/dbal": "^2.10",
-        "facade/ignition": "^1.4",
-        "fzaninotto/faker": "^1.4",
+        "facade/ignition": "^2.0",
+        "fakerphp/faker": "^1.4",
         "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^3.0",
-        "phpunit/phpunit": "^8.0",
-        "psalm/plugin-laravel": "^1.1",
-        "roave/security-advisories": "dev-master",
-        "vimeo/psalm": "^3.10"
+        "nunomaduro/collision": "^4.1",
+        "phpunit/phpunit": "^9.2",
+        "roave/security-advisories": "dev-master"
     },
     "config": {
         "optimize-autoloader": true,
