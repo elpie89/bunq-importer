@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.4 - 2020-11-24
+
+### Fixed
+
+- [Issue 4080](https://github.com/firefly-iii/firefly-iii/issues/4080) Due to a silly mistake by me, some lines had a `sprintf()` too many while others were missing one.
+
+### Changed
+
+- Minimum version of Firefly III required changed to 5.4.0
+
 ## 2.0.3 - 2020-11-19
 
 ### Changed
