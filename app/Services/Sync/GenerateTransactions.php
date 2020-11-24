@@ -139,7 +139,7 @@ class GenerateTransactions
      */
     private function generateTransaction(int $bunqAccountId, array $entry): array
     {
-        Log::debug('Now in generateTransaction(%d, %d) ("")', $bunqAccountId, $entry['id'], $entry['description']);
+        Log::debug(sprintf('Now in generateTransaction(%d, %d) ("")', $bunqAccountId, $entry['id'], $entry['description']));
         $return = [
             'apply_rules'             => $this->configuration->isRules(),
             'error_if_duplicate_hash' => true,
@@ -194,7 +194,7 @@ class GenerateTransactions
 
                 Log::debug(sprintf('Mapped value for "%s" or "%s" means ID for source account is #%d.', $entry['counter_party']['display_name'], $entry['counter_party']['iban'], $mappedId));
                 Log::debug(sprintf('Type of mapped account #%d is "%s"', $mappedId, $mappedType));
-                Log::debug(sprintf(sprintf('Transaction type is now set to "%s"', $return['transactions'][0]['type'])));
+                Log::debug(sprintf('Transaction type is now set to "%s"', $return['transactions'][0]['type']));
                 Log::debug(sprintf('Set source ID to %d, drop IBAN and name field.', $mappedId));
 
                 unset($return['transactions'][0]['source_iban'], $return['transactions'][0]['source_name']);
@@ -208,7 +208,7 @@ class GenerateTransactions
                 $return['transactions'][0]['source_id'] = $this->targetAccounts[$iban];
 
                 Log::debug(sprintf('No mapping found. Found IBAN %s in target accounts (ID %d). Type is %s', $iban, $this->targetAccounts[$iban], $this->targetTypes[$iban]));
-                Log::debug(sprintf(sprintf('Transaction type is now set to "%s"', $return['transactions'][0]['type'])));
+                Log::debug(sprintf('Transaction type is now set to "%s"', $return['transactions'][0]['type']));
                 Log::debug(sprintf('Replaced source IBAN %s with ID #%d (type %s).', $iban, $this->targetAccounts[$iban], $this->targetTypes[$iban]));
 
                 unset($return['transactions'][0]['source_iban'], $return['transactions'][0]['source_name']);
@@ -236,7 +236,7 @@ class GenerateTransactions
 
                 Log::debug(sprintf('Mapped value for "%s" or "%s" means ID for destination account is #%d.', $entry['counter_party']['display_name'], $entry['counter_party']['iban'], $mappedId));
                 Log::debug(sprintf('Type of mapped account #%d is "%s"', $mappedId, $mappedType));
-                Log::debug(sprintf(sprintf('Transaction type is now set to "%s"', $return['transactions'][0]['type'])));
+                Log::debug(sprintf('Transaction type is now set to "%s"', $return['transactions'][0]['type']));
                 Log::debug(sprintf('Set destination ID to %d, drop IBAN and name field.', $mappedId));
 
                 unset($return['transactions'][0]['destination_iban'], $return['transactions'][0]['destination_name']);
