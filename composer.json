@@ -60,7 +60,7 @@
         "issues": "https://github.com/firefly-iii/firefly-iii/issues",
         "forum": "https://reddit.com/r/FireflyIII",
         "source": "https://github.com/firefly-iii/bunq-importer",
-        "docs": "https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/"
+        "docs": "https://bunq-docs.firefly-iii.org/"
     },
     "funding": [
       {

@@ -47,32 +47,32 @@ Anybody who uses Firefly III and wants to automatically import bunq transactions
 
 You can use this tool in several ways.
 
-1. [Install it on your server using composer](https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/installing-and-running/self_hosted).
-2. [Use the Docker-image](https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/installing-and-running/docker).
+1. [Install it on your server using composer](https://bunq-docs.firefly-iii.org/installing-and-running/self_hosted).
+2. [Use the Docker-image](https://bunq-docs.firefly-iii.org/installing-and-running/docker).
 
 Generally speaking, it's easiest to use and install this tool the same way as you use Firefly III. And although it features an excellent web-interface, you can also use the command line to import your data.
 
 ### Upgrade
 
-There are [upgrade instructions](https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/upgrading/upgrade) for boths methods of installation.
+There are [upgrade instructions](https://bunq-docs.firefly-iii.org/upgrading/upgrade) for boths methods of installation.
 
 ## Usage
 
-The [full usage instructions](https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/) can be found in the documentation. Basically, this is the workflow.
+The [full usage instructions](https://bunq-docs.firefly-iii.org/) can be found in the documentation. Basically, this is the workflow.
 
-1. [Set up and configure your tokens](https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/installing-and-running/configure).
-2. [Upload your configuration file (optional)](https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/importing-data/upload).
-3. [Configure the import](https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/importing-data/configure).
-5. [Map values from bunq to existing values in your database](https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/importing-data/map).
+1. [Set up and configure your tokens](https://bunq-docs.firefly-iii.org/installing-and-running/configure).
+2. [Upload your configuration file (optional)](https://bunq-docs.firefly-iii.org/importing-data/upload).
+3. [Configure the import](https://bunq-docs.firefly-iii.org/importing-data/configure).
+5. [Map values from bunq to existing values in your database](https://bunq-docs.firefly-iii.org/importing-data/map).
 6. [Enjoy the result in Firefly III](https://github.com/firefly-iii/firefly-iii).
 
 ## Known issues and problems
 
 Most people run into the same problems when importing data into Firefly III. Read more about those on the following pages:
 
-1. [Issues with your Personal Access Token](https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/errors-and-trouble-shooting/token_errors)
-2. [Often seen errors and issues](https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/errors-and-trouble-shooting/freq_errors).
-3. [Frequently asked questions](https://firefly-iii.gitbook.io/firefly-iii-bunq-importer/errors-and-trouble-shooting/freq_questions).
+1. [Issues with your Personal Access Token](https://bunq-docs.firefly-iii.org/errors-and-trouble-shooting/token_errors)
+2. [Often seen errors and issues](https://bunq-docs.firefly-iii.org/errors-and-trouble-shooting/freq_errors).
+3. [Frequently asked questions](https://bunq-docs.firefly-iii.org/errors-and-trouble-shooting/freq_questions).
 
 ## Other stuff
 
