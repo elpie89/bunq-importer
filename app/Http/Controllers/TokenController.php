@@ -56,9 +56,9 @@ class TokenController extends Controller
     {
         $response = ['result' => 'OK', 'message' => null];
         $token    = (string) config('bunq.access_token');
-        $uri      = (string) config('bunq.uri');
-        app('log')->debug(sprintf('Going to try and access %s', $uri));
-        $request = new SystemInformationRequest($uri, $token);
+        $url      = (string) config('bunq.url');
+        app('log')->debug(sprintf('Going to try and access %s', $url));
+        $request = new SystemInformationRequest($url, $token);
         try {
             /** @var SystemInformationResponse $result */
             $result = $request->get();
@@ -99,9 +99,9 @@ class TokenController extends Controller
     public function index()
     {
         $token = (string) config('bunq.access_token');
-        $uri   = (string) config('bunq.uri');
-        app('log')->debug(sprintf('Going to try and access %s', $uri));
-        $request      = new SystemInformationRequest($uri, $token);
+        $url   = (string) config('bunq.url');
+        app('log')->debug(sprintf('Going to try and access %s', $url));
+        $request      = new SystemInformationRequest($url, $token);
         $errorMessage = 'No error message.';
         $isError      = false;
         $result       = null;

@@ -85,9 +85,9 @@ class ConfigurationController extends Controller
             return redirect()->route('import.download.index');
         }
         // get list of asset accounts in Firefly III
-        $uri     = (string) config('bunq.uri');
+        $url     = (string) config('bunq.url');
         $token   = (string) config('bunq.access_token');
-        $request = new GetAccountsRequest($uri, $token);
+        $request = new GetAccountsRequest($url, $token);
         $request->setType(GetAccountsRequest::ASSET);
         $ff3Accounts = $request->get();
 
@@ -114,7 +114,7 @@ class ConfigurationController extends Controller
                     $bunqAccount['ff3_type']     = $ff3Account->type;
                     $bunqAccount['ff3_iban']     = $ff3Account->iban;
                     $bunqAccount['ff3_currency'] = $ff3Account->currencyCode;
-                    $bunqAccount['ff3_uri']      = sprintf('%saccounts/show/%d', $uri, $ff3Account->id);
+                    $bunqAccount['ff3_url']      = sprintf('%saccounts/show/%d', $url, $ff3Account->id);
                 }
             }
             $combinedAccounts[] = $bunqAccount;

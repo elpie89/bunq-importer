@@ -63,7 +63,7 @@
 
                                                 {% if 'ACTIVE' == combinedAccount.status and null != combinedAccount.ff3_id %}
                                                     <br/><span class="text-success">This bunq account will be imported into <a
-                                                        href="{{ combinedAccount.ff3_uri }}"
+                                                        href="{{ combinedAccount.ff3_url }}"
                                                         title="{{ combinedAccount.ff3_name }}">{{ combinedAccount.ff3_name }}</a>.</span>
                                                     <input type="hidden" name="accounts[{{ combinedAccount.id }}]" value="{{ combinedAccount.ff3_id }}" />
                                                 {% endif %}
