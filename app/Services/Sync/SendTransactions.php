@@ -47,7 +47,7 @@ class SendTransactions
     use ProgressInformation;
 
     private Configuration $configuration;
-    private string        $rootURI;
+    private string        $rootURL;
 
     /**
      * @param array $transactions
@@ -56,18 +56,18 @@ class SendTransactions
      */
     public function send(array $transactions): array
     {
-        $uri   = (string) config('bunq.uri');
+        $url   = (string) config('bunq.url');
         $token = (string) config('bunq.access_token');
 
-        $this->rootURI = config('bunq.uri') ?? '';
-        if ('' !== (string) config('bunq.vanity_uri')) {
-            $this->rootURI = config('bunq.vanity_uri');
+        $this->rootURL = config('bunq.url') ?? '';
+        if ('' !== (string) config('bunq.vanity_url')) {
+            $this->rootURL = config('bunq.vanity_url');
         }
-        app('log')->debug(sprintf('The root URI is "%s"', $this->rootURI));
+        app('log')->debug(sprintf('The root URL is "%s"', $this->rootURL));
 
         foreach ($transactions as $index => $transaction) {
             app('log')->debug(sprintf('Trying to send transaction #%d', $index), $transaction);
-            $this->sendTransaction($uri, $token, $index, $transaction);
+            $this->sendTransaction($url, $token, $index, $transaction);
         }
 
         return [];
@@ -82,16 +82,16 @@ class SendTransactions
     }
 
     /**
-     * @param string $uri
+     * @param string $url
      * @param string $token
      * @param int    $index
      * @param array  $transaction
      *
      * @return array
      */
-    private function sendTransaction(string $uri, string $token, int $index, array $transaction): array
+    private function sendTransaction(string $url, string $token, int $index, array $transaction): array
     {
-        $request = new PostTransactionRequest($uri, $token);
+        $request = new PostTransactionRequest($url, $token);
         $request->setBody($transaction);
         try {
             /** @var PostTransactionResponse $response */
@@ -122,14 +122,14 @@ class SendTransactions
             return [];
         }
         $groupId  = $group->id;
-        $groupUri = (string) sprintf('%s/transactions/show/%d', $this->rootURI, $groupId);
+        $groupUrl = (string) sprintf('%s/transactions/show/%d', $this->rootURL, $groupId);
 
         /** @var Transaction $tr */
         foreach ($group->transactions as $tr) {
             $this->addMessage(
                 $index + 1,
                 sprintf(
-                    'Created transaction #%d: <a href="%s">%s</a> (%s %s)', $groupId, $groupUri, $tr->description, $tr->currencyCode,
+                    'Created transaction #%d: <a href="%s">%s</a> (%s %s)', $groupId, $groupUrl, $tr->description, $tr->currencyCode,
                     round((float) $tr->amount, 2)
                 )
             );

@@ -74,8 +74,8 @@ class GenerateTransactions
         Log::debug('Going to collect all target accounts from Firefly III.');
         // send account list request to Firefly III.
         $token   = (string) config('bunq.access_token');
-        $uri     = (string) config('bunq.uri');
-        $request = new GetAccountsRequest($uri, $token);
+        $url     = (string) config('bunq.url');
+        $request = new GetAccountsRequest($url, $token);
         /** @var GetAccountsResponse $result */
         $result = $request->get();
         $return = [];
@@ -269,10 +269,10 @@ class GenerateTransactions
      */
     private function getAccountType(int $accountId): string
     {
-        $uri   = (string) config('bunq.uri');
+        $url   = (string) config('bunq.url');
         $token = (string) config('bunq.access_token');
         app('log')->debug(sprintf('Going to download account #%d from Firefly III', $accountId));
-        $request = new GetAccountRequest($uri, $token);
+        $request = new GetAccountRequest($url, $token);
         $request->setId($accountId);
         /** @var GetAccountResponse $result */
         $result = $request->get();

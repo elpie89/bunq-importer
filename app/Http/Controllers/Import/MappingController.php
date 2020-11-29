@@ -124,8 +124,8 @@ class MappingController extends Controller
     private function getFireflyIIIAccounts(): array
     {
         $token   = (string) config('bunq.access_token');
-        $uri     = (string) config('bunq.uri');
-        $request = new GetAccountsRequest($uri, $token);
+        $url     = (string) config('bunq.url');
+        $request = new GetAccountsRequest($url, $token);
         /** @var GetAccountsResponse $result */
         $result = $request->get();
         $return = [];

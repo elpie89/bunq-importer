@@ -21,9 +21,9 @@ trait HaveAccess
      */
     private function haveAccess(): bool
     {
-        $uri     = (string) config('bunq.uri');
+        $url     = (string) config('bunq.url');
         $token   = (string) config('bunq.access_token');
-        $request = new SystemInformationRequest($uri, $token);
+        $request = new SystemInformationRequest($url, $token);
         try {
             $request->get();
         } catch (ApiHttpException $e) {

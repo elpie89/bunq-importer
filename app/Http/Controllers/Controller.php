@@ -28,9 +28,9 @@ class Controller extends BaseController
     {
         $variables = [
             'FIREFLY_III_ACCESS_TOKEN' => 'bunq.access_token',
-            'FIREFLY_III_URI'          => 'bunq.uri',
+            'FIREFLY_III_URL'          => 'bunq.url',
             'BUNQ_API_CODE'            => 'bunq.api_code',
-            'BUNQ_API_URI'             => 'bunq.api_uri',
+            'BUNQ_API_URL'             => 'bunq.api_url',
         ];
         foreach ($variables as $env => $config) {
             $value = (string) config($config);
@@ -41,8 +41,8 @@ class Controller extends BaseController
             }
         }
         if (
-            false === strpos(config('bunq.uri'), 'http://')
-            && false === strpos(config('bunq.uri'), 'https://')
+            false === strpos(config('bunq.url'), 'http://')
+            && false === strpos(config('bunq.url'), 'https://')
         ) {
             echo 'The URL to your Firefly III instance must begin with "http://" or "https://".';
             exit;
