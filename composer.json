@@ -82,7 +82,7 @@
         "fideloper/proxy": "^4.0",
         "firefly-iii/api-support-classes": "dev-master",
         "guzzlehttp/guzzle": "^6.5",
-        "laravel/framework": "^7.0",
+        "laravel/framework": "^8.16",
         "rcrowe/twigbridge": "^0.12",
       "ext-json": "*",
       "ext-bcmath": "*"
