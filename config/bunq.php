@@ -7,7 +7,7 @@
 declare(strict_types=1);
 
 return [
-    'version'         => '2.1.0',
+    'version'         => '2.1.1',
     'access_token'    => env('FIREFLY_III_ACCESS_TOKEN', ''),
     'url'             => env('FIREFLY_III_URL', ''),
     'vanity_url'      => envNonEmpty('VANITY_URL'),
