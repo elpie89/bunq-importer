@@ -77,8 +77,8 @@
       }
     ],
     "require": {
-        "php": "^7.4",
-        "bunq/sdk_php": "^1.13",
+        "php": "^7.4|^8.0",
+        "bunq/sdk_php": "^1",
         "fideloper/proxy": "^4.0",
         "firefly-iii/api-support-classes": "dev-master",
         "guzzlehttp/guzzle": "^6.5",
