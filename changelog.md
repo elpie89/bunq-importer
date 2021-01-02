@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+#@ 2.1.1 - 2021-01-02
+
+### Changed
+
+- Updated documentation links and libraries.
+
 ## 2.1.0 - 2020-11-29
 
 ⚠️ Several changes in this release may break Firefly III's duplication detection or are backwards incompatible.
