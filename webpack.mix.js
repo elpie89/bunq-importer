@@ -41,5 +41,5 @@ mix.webpackConfig({
                   });
 
 //mix.js('resources/js/app.js', 'public/js').sass('resources/sass/app.scss', 'public/css');
-mix.js('resources/js/download.js', 'public/js');
-mix.js('resources/js/sync.js', 'public/js');
+mix.js('resources/js/download.js', 'public/js').vue({version: 2});
+mix.js('resources/js/sync.js', 'public/js').vue({version: 2});
