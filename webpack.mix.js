@@ -33,12 +33,12 @@ const mix = require('laravel-mix');
  */
 // production
 mix.webpackConfig({
-                      resolve: {
-                          alias: {
-                              'vue$': 'vue/dist/vue.runtime.common.js'
-                          }
-                      }
-                  });
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.runtime.common.js'
+        }
+    }
+});
 
 //mix.js('resources/js/app.js', 'public/js').sass('resources/sass/app.scss', 'public/css');
 mix.js('resources/js/download.js', 'public/js');
