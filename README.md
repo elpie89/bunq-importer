@@ -4,6 +4,12 @@
 [![Donate][donate-shield]][donate-uri]
 [![Quality Gate Status][sonar-shield]][sonar-uri]
 
+<br />
+<p align="center">
+      <img src="https://fireflyiiiwebsite.z6.web.core.windows.net/assets/logo/small.png" alt="Firefly III" width="120" height="178">
+  </a>
+</p>
+
 # Firefly III bunq 🌈 Importer
 
 <!-- MarkdownTOC autolink="true" -->
