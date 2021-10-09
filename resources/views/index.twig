@@ -7,6 +7,10 @@
     </div>
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
+            <div class="alert alert-danger" role="alert">
+                ⚠️ Active maintenance on the Firefly III bunq importer <strong>has stopped</strong> per January 1st, 2022.
+                <a href="https://github.com/firefly-iii/firefly-iii/issues/5161" class="alert-link" target="_blank">Read more in the announcement</a>
+            </div>
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Firefly III bunq Import Tool 🌈</h5>
@@ -35,11 +39,11 @@
                 $('#start').removeClass('disabled').html('Start here &rarr;');
             } else {
                 $('#start').hide();
-                window.location = tokenPageUrl;
+                //window.location = tokenPageUrl;
             }
         }).fail(function() {
             $('#start').hide();
-            window.location = tokenPageUrl;
+            //window.location = tokenPageUrl;
         });
     </script>
 {% endblock %}

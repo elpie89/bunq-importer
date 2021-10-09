@@ -6,6 +6,8 @@
 
 # Firefly III bunq 🌈 Importer
 
+> ⚠️ Active maintenance on the Firefly III bunq importer **has stopped** per January 1st, 2022. [Read more in the announcement](https://github.com/firefly-iii/firefly-iii/issues/5161).
+
 <!-- MarkdownTOC autolink="true" -->
 
 - [Introduction](#introduction)
@@ -20,7 +22,7 @@
 	- [Contribute](#contribute)
 	- [Versioning](#versioning)
 	- [License](#license)
-	- [Contact](#contact)
+- [Need help?](#need-help)
 	- [Support](#support)
 
 <!-- /MarkdownTOC -->
@@ -29,21 +31,25 @@
 
 This is a tool to import from bunq 🌈 into [Firefly III](https://github.com/firefly-iii/firefly-iii). It works by using your bunq API token and a Firefly III personal access token to access your Firefly III installation's API.
 
-At this moment, the tool is in beta, which means that it may not work as expected. Please bear with me and open all the issues and PR's you like. I greatly appreciate your input!
+> ⚠️ Active maintenance on the Firefly III bunq importer **has stopped** per January 1st, 2022. [Read more in the announcement](https://github.com/firefly-iii/firefly-iii/issues/5161).
 
 ### Purpose
 
 Use this tool to (automatically) import your bunq transactions into Firefly III. If you're a bit of a developer, feel free to use this code to generate your own import tool.
 
+> ⚠️ Active maintenance on the Firefly III bunq importer **has stopped** per January 1st, 2022. [Read more in the announcement](https://github.com/firefly-iii/firefly-iii/issues/5161).
+
 ### Features
 
 * This tool will let you download or generate a configuration file, so the next import will go faster.
-
+* 
 ### Who's it for?
 
 Anybody who uses Firefly III and wants to automatically import bunq transactions.
 
 ## Installation
+
+> ⚠️ Active maintenance on the Firefly III bunq importer **has stopped** per January 1st, 2022. [Read more in the announcement](https://github.com/firefly-iii/firefly-iii/issues/5161).
 
 You can use this tool in several ways.
 
@@ -53,6 +59,8 @@ You can use this tool in several ways.
 Generally speaking, it's easiest to use and install this tool the same way as you use Firefly III. And although it features an excellent web-interface, you can also use the command line to import your data.
 
 ### Upgrade
+
+> ⚠️ Active maintenance on the Firefly III bunq importer **has stopped** per January 1st, 2022. [Read more in the announcement](https://github.com/firefly-iii/firefly-iii/issues/5161).
 
 There are [upgrade instructions](https://docs.firefly-iii.org/other-data-importers/upgrade/) for boths methods of installation.
 
@@ -76,9 +84,12 @@ Most people run into the same problems when importing data into Firefly III. Rea
 
 ## Other stuff
 
+> ⚠️ Active maintenance on the Firefly III bunq importer **has stopped** per January 1st, 2022. [Read more in the announcement](https://github.com/firefly-iii/firefly-iii/issues/5161).
+
 ### Contribute
 
-Your help is always welcome! Feel free to open issues, ask questions, talk about it and discuss this tool. You can also join [reddit](https://www.reddit.com/r/FireflyIII/) or follow me on [Twitter](https://twitter.com/Firefly_III).
+> ⚠️ Active maintenance on the Firefly III bunq importer **has stopped** per January 1st, 2022. [Read more in the announcement](https://github.com/firefly-iii/firefly-iii/issues/5161).
+
 
 Of course, there are some [contributing guidelines](https://github.com/firefly-iii/bunq-importer/blob/main/.github/contributing.md) and a [code of conduct](https://github.com/firefly-iii/bunq-importer/blob/main/.github/code_of_conduct.md), which I invite you to check out.
 
@@ -92,9 +103,19 @@ The Firefly III bunq Importer uses [SemVer](https://semver.org/) for versioning.
 
 This work [is licensed](https://github.com/firefly-iii/bunq-importer/blob/main/LICENSE) under the [GNU Affero General Public License v3](https://www.gnu.org/licenses/agpl-3.0.html).
 
-### Contact
+<!-- HELP TEXT -->
+## Need help?
 
-You can contact me at [james@firefly-iii.org](mailto:james@firefly-iii.org), you may open an issue or contact me through the various social media pages there are: [reddit](https://www.reddit.com/r/FireflyIII/) and [Twitter](https://twitter.com/Firefly_III).
+> ⚠️ Active maintenance on the Firefly III bunq importer **has stopped** per January 1st, 2022. [Read more in the announcement](https://github.com/firefly-iii/firefly-iii/issues/5161).
+
+If you need support using Firefly III or the associated tools, come find us!
+
+- [GitHub Discussions for questions and support](https://github.com/firefly-iii/firefly-iii/discussions/)
+- [Gitter.im for a good chat and a quick answer](https://gitter.im/firefly-iii/firefly-iii)
+- [GitHub Issues for bugs and issues](https://github.com/firefly-iii/firefly-iii/issues)
+- [Follow me around for news and updates on Twitter](https://twitter.com/Firefly_iii)
+
+<!-- END OF HELP TEXT -->
 
 ### Support
 
