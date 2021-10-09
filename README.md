@@ -4,6 +4,12 @@
 [![Donate][donate-shield]][donate-uri]
 [![Quality Gate Status][sonar-shield]][sonar-uri]
 
+<br />
+<p align="center">
+      <img src="https://fireflyiiiwebsite.z6.web.core.windows.net/assets/logo/small.png" alt="Firefly III" width="120" height="178">
+  </a>
+</p>
+
 # Firefly III bunq 🌈 Importer
 
 > ⚠️ Active maintenance on the Firefly III bunq importer **has stopped** per January 1st, 2022. [Read more in the announcement](https://github.com/firefly-iii/firefly-iii/issues/5161).
