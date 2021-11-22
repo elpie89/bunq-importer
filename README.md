@@ -131,11 +131,7 @@ OK that was a joke. You can donate using [Patreon](https://www.patreon.com/jc5).
 
 Thank you for considering donating to Firefly III, and the bunq Importer.
 
-[![Scrutinizer][scrutinizer-shield]][scrutinizer-url]
-[![Requires PHP7.4][php-shield]][php-uri]
 
-[scrutinizer-shield]: https://img.shields.io/scrutinizer/g/firefly-iii/bunq-importer.svg?style=flat-square
-[scrutinizer-url]: https://scrutinizer-ci.com/g/firefly-iii/bunq-importer/
 [php-shield]: https://img.shields.io/badge/php-7.4-red.svg?style=flat-square
 [php-uri]: https://secure.php.net/downloads.php
 [packagist-shield]: https://img.shields.io/packagist/v/firefly-iii/bunq-importer.svg?style=flat-square
