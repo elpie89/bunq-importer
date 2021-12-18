@@ -114,7 +114,7 @@ class ConfigurationController extends Controller
                     $bunqAccount['ff3_type']     = $ff3Account->type;
                     $bunqAccount['ff3_iban']     = $ff3Account->iban;
                     $bunqAccount['ff3_currency'] = $ff3Account->currencyCode;
-                    $bunqAccount['ff3_url']      = sprintf('%saccounts/show/%d', $url, $ff3Account->id);
+                    $bunqAccount['ff3_url']      = sprintf('%s/accounts/show/%d', $url, $ff3Account->id);
                 }
             }
             $combinedAccounts[] = $bunqAccount;
